@@ -2,7 +2,7 @@ This is our repository for the Software Engineering 1 course.
 
 The name of our group is **Lady Bugs**
 
-<img src="https://i.ibb.co/FkSmj14J/bugg.png" alt="Our logo" width="100" height="100">
+<img style="display:flex; justify-content:center;" src="https://i.ibb.co/7x9G6cHC/Bugg-1.webp" alt="Our logo" width="150" height="150">
 
 and we are conformed by
 
