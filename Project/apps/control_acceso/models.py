@@ -3,8 +3,6 @@ from django.db import models
 from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
 
-# Referencias a otras apps hechas por string ("app_label.ModelName")
-# Evita importaciones directas como `from socios.persistencia.models import Socio`
 
 # === TABLA Ejercicio ===
 class Ejercicio(models.Model):

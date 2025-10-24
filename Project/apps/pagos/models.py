@@ -21,13 +21,11 @@ class PlanMembresia(models.Model):
 
 # === TABLA SocioMembresia ===
 class SocioMembresia(models.Model):
-    # Referencia por string para evitar importaciones circulares
     SocioID = models.ForeignKey("socios.Socio", on_delete=models.CASCADE, related_name="membresias")
     PlanID = models.ForeignKey(PlanMembresia, on_delete=models.PROTECT, related_name="socio_membresias")
 
     FechaInicio = models.DateField()
     FechaFin = models.DateField()
-    # Considera usar choices si los estados son fijos
     ESTADO_ACTIVA = "Activa"
     ESTADO_MOROSA = "Morosa"
     ESTADO_EXPIRADA = "Expirada"
@@ -39,7 +37,6 @@ class SocioMembresia(models.Model):
     Estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default=ESTADO_ACTIVA)
 
     def __str__(self):
-        # Evita acceder a atributos que puedan no existir; asumimos NombreCompleto en Socio
         nombre = getattr(self.SocioID, "NombreCompleto", str(self.SocioID))
         return f"Membresía {self.id} de {nombre}"
 

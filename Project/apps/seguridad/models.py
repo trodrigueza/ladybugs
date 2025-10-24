@@ -2,7 +2,6 @@ from django.db import models
 
 # === TABLA Rol ===
 class Rol(models.Model):
-    # id (PK) se crea automáticamente
     NombreRol = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
