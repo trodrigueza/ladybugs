@@ -1,1 +1,245 @@
+<!DOCTYPE html>
 
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GluteOS - User Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0A2342",
+                        "background-light": "#FFFFFF",
+                        "background-dark": "#101622",
+                        "accent": "#2CA58D",
+                        "status-green": "#28a745",
+                        "status-yellow": "#ffc107",
+                        "status-red": "#dc3545",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="flex h-screen w-full">
+<!-- SideNavBar -->
+<aside class="flex w-64 flex-col border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/50">
+<div class="flex h-full flex-col justify-between p-4">
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3 px-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="GluteOS logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCxovvuthJW-2wbnWzPsWXzK37JK8A1R76DsSx7UlIXbHdvP7q7ZLAN58sM4z9gccTeOTnt0ZKP52S_R5bHnAcv9PlQuWbSq9DgBZ1rKY0BfzNjodx5lXenYbK-gYyD79McWd0U_0w64w_eIZtrqITKNtwrnxDbW5AXLaClBs20kssmykT_pQ7CvMu8ZmiRoHk09P2UoVplW89i1hPtztOjKys1Rd9xn3AcfNALblPCoHgfpxSxb1yBafHKS2JRYTzqIG0KDpRaae8");'></div>
+<div class="flex flex-col">
+<h1 class="text-primary dark:text-white text-base font-bold leading-normal">GluteOS</h1>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">Admin Panel</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2 mt-4">
+<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-primary/10" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<p class="text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary text-white" href="#">
+<span class="material-symbols-outlined">group</span>
+<p class="text-sm font-medium leading-normal">Users</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-primary/10" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<p class="text-sm font-medium leading-normal">Routines</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-primary/10" href="#">
+<span class="material-symbols-outlined">restaurant_menu</span>
+<p class="text-sm font-medium leading-normal">Nutrition Plans</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-primary/10" href="#">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-sm font-medium leading-normal">Settings</p>
+</a>
+</nav>
+</div>
+<div class="flex flex-col gap-1 border-t border-gray-200 dark:border-gray-800 pt-4">
+<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-primary/10" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<p class="text-sm font-medium leading-normal">Profile</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-primary/10" href="#">
+<span class="material-symbols-outlined">logout</span>
+<p class="text-sm font-medium leading-normal">Logout</p>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto bg-gray-50 dark:bg-background-dark">
+<div class="p-8">
+<!-- PageHeading -->
+<header class="flex flex-wrap items-center justify-between gap-4 mb-6">
+<div class="flex flex-col gap-1">
+<h1 class="text-gray-900 dark:text-white text-3xl font-bold leading-tight">User Management</h1>
+<p class="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal">Add, edit, view and manage user information.</p>
+</div>
+<button class="flex min-w-[84px] items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined">add</span>
+<span class="truncate">Add New User</span>
+</button>
+</header>
+<!-- Search and Filters -->
+<div class="mb-4 space-y-4">
+<!-- SearchBar -->
+<div class="w-full">
+<label class="flex flex-col h-12 w-full">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+<div class="text-gray-500 dark:text-gray-400 flex bg-white dark:bg-gray-800 items-center justify-center pl-4 rounded-l-lg border border-gray-300 dark:border-gray-700 border-r-0">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 h-full placeholder:text-gray-400 px-4 pl-2 text-base font-normal leading-normal" placeholder="Search by name, email, or ID..." value=""/>
+</div>
+</label>
+</div>
+<!-- Chips / Filters -->
+<div class="flex gap-3 overflow-x-auto pb-2">
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 px-4">
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal">Subscription: All</p>
+<span class="material-symbols-outlined text-gray-500 dark:text-gray-400">expand_more</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 px-4">
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal">Assigned Trainer: All</p>
+<span class="material-symbols-outlined text-gray-500 dark:text-gray-400">expand_more</span>
+</button>
+</div>
+</div>
+<!-- Table -->
+<div class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/50">
+<table class="w-full">
+<thead class="bg-primary">
+<tr>
+<th class="w-12 px-4 py-3 text-left">
+<input class="h-4 w-4 rounded border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-primary focus:ring-primary" type="checkbox"/>
+</th>
+<th class="px-4 py-3 text-left text-sm font-semibold text-white">User Name</th>
+<th class="px-4 py-3 text-left text-sm font-semibold text-white">Email</th>
+<th class="px-4 py-3 text-left text-sm font-semibold text-white">Subscription Status</th>
+<th class="px-4 py-3 text-left text-sm font-semibold text-white">Join Date</th>
+<th class="px-4 py-3 text-left text-sm font-semibold text-white">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+<tr>
+<td class="w-12 px-4 py-3">
+<input class="h-4 w-4 rounded border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-4 py-3 text-sm text-gray-800 dark:text-gray-200">Elena Rodriguez</td>
+<td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">elena.r@email.com</td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center rounded-full bg-status-green/10 px-2.5 py-0.5 text-xs font-medium text-status-green">Active</span>
+</td>
+<td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">2023-05-15</td>
+<td class="px-4 py-3">
+<div class="flex items-center gap-4">
+<button class="text-primary hover:underline text-sm font-medium">Edit</button>
+<button class="text-status-red hover:underline text-sm font-medium">Delete</button>
+</div>
+</td>
+</tr>
+<tr>
+<td class="w-12 px-4 py-3">
+<input class="h-4 w-4 rounded border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-4 py-3 text-sm text-gray-800 dark:text-gray-200">Marcus Chen</td>
+<td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">marcus.c@email.com</td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center rounded-full bg-status-green/10 px-2.5 py-0.5 text-xs font-medium text-status-green">Active</span>
+</td>
+<td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">2023-04-22</td>
+<td class="px-4 py-3">
+<div class="flex items-center gap-4">
+<button class="text-primary hover:underline text-sm font-medium">Edit</button>
+<button class="text-status-red hover:underline text-sm font-medium">Delete</button>
+</div>
+</td>
+</tr>
+<tr>
+<td class="w-12 px-4 py-3">
+<input class="h-4 w-4 rounded border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-4 py-3 text-sm text-gray-800 dark:text-gray-200">Aisha Khan</td>
+<td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">aisha.k@email.com</td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center rounded-full bg-gray-500/10 px-2.5 py-0.5 text-xs font-medium text-gray-500">Inactive</span>
+</td>
+<td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">2023-01-10</td>
+<td class="px-4 py-3">
+<div class="flex items-center gap-4">
+<button class="text-primary hover:underline text-sm font-medium">Edit</button>
+<button class="text-status-red hover:underline text-sm font-medium">Delete</button>
+</div>
+</td>
+</tr>
+<tr>
+<td class="w-12 px-4 py-3">
+<input class="h-4 w-4 rounded border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-4 py-3 text-sm text-gray-800 dark:text-gray-200">David Miller</td>
+<td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">david.m@email.com</td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center rounded-full bg-status-red/10 px-2.5 py-0.5 text-xs font-medium text-status-red">Expired</span>
+</td>
+<td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">2022-11-30</td>
+<td class="px-4 py-3">
+<div class="flex items-center gap-4">
+<button class="text-primary hover:underline text-sm font-medium">Edit</button>
+<button class="text-status-red hover:underline text-sm font-medium">Delete</button>
+</div>
+</td>
+</tr>
+<tr>
+<td class="w-12 px-4 py-3">
+<input class="h-4 w-4 rounded border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-4 py-3 text-sm text-gray-800 dark:text-gray-200">Sophia Williams</td>
+<td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">sophia.w@email.com</td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center rounded-full bg-status-yellow/10 px-2.5 py-0.5 text-xs font-medium text-status-yellow">Expiring Soon</span>
+</td>
+<td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">2023-08-01</td>
+<td class="px-4 py-3">
+<div class="flex items-center gap-4">
+<button class="text-primary hover:underline text-sm font-medium">Edit</button>
+<button class="text-status-red hover:underline text-sm font-medium">Delete</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Pagination -->
+<div class="flex items-center justify-between border-t border-gray-200 dark:border-gray-800 px-4 py-3">
+<p class="text-sm text-gray-500 dark:text-gray-400">Showing 1 to 5 of 57 users</p>
+<div class="flex items-center gap-2">
+<button class="rounded-lg border border-gray-300 dark:border-gray-700 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Previous</button>
+<button class="rounded-lg border border-gray-300 dark:border-gray-700 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Next</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
