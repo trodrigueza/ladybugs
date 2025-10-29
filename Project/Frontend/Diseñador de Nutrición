@@ -1,1 +1,303 @@
+<!DOCTYPE html>
 
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GluteOS - Creador de Planes de Alimentación</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0A2342",
+                        "secondary": "#2CA58D",
+                        "background-light": "#F9FAFB",
+                        "background-dark": "#101622",
+                        "text-light-primary": "#111318",
+                        "text-light-secondary": "#6B7280",
+                        "border-light": "#E5E7EB",
+                        "text-dark-primary": "#F9FAFB",
+                        "text-dark-secondary": "#9CA3AF",
+                        "border-dark": "#374151"
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-text-light-primary dark:text-dark-primary">
+<div class="relative flex min-h-screen w-full flex-col">
+<!-- TopNavBar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-border-light dark:border-border-dark px-6 py-3 bg-white dark:bg-background-dark sticky top-0 z-30">
+<div class="flex items-center gap-4 text-text-light-primary dark:text-dark-primary">
+<div class="size-6 text-primary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6_543)">
+<path d="M42.1739 20.1739L27.8261 5.82609C29.1366 7.13663 28.3989 10.1876 26.2002 13.7654C24.8538 15.9564 22.9595 18.3449 20.6522 20.6522C18.3449 22.9595 15.9564 24.8538 13.7654 26.2002C10.1876 28.3989 7.13663 29.1366 5.82609 27.8261L20.1739 42.1739C21.4845 43.4845 24.5355 42.7467 28.1133 40.548C30.3042 39.2016 32.6927 37.3073 35 35C37.3073 32.6927 39.2016 30.3042 40.548 28.1133C42.7467 24.5355 43.4845 21.4845 42.1739 20.1739Z" fill="currentColor"></path>
+<path clip-rule="evenodd" d="M7.24189 26.4066C7.31369 26.4411 7.64204 26.5637 8.52504 26.3738C9.59462 26.1438 11.0343 25.5311 12.7183 24.4963C14.7583 23.2426 17.0256 21.4503 19.238 19.238C21.4503 17.0256 23.2426 14.7583 24.4963 12.7183C25.5311 11.0343 26.1438 9.59463 26.3738 8.52504C26.5637 7.64204 26.4411 7.31369 26.4066 7.24189C26.345 7.21246 26.143 7.14535 25.6664 7.1918C24.9745 7.25925 23.9954 7.5498 22.7699 8.14278C20.3369 9.32007 17.3369 11.4915 14.4142 14.4142C11.4915 17.3369 9.32007 20.3369 8.14278 22.7699C7.5498 23.9954 7.25925 24.9745 7.1918 25.6664C7.14534 26.143 7.21246 26.345 7.24189 26.4066ZM29.9001 10.7285C29.4519 12.0322 28.7617 13.4172 27.9042 14.8126C26.465 17.1544 24.4686 19.6641 22.0664 22.0664C19.6641 24.4686 17.1544 26.465 14.8126 27.9042C13.4172 28.7617 12.0322 29.4519 10.7285 29.9001L21.5754 40.747C21.6001 40.7606 21.8995 40.931 22.8729 40.7217C23.9424 40.4916 25.3821 39.879 27.0661 38.8441C29.1062 37.5904 31.3734 35.7982 33.5858 33.5858C35.7982 31.3734 37.5904 29.1062 38.8441 27.0661C39.879 25.3821 40.4916 23.9425 40.7216 22.8729C40.931 21.8995 40.7606 21.6001 40.747 21.5754L29.9001 10.7285ZM29.2403 4.41187L43.5881 18.7597C44.9757 20.1473 44.9743 22.1235 44.6322 23.7139C44.2714 25.3919 43.4158 27.2666 42.252 29.1604C40.8128 31.5022 38.8165 34.012 36.4142 36.4142C34.012 38.8165 31.5022 40.8128 29.1604 42.252C27.2666 43.4158 25.3919 44.2714 23.7139 44.6322C22.1235 44.9743 20.1473 44.9757 18.7597 43.5881L4.41187 29.2403C3.29027 28.1187 3.08209 26.5973 3.21067 25.2783C3.34099 23.9415 3.8369 22.4852 4.54214 21.0277C5.96129 18.0948 8.43335 14.7382 11.5858 11.5858C14.7382 8.43335 18.0948 5.9613 21.0277 4.54214C22.4852 3.8369 23.9415 3.34099 25.2783 3.21067C26.5973 3.08209 28.1187 3.29028 29.2403 4.41187Z" fill="currentColor" fill-rule="evenodd"></path>
+</g>
+<defs>
+<clippath id="clip0_6_543">
+<rect fill="white" height="48" width="48"></rect>
+</clippath>
+</defs>
+</svg>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">GluteOS</h2>
+</div>
+<div class="hidden md:flex flex-1 justify-center items-center gap-9">
+<a class="text-sm font-medium leading-normal" href="#">Dashboard</a>
+<a class="text-sm font-bold text-primary dark:text-secondary leading-normal" href="#">Planes de Alimentación</a>
+<a class="text-sm font-medium leading-normal" href="#">Rutinas</a>
+<a class="text-sm font-medium leading-normal" href="#">Clientes</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Guardar Plan</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD9-fFrY-0rkAuFF1pFHztkE2Bm6bEx7sXFi5kqYgbFMmQtAkA4kFCp9QY0nHEb0F1XNAEgIoBYcsru0T2DCmMJOThtpPAvP4RpUWRMKMu8idRPBomwux7kiresC9R87jLanLgNmM2KP3KJbJyLuCOTqHcRxjw87iDrNF_iiLFO6uX6zXQ-4IhM7gZGGtSQ5BFBqLBFGXh1aqLTdxrvmsP7Vie_16K6f4KLwdqnExPAKiIgNXVOPcrIN-Ad6wyJnb6_8rjwx8Sy5SM");'></div>
+</div>
+</header>
+<main class="flex-grow p-4 md:p-6 lg:p-8">
+<div class="flex flex-col gap-6">
+<!-- PageHeading -->
+<div class="flex flex-wrap justify-between gap-3 px-2">
+<div class="flex flex-col gap-2">
+<p class="text-3xl lg:text-4xl font-black leading-tight tracking-[-0.033em]">Creador de Planes de Alimentación</p>
+<p class="text-base font-normal leading-normal text-text-light-secondary dark:text-dark-secondary">Crea y asigna planes de alimentación detallados para tus clientes.</p>
+</div>
+</div>
+<!-- TextField -->
+<div class="flex flex-wrap items-end gap-4 px-2">
+<label class="flex flex-col min-w-60 flex-1">
+<p class="text-base font-medium leading-normal pb-2">Nombre del Plan</p>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light-primary dark:text-dark-primary focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark/50 h-12 placeholder:text-text-light-secondary dark:placeholder:text-dark-secondary p-3 text-base font-normal leading-normal" placeholder="Ej: Plan de Volumen - Semana 1" value=""/>
+</label>
+<label class="flex flex-col min-w-60 flex-1">
+<p class="text-base font-medium leading-normal pb-2">Asignar a Usuario</p>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light-primary dark:text-dark-primary focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark/50 h-12 placeholder:text-text-light-secondary dark:placeholder:text-dark-secondary p-3 text-base font-normal leading-normal" placeholder="Buscar cliente..." value=""/>
+</label>
+</div>
+<!-- Main Content Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- Left Panel: Ingredient Library -->
+<div class="lg:col-span-3 flex flex-col gap-4">
+<div class="bg-white dark:bg-background-dark rounded-xl border border-border-light dark:border-border-dark p-4 h-full">
+<h3 class="text-lg font-bold leading-tight tracking-[-0.015em] mb-4">Biblioteca de Ingredientes</h3>
+<div class="mb-4">
+<label class="flex flex-col w-full">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-11 bg-background-light dark:bg-background-dark/50">
+<div class="text-text-light-secondary dark:text-dark-secondary flex items-center justify-center pl-3">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden text-text-light-primary dark:text-dark-primary focus:outline-0 focus:ring-0 border-none bg-transparent h-full placeholder:text-text-light-secondary dark:placeholder:text-dark-secondary px-2 text-base font-normal leading-normal" placeholder="Buscar ingrediente..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-col gap-2 max-h-[600px] overflow-y-auto pr-2">
+<!-- Ingredient Item -->
+<div class="flex items-center gap-3 p-2 rounded-lg hover:bg-background-light dark:hover:bg-background-dark/50 cursor-pointer">
+<div class="flex-shrink-0 size-10 rounded-lg bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">egg</span>
+</div>
+<div class="flex-1">
+<p class="font-semibold text-sm">Pechuga de Pollo</p>
+<p class="text-xs text-text-light-secondary dark:text-dark-secondary">165 kcal / 100g</p>
+</div>
+<span class="material-symbols-outlined text-text-light-secondary dark:text-dark-secondary">add_circle_outline</span>
+</div>
+<div class="flex items-center gap-3 p-2 rounded-lg hover:bg-background-light dark:hover:bg-background-dark/50 cursor-pointer">
+<div class="flex-shrink-0 size-10 rounded-lg bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">lunch_dining</span>
+</div>
+<div class="flex-1">
+<p class="font-semibold text-sm">Arroz Blanco</p>
+<p class="text-xs text-text-light-secondary dark:text-dark-secondary">130 kcal / 100g</p>
+</div>
+<span class="material-symbols-outlined text-text-light-secondary dark:text-dark-secondary">add_circle_outline</span>
+</div>
+<div class="flex items-center gap-3 p-2 rounded-lg hover:bg-background-light dark:hover:bg-background-dark/50 cursor-pointer">
+<div class="flex-shrink-0 size-10 rounded-lg bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">spa</span>
+</div>
+<div class="flex-1">
+<p class="font-semibold text-sm">Brócoli</p>
+<p class="text-xs text-text-light-secondary dark:text-dark-secondary">55 kcal / 100g</p>
+</div>
+<span class="material-symbols-outlined text-text-light-secondary dark:text-dark-secondary">add_circle_outline</span>
+</div>
+<div class="flex items-center gap-3 p-2 rounded-lg hover:bg-background-light dark:hover:bg-background-dark/50 cursor-pointer">
+<div class="flex-shrink-0 size-10 rounded-lg bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">water_drop</span>
+</div>
+<div class="flex-1">
+<p class="font-semibold text-sm">Aceite de Oliva</p>
+<p class="text-xs text-text-light-secondary dark:text-dark-secondary">884 kcal / 100g</p>
+</div>
+<span class="material-symbols-outlined text-text-light-secondary dark:text-dark-secondary">add_circle_outline</span>
+</div>
+</div>
+<button class="mt-4 w-full flex min-w-[84px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 bg-primary/10 text-primary dark:bg-secondary/20 dark:text-secondary text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="material-symbols-outlined">add</span>
+<span class="truncate">Añadir Ingrediente</span>
+</button>
+</div>
+</div>
+<!-- Center Panel: Meal Builder -->
+<div class="lg:col-span-6 flex flex-col gap-4">
+<div class="bg-white dark:bg-background-dark rounded-xl border border-border-light dark:border-border-dark p-4">
+<div class="border-b border-border-light dark:border-border-dark mb-4">
+<nav aria-label="Tabs" class="-mb-px flex gap-6">
+<a class="whitespace-nowrap py-3 px-1 border-b-2 font-bold text-sm text-primary dark:text-secondary border-primary dark:border-secondary" href="#">Lunes</a>
+<a class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm text-text-light-secondary dark:text-dark-secondary border-transparent hover:text-text-light-primary dark:hover:text-dark-primary hover:border-border-light dark:hover:border-border-dark" href="#">Martes</a>
+<a class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm text-text-light-secondary dark:text-dark-secondary border-transparent hover:text-text-light-primary dark:hover:text-dark-primary hover:border-border-light dark:hover:border-border-dark" href="#">Miércoles</a>
+<a class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm text-text-light-secondary dark:text-dark-secondary border-transparent hover:text-text-light-primary dark:hover:text-dark-primary hover:border-border-light dark:hover:border-border-dark" href="#">Jueves</a>
+<a class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm text-text-light-secondary dark:text-dark-secondary border-transparent hover:text-text-light-primary dark:hover:text-dark-primary hover:border-border-light dark:hover:border-border-dark" href="#">Viernes</a>
+</nav>
+</div>
+<div class="flex flex-col gap-6">
+<!-- Meal Section -->
+<div class="flex flex-col gap-3">
+<h4 class="font-bold text-base">Desayuno</h4>
+<div class="flex items-center justify-between p-3 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark/50">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-text-light-secondary dark:text-dark-secondary">drag_indicator</span>
+<p class="font-medium text-sm">Huevos Revueltos</p>
+</div>
+<div class="flex items-center gap-3">
+<input class="form-input w-20 text-center rounded-md text-sm border-border-light dark:border-border-dark bg-white dark:bg-background-dark" value="3"/>
+<p class="text-sm text-text-light-secondary dark:text-dark-secondary">unidades</p>
+<button class="text-text-light-secondary dark:text-dark-secondary hover:text-red-500">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+<button class="flex items-center justify-center gap-2 p-3 rounded-lg border-2 border-dashed border-border-light dark:border-border-dark hover:border-primary dark:hover:border-secondary hover:text-primary dark:hover:text-secondary text-sm font-semibold text-text-light-secondary dark:text-dark-secondary">
+<span class="material-symbols-outlined">add</span>
+                                        Añadir alimento
+                                    </button>
+</div>
+<div class="flex flex-col gap-3">
+<h4 class="font-bold text-base">Almuerzo</h4>
+<div class="flex items-center justify-between p-3 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark/50">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-text-light-secondary dark:text-dark-secondary">drag_indicator</span>
+<p class="font-medium text-sm">Pechuga de Pollo</p>
+</div>
+<div class="flex items-center gap-3">
+<input class="form-input w-20 text-center rounded-md text-sm border-border-light dark:border-border-dark bg-white dark:bg-background-dark" value="200"/>
+<p class="text-sm text-text-light-secondary dark:text-dark-secondary">gramos</p>
+<button class="text-text-light-secondary dark:text-dark-secondary hover:text-red-500">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark/50">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-text-light-secondary dark:text-dark-secondary">drag_indicator</span>
+<p class="font-medium text-sm">Arroz Blanco</p>
+</div>
+<div class="flex items-center gap-3">
+<input class="form-input w-20 text-center rounded-md text-sm border-border-light dark:border-border-dark bg-white dark:bg-background-dark" value="150"/>
+<p class="text-sm text-text-light-secondary dark:text-dark-secondary">gramos</p>
+<button class="text-text-light-secondary dark:text-dark-secondary hover:text-red-500">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+<button class="flex items-center justify-center gap-2 p-3 rounded-lg border-2 border-dashed border-border-light dark:border-border-dark hover:border-primary dark:hover:border-secondary hover:text-primary dark:hover:text-secondary text-sm font-semibold text-text-light-secondary dark:text-dark-secondary">
+<span class="material-symbols-outlined">add</span>
+                                        Añadir alimento
+                                    </button>
+</div>
+<button class="mt-2 w-full flex min-w-[84px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 bg-primary/10 text-primary dark:bg-secondary/20 dark:text-secondary text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="material-symbols-outlined">add</span>
+<span class="truncate">Añadir Comida</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Right Panel: Summary -->
+<div class="lg:col-span-3 flex flex-col gap-6 sticky top-24">
+<div class="bg-white dark:bg-background-dark rounded-xl border border-border-light dark:border-border-dark p-4">
+<h3 class="text-lg font-bold leading-tight tracking-[-0.015em] mb-4">Resumen del Día</h3>
+<div class="text-center mb-4">
+<p class="text-4xl font-black text-primary dark:text-secondary">2,150</p>
+<p class="text-sm text-text-light-secondary dark:text-dark-secondary">Calorías Totales</p>
+</div>
+<div class="flex flex-col gap-3">
+<div class="flex justify-between items-center">
+<p class="font-semibold text-sm">Proteínas</p>
+<p class="text-sm text-text-light-secondary dark:text-dark-secondary">180g</p>
+</div>
+<div class="w-full bg-background-light dark:bg-background-dark/50 rounded-full h-2">
+<div class="bg-blue-500 h-2 rounded-full" style="width: 40%"></div>
+</div>
+<div class="flex justify-between items-center">
+<p class="font-semibold text-sm">Carbohidratos</p>
+<p class="text-sm text-text-light-secondary dark:text-dark-secondary">200g</p>
+</div>
+<div class="w-full bg-background-light dark:bg-background-dark/50 rounded-full h-2">
+<div class="bg-green-500 h-2 rounded-full" style="width: 45%"></div>
+</div>
+<div class="flex justify-between items-center">
+<p class="font-semibold text-sm">Grasas</p>
+<p class="text-sm text-text-light-secondary dark:text-dark-secondary">65g</p>
+</div>
+<div class="w-full bg-background-light dark:bg-background-dark/50 rounded-full h-2">
+<div class="bg-yellow-500 h-2 rounded-full" style="width: 15%"></div>
+</div>
+</div>
+<div class="flex gap-2 mt-6">
+<button class="flex-1 flex min-w-[84px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 border border-border-light dark:border-border-dark text-sm font-bold">
+<span class="material-symbols-outlined">ios_share</span>
+<span>Exportar</span>
+</button>
+<button class="flex-1 flex min-w-[84px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 bg-secondary text-white text-sm font-bold">
+<span class="material-symbols-outlined">assignment_ind</span>
+<span>Asignar</span>
+</button>
+</div>
+</div>
+<div class="bg-white dark:bg-background-dark rounded-xl border border-border-light dark:border-border-dark p-4">
+<h3 class="text-lg font-bold leading-tight tracking-[-0.015em] mb-4">Lista de Compras Semanal</h3>
+<div class="flex flex-col gap-2 max-h-[200px] overflow-y-auto pr-2">
+<div class="flex justify-between items-center py-1">
+<p class="text-sm">Pechuga de Pollo</p>
+<p class="text-sm font-medium text-text-light-secondary dark:text-dark-secondary">1.4 kg</p>
+</div>
+<div class="flex justify-between items-center py-1">
+<p class="text-sm">Huevos</p>
+<p class="text-sm font-medium text-text-light-secondary dark:text-dark-secondary">21 unidades</p>
+</div>
+<div class="flex justify-between items-center py-1">
+<p class="text-sm">Arroz Blanco</p>
+<p class="text-sm font-medium text-text-light-secondary dark:text-dark-secondary">1.05 kg</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
