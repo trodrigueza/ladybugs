@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>GluteOS - Registro</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style> .form-label{font-size:.9rem}</style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-text-light-primary dark:text-text-dark-primary">
+  <div class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-2xl bg-white dark:bg-[#0b1116] rounded-xl shadow-md p-6">
+      <div class="mb-6 text-center">
+        <h1 class="text-2xl font-bold">Crear nueva cuenta</h1>
+        <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mt-1">Registro de socio — captura los campos obligatorios</p>
+      </div>
+
+      <!-- Formulario: POST a la URL 'register' -->
+      <form id="registerForm" method="post" action="{% url 'register' %}" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% csrf_token %}
+
+        <!-- Identificación -->
+        <div class="flex flex-col">
+          <label for="identificacion" class="form-label font-medium">Identificación <span class="text-red-500">*</span></label>
+          <input id="identificacion" name="identificacion" required
+                 class="form-input rounded-lg border-border-light dark:border-border-dark p-2"
+                 placeholder="Número de documento (cédula)"/>
+        </div>
+
+        <!-- Nombre completo -->
+        <div class="flex flex-col">
+          <label for="full_name" class="form-label font-medium">Nombre completo <span class="text-red-500">*</span></label>
+          <input id="full_name" name="full_name" required
+                 class="form-input rounded-lg border-border-light dark:border-border-dark p-2"
+                 placeholder="Ej: Juan Pérez"/>
+        </div>
+
+        <!-- Teléfono -->
+        <div class="flex flex-col">
+          <label for="phone" class="form-label font-medium">Teléfono <span class="text-red-500">*</span></label>
+          <input id="phone" name="phone" type="tel" required
+                 class="form-input rounded-lg border-border-light dark:border-border-dark p-2"
+                 placeholder="+57 300 123 4567"/>
+        </div>
+
+        <!-- Correo -->
+        <div class="flex flex-col">
+          <label for="email" class="form-label font-medium">Correo electrónico <span class="text-red-500">*</span></label>
+          <input id="email" name="email" type="email" required
+                 class="form-input rounded-lg border-border-light dark:border-border-dark p-2"
+                 placeholder="correo@ejemplo.com"/>
+        </div>
+
+        <!-- Fecha de nacimiento -->
+        <div class="flex flex-col">
+          <label for="birthdate" class="form-label font-medium">Fecha de nacimiento <span class="text-red-500">*</span></label>
+          <input id="birthdate" name="birthdate" type="date" required
+                 class="form-input rounded-lg border-border-light dark:border-border-dark p-2"/>
+        </div>
+
+        <!-- Consentimiento de datos -->
+        <div class="flex flex-col md:col-span-2">
+          <label class="inline-flex items-start gap-3 mt-2">
+            <input id="consent" name="consent" type="checkbox" required class="mt-1"/>
+            <span class="text-sm">Acepto el tratamiento de datos personales según la política de privacidad. <span class="text-red-500">*</span></span>
+          </label>
+        </div>
+
+        <!-- Password (para acceso) -->
+        <div class="flex flex-col">
+          <label for="password" class="form-label font-medium">Contraseña <span class="text-red-500">*</span></label>
+          <input id="password" name="password" type="password" minlength="8" required
+                 class="form-input rounded-lg border-border-light dark:border-border-dark p-2"
+                 placeholder="Mínimo 8 caracteres"/>
+        </div>
+
+        <div class="flex flex-col">
+          <label for="confirm_password" class="form-label font-medium">Confirmar contraseña <span class="text-red-500">*</span></label>
+          <input id="confirm_password" name="confirm_password" type="password" minlength="8" required
+                 class="form-input rounded-lg border-border-light dark:border-border-dark p-2"
+                 placeholder="Repite la contraseña"/>
+        </div>
+
+        <!-- Campos opcionales (ADM-R1.2): estado de salud y nota seguimiento -->
+        <div class="flex flex-col md:col-span-2">
+          <label for="health_status" class="form-label font-medium">Estado de salud (opcional)</label>
+          <select id="health_status" name="health_status" class="form-input rounded-lg border-border-light dark:border-border-dark p-2">
+            <option value="">— Seleccionar —</option>
+            <option value="bueno">Bueno</option>
+            <option value="condicion_medica">Condición médica</option>
+            <option value="limitacion_motriz">Limitación motriz</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+
+        <div class="flex flex-col md:col-span-2">
+          <label for="follow_up_note" class="form-label font-medium">Nota de seguimiento (opcional)</label>
+          <textarea id="follow_up_note" name="follow_up_note" rows="3"
+                    class="form-input rounded-lg border-border-light dark:border-border-dark p-2"
+                    placeholder="Anotar observaciones de salud o recomendación para recepción"></textarea>
+        </div>
+
+        <!-- Mensajes de error -->
+        <div id="errorBox" class="md:col-span-2 text-red-500 text-sm hidden"></div>
+
+        <!-- Botones -->
+        <div class="md:col-span-2 flex gap-3 mt-2">
+          <button type="submit"
+                  class="flex-1 flex items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-white font-semibold hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition">
+            <span>Crear cuenta</span>
+          </button>
+
+          <a href="{% url 'login' %}"
+             class="flex-1 text-center rounded-lg border border-border-light py-2.5 hover:bg-gray-50 transition">
+            Volver a iniciar sesión
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
