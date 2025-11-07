@@ -13,9 +13,9 @@ class Socio(models.Model):
     NotaOpcional = models.TextField(null=True, blank=True)
 
     Password = models.CharField(max_length=128, null=True, blank=True)
-
+    Rol = models.CharField(max_length=20, default='Socio')
     def __str__(self):
-        return self.NombreCompleto
+        return f"{self.NombreCompleto} ({self.Rol})"
 
 # === TABLA Medicion ===
 class Medicion(models.Model):
