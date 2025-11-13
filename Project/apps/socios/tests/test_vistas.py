@@ -30,7 +30,7 @@ class RegisterViewTest(TestCase):
         response = self.client.post(self.register_url, self.valid_data)
         
         self.assertEqual(Socio.objects.count(), 1)
-        self.assertEqual(Socio.objects.first().email, "view@valido.com")
+        self.assertEqual(Socio.objects.first().Email, "view@valido.com")
         
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('login')) # Asumiendo name='login'
