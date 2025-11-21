@@ -14,8 +14,10 @@ class Usuario(models.Model):
     UltimoAcceso = models.DateTimeField(null=True, blank=True)
     RolID = models.ForeignKey(Rol, on_delete=models.PROTECT)
 
+    Email = models.EmailField(max_length=254, unique=True)
+
     def __str__(self):
-        return self.NombreUsuario
+        return self.Email
 
 # === TABLA RegistroAuditoria ===
 class RegistroAuditoria(models.Model):

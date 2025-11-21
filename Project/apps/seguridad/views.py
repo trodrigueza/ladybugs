@@ -16,33 +16,33 @@ def login_view(request):
     - Si es correcto: guarda info en sesión y redirige a 'home'
     """
     if request.method == "POST":
-        username = request.POST.get("username", "").strip()
+        email = request.POST.get("email", "").strip()
         password = request.POST.get("password", "")
 
-        if not username or not password:
-            messages.error(request, "Debes ingresar usuario y contraseña.")
+        if not email or not password:
+            messages.error(request, "Debes ingresar email y contraseña.")
             return render(
                 request,
                 "seguridad/login.html",
-                {"username": username},
+                {"email": email},
             )
 
-        usuario = autenticar_usuario(username, password)
+        usuario = autenticar_usuario(email, password)
 
         if usuario is None:
-            messages.error(request, "Usuario o contraseña incorrectos.")
+            messages.error(request, "Correo o contraseña incorrectos.")
             return render(
                 request,
                 "seguridad/login.html",
-                {"username": username},
+                {"email": email},
             )
 
         #Guardar datos en sesión
         request.session["usuario_id"] = usuario.id
-        request.session["usuario_nombre"] = usuario.NombreUsuario
+        request.session["usuario_email"] = usuario.Email
         request.session["usuario_rol"] = usuario.RolID.NombreRol
 
-        messages.success(request, f"Bienvenido, {usuario.NombreUsuario}.")
+        messages.success(request, f"Bienvenido, {usuario.Email}.")
         
         return redirect("home")
 

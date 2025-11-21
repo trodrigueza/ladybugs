@@ -17,7 +17,7 @@ def registrar_evento_auditoria(usuario, tipo_accion, detalle):
     )
 
 
-def autenticar_usuario(nombre_usuario, password_plano):
+def autenticar_usuario(email, password_plano):
     """
     Verifica usuario y contraseña contra la tabla Usuario.
     Devuelve el objeto Usuario si las credenciales son correctas, si no, None.
@@ -26,12 +26,12 @@ def autenticar_usuario(nombre_usuario, password_plano):
       - Registra auditoría de login exitoso / fallido.
     """
     try:
-        usuario = Usuario.objects.get(NombreUsuario=nombre_usuario)
+        usuario = Usuario.objects.get(Email=email)
     except Usuario.DoesNotExist:
         registrar_evento_auditoria(
             usuario=None,
             tipo_accion="LOGIN_FALLIDO",
-            detalle=f"Intento de acceso con usuario inexistente: {nombre_usuario}",
+            detalle=f"Intento de acceso con email inexistente: {email}",
         )
         return None
 

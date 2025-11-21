@@ -62,17 +62,17 @@
       <form method="POST" action="{% url 'login' %}" class="flex flex-col gap-4">
         {% csrf_token %}
 
-        <!-- Campo: Usuario -->
+        <!-- Campo: Email -->
         <div class="flex flex-col gap-1.5">
-          <label class="text-sm font-medium" for="username">Usuario</label>
+          <label class="text-sm font-medium" for="email">Correo</label>
           <input class="form-input w-full rounded-lg border-border-light dark:border-border-dark 
                       bg-background-light dark:bg-background-dark text-text-light-primary dark:text-text-dark-primary 
                       focus:border-primary focus:ring-primary/50"
-                 id="username"
-                 name="username"
-                 placeholder="tu_usuario"
-                 type="text"
-                 value="{{ username|default:'' }}"
+                 id="email"
+                 name="email"
+                 placeholder="tu@email.com"
+                 type="email"
+                 value="{{ email|default:'' }}"
                  required />
         </div>
 
