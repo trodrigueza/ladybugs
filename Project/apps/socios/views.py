@@ -1,7 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db import IntegrityError
+
 from .servicios.registro_db import create_socio_from_dict, ValidationError
+from apps.seguridad.servicios.registro_usuario import crear_usuario_para_socio
+from apps.seguridad.decoradores import login_requerido
+
 
 def register_view(request):
     if request.method == 'POST':
@@ -37,10 +41,12 @@ def register_view(request):
             'health_status': health_status,
             'follow_up_note': follow_up_note,
         }
-        
 
         try:
-            create_socio_from_dict(data)
+            socio = create_socio_from_dict(data)
+
+            crear_usuario_para_socio(socio, password)
+
             messages.success(request, "Cuenta creada correctamente. Puedes iniciar sesión.")
             return redirect('login')
         
@@ -51,8 +57,22 @@ def register_view(request):
         except IntegrityError:
             messages.error(request, "Ya existe un socio con esa identificación o correo.")
             return render(request, 'socio/register.html', request.POST)
+
         except Exception as e:
             messages.error(request, f"Ocurrió un error inesperado: {str(e)}")
             return render(request, 'socio/register.html', request.POST)
 
     return render(request, 'socio/register.html')
+
+
+#Interfaz Inicio (beta)
+
+def panel_de_control_view(request):
+    return render(request, "socio/PanelDeControl.html")
+
+#Acceso solo con registro previo
+
+@login_requerido
+def panel_de_control_view(request):
+    return render(request, "socio/PanelDeControl.html")
+

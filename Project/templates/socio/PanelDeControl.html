@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GluteOS - Panel de Administrador</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#0f49bd",
+              "background-light": "#f6f6f8",
+              "background-dark": "#101622",
+              "card-light": "#ffffff",
+              "card-dark": "#1a2230",
+              "text-light-primary": "#101622",
+              "text-dark-primary": "#f6f6f8",
+              "text-light-secondary": "#616f89",
+              "text-dark-secondary": "#9ca3af",
+              "border-light": "#e5e7eb",
+              "border-dark": "#374151"
+            },
+            fontFamily: {
+              "display": ["Manrope", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="w-64 flex-shrink-0 bg-card-light dark:bg-card-dark border-r border-border-light dark:border-border-dark flex flex-col">
+<div class="flex items-center gap-3 p-6 text-primary h-[65px] border-b border-border-light dark:border-border-dark">
+<span class="material-symbols-outlined text-3xl">exercise</span>
+<h2 class="text-xl font-bold leading-tight">GluteOS</h2>
+</div>
+<div class="flex h-full flex-col justify-between p-4">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">dashboard</span>
+<p class="text-sm font-semibold leading-normal">Dashboard</p>
+</div>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<p class="text-sm font-medium leading-normal">Users</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<p class="text-sm font-medium leading-normal">Routines</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">restaurant_menu</span>
+<p class="text-sm font-medium leading-normal">Nutrition</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<p class="text-sm font-medium leading-normal">Analytics</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-sm font-medium leading-normal">Settings</p>
+</a>
+</div>
+<div class="flex flex-col">
+<div class="border-t border-border-light dark:border-border-dark my-2"></div>
+<div class="flex gap-3 items-center p-2">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Avatar de Administrador" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDWzszGb7-h98h-Jrd9T1hbE8E2Lbd_jXTb_WV8vAYDLLtsJmPSJr4xS36kBeHzwbsDvlWrhv-zyIuZ1wO7MLq0G4zQulVzzzCbvrdgJZpZM-fWC2t2XFdToIc8xOHU3ptEj5Ucr7GcAxPLaxoOue-j946bQ7ZzZCWijNeRNnKAO3FJwLtEXl2tdNEi8Ijmhqycb4sCiIEflO_IGVbGBFXQ9sEkjFWQvukIC4D8AcZunJuE3DG-PQsiT5TzVZCkG5DQxg3KMSDrRxk");'></div>
+<div class="flex flex-col">
+<h1 class="text-text-light-primary dark:text-text-dark-primary text-sm font-semibold leading-normal">Alex Hudson</h1>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs font-normal leading-normal">Administrator</p>
+</div>
+</div>
+<a class="flex items-center gap-3 px-3 py-2 mt-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-red-500/10 hover:text-red-500 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">logout</span>
+<p class="text-sm font-medium leading-normal">Logout</p>
+</a>
+</div>
+</div>
+</aside>
+<main class="flex-1 flex flex-col">
+<!-- TopNavBar -->
+<header class="flex h-[65px] items-center justify-between whitespace-nowrap border-b border-solid border-border-light dark:border-border-dark px-8 bg-card-light dark:bg-card-dark sticky top-0 z-10">
+<div class="flex items-center gap-8">
+<label class="flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+<div class="text-text-light-secondary dark:text-text-dark-secondary flex border-none bg-background-light dark:bg-background-dark items-center justify-center pl-4 rounded-l-lg border-r-0">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light-primary dark:text-text-dark-primary focus:outline-0 focus:ring-0 border-none bg-background-light dark:bg-background-dark focus:border-none h-full placeholder:text-text-light-secondary dark:placeholder:text-text-dark-secondary px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal" placeholder="Search users or plans..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-1 justify-end gap-4 items-center">
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-background-light dark:bg-background-dark text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200">
+<span class="material-symbols-outlined text-xl">notifications</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Avatar de Administrador" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAuOmqqYO5uarzaaMM7B8ne3H7CC_-d66tOhErsM3PBLvIn5g_9oiHC4A7ggjALfgxot8ou5C2rJQfM9mvnnpLvbklHMXju1EyD2DkTFnb2eCVfdnRUrUHjRKF5vyY8pmGdVpu0Pc1bf4qit3559LGTfxcwrf38aUX9L9OzEmQKRpt87ow87eSlVRx81D0W4nydfeksec5gQHLdrIQ-Me7MMXVqX8W7JEfrPPCMflB26aQdvEp32kV60AY5kvAijpUoIQYqoygf1zs");'></div>
+</div>
+</header>
+<div class="p-8">
+<!-- PageHeading -->
+<div class="flex flex-wrap justify-between gap-3 mb-6">
+<div class="flex min-w-72 flex-col gap-2">
+<p class="text-text-light-primary dark:text-text-dark-primary text-3xl font-bold leading-tight">Welcome back, Alex!</p>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-base font-normal leading-normal">Here is a quick overview of your system's activity.</p>
+</div>
+</div>
+<!-- Stats -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-base font-medium leading-normal">Total Active Users</p>
+<p class="text-text-light-primary dark:text-text-dark-primary tracking-tight text-3xl font-bold leading-tight">1,204</p>
+<p class="text-green-600 dark:text-green-500 text-sm font-medium leading-normal">+5.2%</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-base font-medium leading-normal">Active Routines</p>
+<p class="text-text-light-primary dark:text-text-dark-primary tracking-tight text-3xl font-bold leading-tight">482</p>
+<p class="text-green-600 dark:text-green-500 text-sm font-medium leading-normal">+1.8%</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-base font-medium leading-normal">Plans to Review</p>
+<p class="text-text-light-primary dark:text-text-dark-primary tracking-tight text-3xl font-bold leading-tight">15</p>
+<p class="text-yellow-600 dark:text-yellow-500 text-sm font-medium leading-normal">+3 this week</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-base font-medium leading-normal">New Sign-ups</p>
+<p class="text-text-light-primary dark:text-text-dark-primary tracking-tight text-3xl font-bold leading-tight">31</p>
+<p class="text-green-600 dark:text-green-500 text-sm font-medium leading-normal">+12%</p>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Charts -->
+<div class="lg:col-span-2 flex flex-col gap-4 p-6 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+<div class="flex flex-col">
+<p class="text-text-light-primary dark:text-text-dark-primary text-lg font-semibold leading-normal">Weekly User Activity</p>
+<div class="flex gap-2 items-baseline">
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-normal leading-normal">Last 7 Days</p>
+<p class="text-green-600 dark:text-green-500 text-sm font-medium leading-normal">+11.2%</p>
+</div>
+</div>
+<div class="grid min-h-[220px] grid-flow-col gap-6 grid-rows-[1fr_auto] items-end justify-items-center px-3">
+<div class="bg-primary/20 dark:bg-primary/40 w-full rounded-t-md" style="height: 80%;"></div>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs font-bold leading-normal">Mon</p>
+<div class="bg-primary/20 dark:bg-primary/40 w-full rounded-t-md" style="height: 50%;"></div>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs font-bold leading-normal">Tue</p>
+<div class="bg-primary/20 dark:bg-primary/40 w-full rounded-t-md" style="height: 60%;"></div>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs font-bold leading-normal">Wed</p>
+<div class="bg-primary/20 dark:bg-primary/40 w-full rounded-t-md" style="height: 70%;"></div>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs font-bold leading-normal">Thu</p>
+<div class="bg-primary w-full rounded-t-md" style="height: 100%;"></div>
+<p class="text-primary text-xs font-bold leading-normal">Fri</p>
+<div class="bg-primary/20 dark:bg-primary/40 w-full rounded-t-md" style="height: 40%;"></div>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs font-bold leading-normal">Sat</p>
+<div class="bg-primary/20 dark:bg-primary/40 w-full rounded-t-md" style="height: 20%;"></div>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs font-bold leading-normal">Sun</p>
+</div>
+</div>
+<!-- Administrative Alerts -->
+<div class="flex flex-col gap-4 p-6 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-red-500">error</span>
+<h3 class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary">Administrative Alerts</h3>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex items-start gap-3 p-3 rounded-lg bg-red-500/10">
+<span class="material-symbols-outlined text-red-500 text-xl mt-0.5">payment</span>
+<div>
+<p class="font-semibold text-sm text-red-800 dark:text-red-300">2 user payments failed</p>
+<p class="text-xs text-red-600 dark:text-red-400">Action required to resolve.</p>
+</div>
+</div>
+<div class="flex items-start gap-3 p-3 rounded-lg bg-yellow-500/10">
+<span class="material-symbols-outlined text-yellow-500 text-xl mt-0.5">person_add</span>
+<div>
+<p class="font-semibold text-sm text-yellow-800 dark:text-yellow-300">1 new trainer application</p>
+<p class="text-xs text-yellow-600 dark:text-yellow-400">Pending review.</p>
+</div>
+</div>
+<div class="flex items-start gap-3 p-3 rounded-lg bg-blue-500/10">
+<span class="material-symbols-outlined text-blue-500 text-xl mt-0.5">system_update</span>
+<div>
+<p class="font-semibold text-sm text-blue-800 dark:text-blue-300">System update available</p>
+<p class="text-xs text-blue-600 dark:text-blue-400">Schedule for tonight.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Routines and Nutrition Tables -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+<!-- Upcoming Routines -->
+<div class="flex flex-col gap-4 p-6 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+<h3 class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary">Today's Scheduled Routines</h3>
+<div class="overflow-x-auto">
+<table class="w-full text-left text-sm">
+<thead class="text-xs text-text-light-secondary dark:text-text-dark-secondary uppercase bg-background-light dark:bg-background-dark">
+<tr>
+<th class="px-4 py-3" scope="col">Client</th>
+<th class="px-4 py-3" scope="col">Routine</th>
+<th class="px-4 py-3" scope="col">Time</th>
+</tr>
+</thead>
+<tbody class="text-text-light-primary dark:text-text-dark-primary">
+<tr class="border-b border-border-light dark:border-border-dark">
+<td class="px-4 py-3 font-medium">Olivia Chen</td>
+<td class="px-4 py-3">Full Body Strength</td>
+<td class="px-4 py-3 text-text-light-secondary dark:text-text-dark-secondary">09:00 AM</td>
+</tr>
+<tr class="border-b border-border-light dark:border-border-dark">
+<td class="px-4 py-3 font-medium">Ben Carter</td>
+<td class="px-4 py-3">HIIT Cardio</td>
+<td class="px-4 py-3 text-text-light-secondary dark:text-text-dark-secondary">11:30 AM</td>
+</tr>
+<tr class="border-b border-border-light dark:border-border-dark">
+<td class="px-4 py-3 font-medium">Sophia Rodriguez</td>
+<td class="px-4 py-3">Leg Day Special</td>
+<td class="px-4 py-3 text-text-light-secondary dark:text-text-dark-secondary">02:00 PM</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Nutrition Plan Status -->
+<div class="flex flex-col gap-4 p-6 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+<h3 class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary">Recent Nutrition Plan Status</h3>
+<div class="overflow-x-auto">
+<table class="w-full text-left text-sm">
+<thead class="text-xs text-text-light-secondary dark:text-text-dark-secondary uppercase bg-background-light dark:bg-background-dark">
+<tr>
+<th class="px-4 py-3" scope="col">Client</th>
+<th class="px-4 py-3" scope="col">Plan Name</th>
+<th class="px-4 py-3" scope="col">Status</th>
+</tr>
+</thead>
+<tbody class="text-text-light-primary dark:text-text-dark-primary">
+<tr class="border-b border-border-light dark:border-border-dark">
+<td class="px-4 py-3 font-medium">Liam Johnson</td>
+<td class="px-4 py-3">Lean Bulk</td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">Active</span>
+</td>
+</tr>
+<tr class="border-b border-border-light dark:border-border-dark">
+<td class="px-4 py-3 font-medium">Ava Williams</td>
+<td class="px-4 py-3">Weight Loss Start</td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">Pending Review</span>
+</td>
+</tr>
+<tr class="border-b border-border-light dark:border-border-dark">
+<td class="px-4 py-3 font-medium">Noah Brown</td>
+<td class="px-4 py-3">Maintenance Phase</td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">Completed</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

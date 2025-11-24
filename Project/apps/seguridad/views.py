@@ -44,7 +44,7 @@ def login_view(request):
 
         messages.success(request, f"Bienvenido, {usuario.Email}.")
         
-        return redirect("home")
+        return redirect("panel_control")
 
     # GET
     return render(request, "seguridad/login.html")
