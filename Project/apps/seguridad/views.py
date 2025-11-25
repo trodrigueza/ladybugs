@@ -9,65 +9,63 @@ from apps.seguridad.servicios.autenticacion import (
 
 
 def login_view(request):
-    """
-    Vista de login básica:
-    - GET: muestra el formulario
-    - POST: procesa usuario/contraseña
-    - Si es correcto: guarda info en sesión y redirige a 'home'
-    """
     if request.method == "POST":
         email = request.POST.get("email", "").strip()
         password = request.POST.get("password", "")
+        rol_seleccionado = request.POST.get("role", "").strip()
 
         if not email or not password:
-            messages.error(request, "Debes ingresar email y contraseña.")
-            return render(
-                request,
-                "seguridad/login.html",
-                {"email": email},
-            )
+            messages.error(request, "Debes ingresar correo y contraseña.")
+            return render(request, "seguridad/login.html", {"email": email})
+
+        if not rol_seleccionado:
+            messages.error(request, "Debes seleccionar un rol.")
+            return render(request, "seguridad/login.html", {"email": email})
 
         usuario = autenticar_usuario(email, password)
 
         if usuario is None:
             messages.error(request, "Correo o contraseña incorrectos.")
-            return render(
-                request,
-                "seguridad/login.html",
-                {"email": email},
-            )
+            return render(request, "seguridad/login.html", {"email": email})
 
-        #Guardar datos en sesión
+        rol_real = usuario.RolID.NombreRol.lower()
+
+        if rol_seleccionado != rol_real:
+            messages.error(request, "No tienes permisos para iniciar sesión como ese rol.")
+            return render(request, "seguridad/login.html", {"email": email})
+        
         request.session["usuario_id"] = usuario.id
         request.session["usuario_email"] = usuario.Email
-        request.session["usuario_rol"] = usuario.RolID.NombreRol
+        request.session["usuario_rol"] = rol_real
 
         messages.success(request, f"Bienvenido, {usuario.Email}.")
-        
+
+        if rol_real == "socio":
+            return redirect("panel_control")
+
+        elif rol_real == "entrenador":
+            return redirect("panel_entrenador")  
+        elif rol_real == "administrativo":
+            return redirect("panel_admin")  
+
         return redirect("panel_control")
 
-    # GET
     return render(request, "seguridad/login.html")
 
 
+
 def logout_view(request):
-    """
-    Cierra sesión:
-    - Registra en auditoría
-    - Limpia la sesión
-    - Redirige a login
-    """
-    usuario = None
     usuario_id = request.session.get("usuario_id")
 
     if usuario_id:
         try:
-            usuario = Usuario.objects.get(pk=usuario_id)
+            usuario = Usuario.objects.get(id=usuario_id)
+            registrar_logout(usuario)
         except Usuario.DoesNotExist:
-            usuario = None
-
-    registrar_logout(usuario)
+            pass
 
     request.session.flush()
-    messages.info(request, "Has cerrado sesión correctamente.")
+
+    messages.success(request, "Has cerrado sesión correctamente.")
+
     return redirect("login")

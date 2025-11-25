@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db import IntegrityError
+from django.http import HttpResponse
 
 from .servicios.registro_db import create_socio_from_dict, ValidationError
 from apps.seguridad.servicios.registro_usuario import crear_usuario_para_socio
@@ -75,4 +76,12 @@ def panel_de_control_view(request):
 @login_requerido
 def panel_de_control_view(request):
     return render(request, "socio/PanelDeControl.html")
+
+@login_requerido
+def panel_entrenador_view(request):
+    return HttpResponse("PANEL DEL ENTRENADOR — OK")
+
+@login_requerido
+def panel_admin_view(request):
+    return HttpResponse("PANEL ADMINISTRATIVO — OK")
 

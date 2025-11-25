@@ -58,9 +58,26 @@
       </div>
       {% endif %}
 
+
+
+
       <!-- FORMULARIO REAL -->
       <form method="POST" action="{% url 'login' %}" class="flex flex-col gap-4">
         {% csrf_token %}
+
+
+        <!-- NUEVO CAMPO: Rol -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-medium text-text-light-primary dark:text-text-dark-primary" for="role">Rol</label>
+          <select id="role" name="role"
+            class="form-select w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-text-light-primary dark:text-text-dark-primary focus:border-primary focus:ring-primary/50">
+            <option value="">Selecciona tu rol</option>
+            <option value="entrenador">Entrenador</option>
+            <option value="administrativo">Administrativo</option>
+            <option value="socio">Socio</option>
+          </select>
+        </div>
+
 
         <!-- Campo: Email -->
         <div class="flex flex-col gap-1.5">
