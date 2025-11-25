@@ -78,10 +78,10 @@ def panel_de_control_view(request):
     return render(request, "socio/PanelDeControl.html")
 
 @login_requerido
-def panel_entrenador_view(request):
-    return HttpResponse("PANEL DEL ENTRENADOR — OK")
+def planel_inicio_entrenador_view(request):
+    return render(request, "Entrenador/PaneldeInicio.html")
 
 @login_requerido
 def panel_admin_view(request):
-    return HttpResponse("PANEL ADMINISTRATIVO — OK")
+    return render(request, "Administrador/PaneldeInicio.html")
 

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GluteOS - Dashboard de Informes</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0f49bd",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="relative flex min-h-screen w-full flex-col">
+<div class="flex flex-1">
+<!-- SideNavBar -->
+<aside class="flex w-64 flex-col gap-y-6 border-r border-gray-200 dark:border-gray-700/50 bg-white dark:bg-background-dark p-4">
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="GluteOS logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCSmiuGc0GSg6rgX67t9_zfcDZ8fLMglol9QBiEV7tWt3o1GCsqk-vIC28XwSXInkV4LlPfGX64X8fYq7MsLElc9jaJPJSGK-wcOMvRcF_Pgv-AZF0xHg10k2zhd0ACoZmiCVXp4Nhkwkte8hV1bcR3w_EcF8GLURQnhbapqmcZgKR_03ybjKLdgSuBShp_WQkhhRl7yuusItsLSUw6JRCRXsv1-v-fzqBRn3DEx1nbAylqxozVoHwFjt30T0hQ31GdoZWlr5U6FF0");'></div>
+<div class="flex flex-col">
+<h1 class="text-gray-900 dark:text-white text-base font-medium leading-normal">GluteOS</h1>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">Admin Panel</p>
+</div>
+</div>
+<nav class="flex flex-1 flex-col justify-between">
+<div class="flex flex-col gap-2">
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-primary/20" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<p class="text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-primary/20" href="#">
+<span class="material-symbols-outlined">group</span>
+<p class="text-sm font-medium leading-normal">Usuarios</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-primary/20" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<p class="text-sm font-medium leading-normal">Rutinas</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-primary/20" href="#">
+<span class="material-symbols-outlined">restaurant</span>
+<p class="text-sm font-medium leading-normal">Nutrición</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg bg-primary/20 px-3 py-2 text-primary dark:text-white dark:bg-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">assessment</span>
+<p class="text-sm font-medium leading-normal">Reportes</p>
+</a>
+</div>
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-primary/20" href="#">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-sm font-medium leading-normal">Ajustes</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-primary/20" href="#">
+<span class="material-symbols-outlined">help</span>
+<p class="text-sm font-medium leading-normal">Ayuda</p>
+</a>
+</div>
+</nav>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto">
+<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+<!-- PageHeading -->
+<div class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 dark:border-gray-700/50 pb-6">
+<div class="flex min-w-72 flex-col gap-1">
+<p class="text-gray-900 dark:text-white text-3xl font-bold leading-tight tracking-tight">Dashboard de Informes</p>
+<p class="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal">Genera y visualiza informes sobre el progreso de los usuarios.</p>
+</div>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined" style="font-size: 20px;">add</span>
+<span class="truncate">Generar Reporte</span>
+</button>
+</div>
+<!-- Chips/Filters -->
+<div class="flex flex-wrap gap-3 py-6">
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white dark:bg-background-dark dark:border dark:border-gray-700/50 px-3 hover:bg-gray-50 dark:hover:bg-primary/20 shadow-sm">
+<p class="text-gray-800 dark:text-gray-300 text-sm font-medium leading-normal">Rango de Fechas</p>
+<span class="material-symbols-outlined text-gray-500 dark:text-gray-400" style="font-size: 20px;">expand_more</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white dark:bg-background-dark dark:border dark:border-gray-700/50 px-3 hover:bg-gray-50 dark:hover:bg-primary/20 shadow-sm">
+<p class="text-gray-800 dark:text-gray-300 text-sm font-medium leading-normal">Seleccionar Usuario(s)</p>
+<span class="material-symbols-outlined text-gray-500 dark:text-gray-400" style="font-size: 20px;">expand_more</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white dark:bg-background-dark dark:border dark:border-gray-700/50 px-3 hover:bg-gray-50 dark:hover:bg-primary/20 shadow-sm">
+<p class="text-gray-800 dark:text-gray-300 text-sm font-medium leading-normal">Tipo de Reporte</p>
+<span class="material-symbols-outlined text-gray-500 dark:text-gray-400" style="font-size: 20px;">expand_more</span>
+</button>
+</div>
+<!-- Charts -->
+<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+<div class="flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-gray-700/50 bg-white dark:bg-background-dark p-6 shadow-sm">
+<p class="text-gray-900 dark:text-white text-base font-medium leading-normal">Progreso del Usuario (últimos 30 días)</p>
+<p class="text-gray-900 dark:text-white tracking-tight text-3xl font-bold leading-tight truncate">75 kg</p>
+<div class="flex gap-1">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">Últimos 30 días</p>
+<p class="text-green-600 dark:text-green-500 text-sm font-medium leading-normal">+5.2%</p>
+</div>
+<div class="flex min-h-[180px] flex-1 flex-col gap-8 py-4">
+<svg fill="none" height="148" preserveaspectratio="none" viewbox="-3 0 478 150" width="100%" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 109C18.1538 109 18.1538 21 36.3077 21C54.4615 21 54.4615 41 72.6154 41C90.7692 41 90.7692 93 108.923 93C127.077 93 127.077 33 145.231 33C163.385 33 163.385 101 181.538 101C199.692 101 199.692 61 217.846 61C236 61 236 45 254.154 45C272.308 45 272.308 121 290.462 121C308.615 121 308.615 149 326.769 149C344.923 149 344.923 1 363.077 1C381.231 1 381.231 81 399.385 81C417.538 81 417.538 129 435.692 129C453.846 129 453.846 25 472 25V149H326.769H0V109Z" fill="url(#paint0_linear_chart1)"></path>
+<path d="M0 109C18.1538 109 18.1538 21 36.3077 21C54.4615 21 54.4615 41 72.6154 41C90.7692 41 90.7692 93 108.923 93C127.077 93 127.077 33 145.231 33C163.385 33 163.385 101 181.538 101C199.692 101 199.692 61 217.846 61C236 61 236 45 254.154 45C272.308 45 272.308 121 290.462 121C308.615 121 308.615 149 326.769 149C344.923 149 344.923 1 363.077 1C381.231 1 381.231 81 399.385 81C417.538 81 417.538 129 435.692 129C453.846 129 453.846 25 472 25" stroke="#0f49bd" stroke-linecap="round" stroke-width="3"></path>
+<defs>
+<lineargradient gradientunits="userSpaceOnUse" id="paint0_linear_chart1" x1="236" x2="236" y1="1" y2="149">
+<stop stop-color="#0f49bd" stop-opacity="0.2"></stop>
+<stop offset="1" stop-color="#0f49bd" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+</div>
+<div class="flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-gray-700/50 bg-white dark:bg-background-dark p-6 shadow-sm">
+<p class="text-gray-900 dark:text-white text-base font-medium leading-normal">Adherencia a Rutinas de Entrenamiento</p>
+<p class="text-gray-900 dark:text-white tracking-tight text-3xl font-bold leading-tight truncate">85%</p>
+<div class="flex gap-1">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">Este mes</p>
+<p class="text-red-600 dark:text-red-500 text-sm font-medium leading-normal">-1.5%</p>
+</div>
+<div class="grid min-h-[180px] grid-flow-col gap-6 grid-rows-[1fr_auto] items-end justify-items-center px-3 pt-4">
+<div class="w-full rounded-t bg-primary/30 dark:bg-primary/50" style="height: 40%;"></div><p class="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">Rutina A</p>
+<div class="w-full rounded-t bg-primary/30 dark:bg-primary/50" style="height: 50%;"></div><p class="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">Rutina B</p>
+<div class="w-full rounded-t bg-primary dark:bg-primary" style="height: 85%;"></div><p class="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">Rutina C</p>
+<div class="w-full rounded-t bg-primary/30 dark:bg-primary/50" style="height: 60%;"></div><p class="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">Rutina D</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-gray-700/50 bg-white dark:bg-background-dark p-6 shadow-sm">
+<p class="text-gray-900 dark:text-white text-base font-medium leading-normal">Cumplimiento del Plan Nutricional</p>
+<p class="text-gray-900 dark:text-white tracking-tight text-3xl font-bold leading-tight truncate">92%</p>
+<div class="flex gap-1">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">Esta semana</p>
+<p class="text-green-600 dark:text-green-500 text-sm font-medium leading-normal">+3.0%</p>
+</div>
+<div class="flex min-h-[180px] flex-1 items-center justify-center py-4">
+<svg class="size-40 transform -rotate-90" viewbox="0 0 120 120">
+<circle class="dark:stroke-gray-700/50" cx="60" cy="60" fill="none" r="54" stroke="#e0e0e0" stroke-width="12"></circle>
+<circle cx="60" cy="60" fill="none" r="54" stroke="#0f49bd" stroke-dasharray="339.29" stroke-dashoffset="33.929" stroke-linecap="round" stroke-width="12"></circle>
+<text class="fill-gray-900 dark:fill-white text-3xl font-bold transform rotate-90" dominant-baseline="middle" style="transform-origin: center;" text-anchor="middle" x="50%" y="50%">92%</text>
+</svg>
+</div>
+</div>
+</div>
+<!-- SectionHeader -->
+<h2 class="text-gray-900 dark:text-white text-xl font-bold leading-tight tracking-tight px-0 pb-3 pt-8">Actividad Reciente</h2>
+<!-- Interactive Table -->
+<div class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700/50 bg-white dark:bg-background-dark shadow-sm">
+<div class="overflow-x-auto">
+<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700/50">
+<thead class="bg-gray-50 dark:bg-gray-800/50">
+<tr>
+<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider" scope="col">Usuario</th>
+<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider" scope="col">Fecha</th>
+<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider" scope="col">Rutina Completada</th>
+<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider" scope="col">Calorías Consumidas</th>
+<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider" scope="col">Estado</th>
+<th class="relative px-6 py-3" scope="col"><span class="sr-only">Actions</span></th>
+</tr>
+</thead>
+<tbody class="bg-white dark:bg-background-dark divide-y divide-gray-200 dark:divide-gray-700/50">
+<tr>
+<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">Carlos Vega</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">2023-10-26</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">Día de Pierna</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">2,450 kcal</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm">
+<span class="inline-flex items-center rounded-full bg-green-100 dark:bg-green-900/50 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:text-green-300">Completado</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+<a class="text-primary hover:text-primary/80" href="#">Ver Detalles</a>
+</td>
+</tr>
+<tr>
+<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">Ana Torres</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">2023-10-26</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">Cardio HIIT</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">1,800 kcal</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm">
+<span class="inline-flex items-center rounded-full bg-green-100 dark:bg-green-900/50 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:text-green-300">Completado</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+<a class="text-primary hover:text-primary/80" href="#">Ver Detalles</a>
+</td>
+</tr>
+<tr>
+<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">Javier Morales</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">2023-10-25</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">Pecho y Tríceps</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">2,900 kcal</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm">
+<span class="inline-flex items-center rounded-full bg-yellow-100 dark:bg-yellow-900/50 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:text-yellow-300">Parcial</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+<a class="text-primary hover:text-primary/80" href="#">Ver Detalles</a>
+</td>
+</tr>
+<tr>
+<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">Sofia Gomez</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">2023-10-25</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">Yoga Restaurativo</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">1,650 kcal</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm">
+<span class="inline-flex items-center rounded-full bg-red-100 dark:bg-red-900/50 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:text-red-300">Omitido</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+<a class="text-primary hover:text-primary/80" href="#">Ver Detalles</a>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

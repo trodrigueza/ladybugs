@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GluteOS Coach Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+      }
+    </style>
+
+<style>
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
+</style>
+
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#0f49bd",
+              "background-light": "#f6f6f8",
+              "background-dark": "#101622",
+              "gluteos-blue": "#1A237E",
+              "gluteos-blue-dark": "#161d68",
+              "success": "#07883b",
+              "warning": "#f59e0b",
+              "critical": "#e73908",
+              "card-light": "#ffffff",
+              "card-dark": "#1c2436",
+              "text-light-primary": "#111318",
+              "text-dark-primary": "#f6f6f8",
+              "text-light-secondary": "#616f89",
+              "text-dark-secondary": "#94a3b8",
+              "border-light": "#dbdfe6",
+              "border-dark": "#334155",
+            },
+            fontFamily: {
+              "display": ["Manrope", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="flex w-64 flex-col bg-gluteos-blue p-4 text-white">
+<div class="flex items-center gap-3 px-3 py-4 text-white">
+<span class="material-symbols-outlined text-3xl">fitness_center</span>
+<h2 class="text-xl font-bold leading-tight tracking-[-0.015em]">GluteOS</h2>
+</div>
+<div class="flex h-full flex-col justify-between">
+<div class="flex flex-col gap-2 pt-4">
+<a class="flex items-center gap-3 rounded-lg bg-gluteos-blue-dark px-3 py-2" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<p class="text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="#">
+<span class="material-symbols-outlined">group</span>
+<p class="text-sm font-medium leading-normal">Clients</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<p class="text-sm font-medium leading-normal">Routines</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="#">
+<span class="material-symbols-outlined">restaurant_menu</span>
+<p class="text-sm font-medium leading-normal">Nutrition</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="#">
+<span class="material-symbols-outlined">mail</span>
+<p class="text-sm font-medium leading-normal">Messages</p>
+</a>
+</div>
+<div class="flex flex-col gap-1">
+<div class="mb-4 flex gap-3 px-3 py-2">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Coach Antonia's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDfQWrkjVOCmpIklKgYAtayyKEKku6uP2jWrASZq-FPRFzrqHTD92I1o40Vn22sp3QX4zCVhlpf-dIREfbJb9Qnn0vbu4rBIYLqtIHNoYNAoU4LXCy0HR7-dUcPCtD6ztBC4MN0cGBrwa3mNIT9TnwjZIpC1oi9TjQz9mPQeUI7tByNhIDSS04EhhJZLvH_QuP26qy8mRLay7o7OHF-BmEyFkdn612y35_li2FDOBvcfCrXt9ySKWhCerWJ6leMpnbG6oZRjgWvFO4");'></div>
+<div class="flex flex-col">
+<h1 class="text-base font-medium leading-normal">Antonia</h1>
+<p class="text-sm font-normal leading-normal text-slate-300">Coach</p>
+</div>
+</div>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="#">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-sm font-medium leading-normal">Settings</p>
+</a>
+
+<a onclick="openLogoutModal()"
+   class="flex items-center gap-3 px-3 py-2 text-white-700 dark:text-blue-dark-300 rounded-lg hover:bg-blue-dark-100 dark:hover:bg-blue-dark-800 cursor-pointer">
+    <span class="material-symbols-outlined">logout</span>
+    <p class="text-sm font-medium leading-normal">Log Out</p>
+</a>
+
+
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1">
+<!-- TopNavBar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-10 py-3">
+<div class="flex items-center gap-4 text-text-light-primary dark:text-text-dark-primary">
+<label class="flex flex-col min-w-40 !h-10 w-80 max-w-sm">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+<div class="text-text-light-secondary dark:text-text-dark-secondary flex border-none bg-background-light dark:bg-background-dark items-center justify-center pl-4 rounded-l-lg border-r-0">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light-primary dark:text-text-dark-primary focus:outline-0 focus:ring-0 border-none bg-background-light dark:bg-background-dark focus:border-none h-full placeholder:text-text-light-secondary dark:placeholder:text-text-dark-secondary px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal" placeholder="Search clients, routines..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-1 justify-end items-center gap-6">
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-background-light dark:bg-background-dark text-text-light-primary dark:text-text-dark-primary gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1.5 right-1.5 flex h-2.5 w-2.5">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-critical opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-critical"></span>
+</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Coach Antonia's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCR_F1ZYZcP-Fh1I-vATamf61ofKFUvWE8jYyAJtCjFyrbytmsnL5yTxSiCt41xJvVAupRRH2Hs2hY-5Q24JpgujjVvi6LJVmW4hecAM2_oW4xofBE1TFtih4kyZAKe5JriR7JxhLxPWWp1H3Gxy4ussppL1wu1XWHDE3EXvUWlUXbf2T9Mi5oiiNM-PTZl4PdToOGm7V5mXpFiLFfiNaU5S0v7_ip9ElSS1cq2cllO6xuYVHK8RIpXmsuPWmOz6VGcoRXQ-f19hJI");'></div>
+</div>
+</header>
+<div class="p-6 lg:p-10">
+<!-- PageHeading -->
+<div class="flex flex-wrap justify-between gap-3 mb-6">
+<div class="flex min-w-72 flex-col gap-2">
+<p class="text-text-light-primary dark:text-text-dark-primary text-3xl font-black leading-tight tracking-[-0.033em]">Welcome back, Antonia!</p>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-base font-normal leading-normal">Here's a summary of your clients and activities.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex cursor-pointer items-center justify-center rounded-lg h-10 bg-white dark:bg-card-dark text-text-light-primary dark:text-text-dark-primary border border-border-light dark:border-border-dark gap-2 text-sm font-bold px-4 hover:bg-gray-50 dark:hover:bg-slate-700">Assign Nutrition Plan</button>
+<button class="flex cursor-pointer items-center justify-center rounded-lg h-10 bg-gluteos-blue text-white gap-2 text-sm font-bold px-4 hover:bg-gluteos-blue-dark">Create New Routine</button>
+</div>
+</div>
+<!-- Stats -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark">
+<p class="text-text-light-primary dark:text-text-dark-primary text-base font-medium leading-normal">Total Active Clients</p>
+<p class="text-text-light-primary dark:text-text-dark-primary tracking-light text-4xl font-bold leading-tight">42</p>
+<p class="text-success text-base font-medium leading-normal flex items-center gap-1"><span class="material-symbols-outlined text-base">arrow_upward</span>+2 this week</p>
+</div>
+<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark">
+<p class="text-text-light-primary dark:text-text-dark-primary text-base font-medium leading-normal">Routines Assigned</p>
+<p class="text-text-light-primary dark:text-text-dark-primary tracking-light text-4xl font-bold leading-tight">15</p>
+<p class="text-success text-base font-medium leading-normal flex items-center gap-1"><span class="material-symbols-outlined text-base">arrow_upward</span>+5 this week</p>
+</div>
+<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark">
+<p class="text-text-light-primary dark:text-text-dark-primary text-base font-medium leading-normal">Pending Check-ins</p>
+<p class="text-text-light-primary dark:text-text-dark-primary tracking-light text-4xl font-bold leading-tight">3</p>
+<p class="text-critical text-base font-medium leading-normal flex items-center gap-1"><span class="material-symbols-outlined text-base">priority_high</span>Needs attention</p>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="lg:col-span-2">
+<!-- SectionHeader -->
+<h2 class="text-text-light-primary dark:text-text-dark-primary text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">Clients to Watch</h2>
+<!-- Clients to Watch List -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between p-4 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+<div class="flex items-center gap-4">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12" data-alt="Client Michael Scott's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBwwfQjxq5N0a65_OHkkfrgdzg8qR5lfCAcf5JsIndOMm-qyT1_UFuZT0pIU3j87vdzl6GIqITEZmY6ln6V3RhbKU1qDlWv3RzGR_t_tiZ16yW3kaVRqcoWeWGIo-L01VG9pcyqx54jczPUx6jdfJOCO-EuMy4dUamoTIyU0LbM4xOlDlzZCFI1EiyyvlhYGFpidXDsa5nW-XFXs0ZdK64TjIyuAp0-4TNq9oc4E3zgz2kPin4p0EX3VSAMNSafWpUrHrmxJ6jCOGg");'></div>
+<div>
+<p class="text-text-light-primary dark:text-text-dark-primary font-semibold">Michael Scott</p>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm">Check-in overdue by 2 days</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center rounded-md bg-critical/10 px-2 py-1 text-xs font-medium text-critical ring-1 ring-inset ring-critical/20">Overdue</span>
+<button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 text-text-light-secondary dark:text-text-dark-secondary">
+<span class="material-symbols-outlined text-xl">more_vert</span>
+</button>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+<div class="flex items-center gap-4">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12" data-alt="Client Jane Doe's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBtphg1gXj0TkH6y_tu2UQ0c63LlfIKNw4U6_NFFxB5AlV2byMYEtxgE4A-CEHzCYil4EQ3U6SWZ8LrE6L9DHkNYUxjTVPv2homlBq5MJEEejdPfGHENJ-z_VKkD7eXl2grFvD-KERKiRu_S5BH9KZLN6hm03hnWWm-V_ZI_eDc1-0ksFso1IcZ5ip_aPbRcHfcTd-Ni9Hg4ozyc_UWsFzSAbd1Ui7_jNr1mW05bUDbOrHQ3mHPAB954he7ztmu278cyAOr3Mxq6cM");'></div>
+<div>
+<p class="text-text-light-primary dark:text-text-dark-primary font-semibold">Jane Doe</p>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm">Nutrition plan expires tomorrow</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center rounded-md bg-warning/10 px-2 py-1 text-xs font-medium text-warning ring-1 ring-inset ring-warning/20">Expiring Soon</span>
+<button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 text-text-light-secondary dark:text-text-dark-secondary">
+<span class="material-symbols-outlined text-xl">more_vert</span>
+</button>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+<div class="flex items-center gap-4">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12" data-alt="Client John Smith's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAGDf5skG3w59ep0o2heOWWcyaZyl5Hsgbk9tGjBb39S-Xi-Rmq70MfFnT6v1AgsV-mrQbHqls88IsTG33lAD6AxOCeSVdU9mwf9Ko5b9N-qa4rmoutHvENVCdhE0M2j3zM89gMxjtlJ_KSDepyktjDP8wGebJziwFFlSwLvDgG-GyNkjwcaicNzlYTO2oH-o_v_5zpnGsJICAA4GLbF4w14AhkF-VZN-JZuoI6myHoe4RF6p3lCyCVrbQKo3IdVCIl7x3uCwdqsgA");'></div>
+<div>
+<p class="text-text-light-primary dark:text-text-dark-primary font-semibold">John Smith</p>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm">Reported drop in motivation</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center rounded-md bg-sky-500/10 px-2 py-1 text-xs font-medium text-sky-500 ring-1 ring-inset ring-sky-500/20">Feedback</span>
+<button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 text-text-light-secondary dark:text-text-dark-secondary">
+<span class="material-symbols-outlined text-xl">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-1">
+<h2 class="text-text-light-primary dark:text-text-dark-primary text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">Recent Activity</h2>
+<div class="flex flex-col gap-5">
+<div class="flex gap-4">
+<div class="flex items-center justify-center size-10 rounded-full bg-success/10 text-success">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+<div>
+<p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"><strong>Pamela Beesly</strong> completed 'Leg Day Annihilator'.</p>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">15 minutes ago</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="flex items-center justify-center size-10 rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined">trending_up</span>
+</div>
+<div>
+<p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"><strong>Dwight Schrute</strong> logged a new PR on Bench Press.</p>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">1 hour ago</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="flex items-center justify-center size-10 rounded-full bg-yellow-500/10 text-yellow-500">
+<span class="material-symbols-outlined">chat</span>
+</div>
+<div>
+<p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium">New message from <strong>Michael Scott</strong>.</p>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">3 hours ago</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="flex items-center justify-center size-10 rounded-full bg-success/10 text-success">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+<div>
+<p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"><strong>Jim Halpert</strong> completed 'Full Body Workout'.</p>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">Yesterday</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+
+<!-- Logout Modal -->
+<div id="logoutModal"
+     class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+  <div class="bg-white dark:bg-gray-900 rounded-xl shadow-xl p-6 w-full max-w-sm animate-fadeIn">
+    
+    <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-3">
+      ¿Cerrar sesión?
+    </h2>
+    <p class="text-gray-600 dark:text-gray-300 text-sm mb-6">
+      Tu sesión actual se cerrará y volverás a la página de inicio de sesión.
+    </p>
+    
+    <div class="flex justify-end gap-3">
+      <button onclick="closeLogoutModal()"
+              class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+        Cancelar
+      </button>
+      
+      <button onclick="logoutNow()"
+              class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition">
+        Salir
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openLogoutModal() {
+  document.getElementById("logoutModal").classList.remove("hidden");
+}
+
+function closeLogoutModal() {
+  document.getElementById("logoutModal").classList.add("hidden");
+}
+
+function logoutNow() {
+  window.location.href = "/logout/";
+}
+</script>
+
+
+
+</body></html>
