@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>GluteOS - Mi Rutina</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0f49bd",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "card-light": "#ffffff",
+                        "card-dark": "#1a2230",
+                        "text-light-primary": "#101622",
+                        "text-dark-primary": "#f6f6f8",
+                        "text-light-secondary": "#616f89",
+                        "text-dark-secondary": "#9ca3af",
+                        "border-light": "#e5e7eb",
+                        "border-dark": "#374151"
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+
+<body class="font-display bg-background-light dark:bg-background-dark">
+    <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+        <div class="flex min-h-screen">
+            <aside
+                class="w-64 flex-shrink-0 bg-card-light dark:bg-card-dark border-r border-border-light dark:border-border-dark flex flex-col">
+                <div
+                    class="flex items-center gap-3 p-6 text-primary h-[65px] border-b border-border-light dark:border-border-dark">
+                    <span class="material-symbols-outlined text-3xl">exercise</span>
+                    <h2 class="text-xl font-bold leading-tight">GluteOS</h2>
+                </div>
+                <div class="flex h-full flex-col justify-between p-4">
+                    <div class="flex flex-col gap-2">
+                        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
+                            href="{% url 'socio_panel' %}">
+                            <span class="material-symbols-outlined">home</span>
+                            <p class="text-sm font-medium leading-normal">Inicio</p>
+                        </a>
+                        <div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary">
+                            <span class="material-symbols-outlined">fitness_center</span>
+                            <p class="text-sm font-semibold leading-normal">Mi Rutina</p>
+                        </div>
+                        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
+                            href="#">
+                            <span class="material-symbols-outlined">restaurant_menu</span>
+                            <p class="text-sm font-medium leading-normal">Mi Nutrición</p>
+                        </a>
+                        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
+                            href="#">
+                            <span class="material-symbols-outlined">monitoring</span>
+                            <p class="text-sm font-medium leading-normal">Progreso</p>
+                        </a>
+                        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
+                            href="#">
+                            <span class="material-symbols-outlined">chat</span>
+                            <p class="text-sm font-medium leading-normal">Mensajes</p>
+                        </a>
+                        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
+                            href="#">
+                            <span class="material-symbols-outlined">account_circle</span>
+                            <p class="text-sm font-medium leading-normal">Mi Perfil</p>
+                        </a>
+                    </div>
+                    <div class="flex flex-col">
+                        <div class="border-t border-border-light dark:border-border-dark my-2"></div>
+                        <div class="flex gap-3 items-center p-2">
+                            <div
+                                class="flex items-center justify-center rounded-full size-10 bg-primary/10 text-primary">
+                                <span class="material-symbols-outlined text-2xl">person</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <h1
+                                    class="text-text-light-primary dark:text-text-dark-primary text-sm font-semibold leading-normal">
+                                    {{ socio.NombreCompleto }}</h1>
+                                <p
+                                    class="text-text-light-secondary dark:text-text-dark-secondary text-xs font-normal leading-normal">
+                                    Socio Activo</p>
+                            </div>
+                        </div>
+                        <a class="flex items-center gap-3 px-3 py-2 mt-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-red-500/10 hover:text-red-500 transition-colors duration-200"
+                            href="{% url 'logout' %}">
+                            <span class="material-symbols-outlined">logout</span>
+                            <p class="text-sm font-medium leading-normal">Cerrar Sesión</p>
+                        </a>
+                    </div>
+                </div>
+            </aside>
+            <main class="flex-1 flex flex-col">
+                <header
+                    class="flex h-[65px] items-center justify-between whitespace-nowrap border-b border-solid border-border-light dark:border-border-dark px-8 bg-card-light dark:bg-card-dark sticky top-0 z-10">
+                    <div class="flex items-center gap-8">
+                        <h1 class="text-text-light-primary dark:text-text-dark-primary text-xl font-bold">Mi Rutina</h1>
+                    </div>
+                    <div class="flex flex-1 justify-end gap-4 items-center">
+                        <button
+                            class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-background-light dark:bg-background-dark text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200">
+                            <span class="material-symbols-outlined text-xl">notifications</span>
+                        </button>
+                        <div class="flex items-center justify-center rounded-full size-10 bg-primary/10 text-primary">
+                            <span class="material-symbols-outlined text-2xl">person</span>
+                        </div>
+                    </div>
+                </header>
+                <div class="p-8">
+                    <div class="flex flex-wrap justify-between items-start gap-4 mb-8">
+                        <div class="flex flex-col gap-1">
+                            <p
+                                class="text-text-light-primary dark:text-text-dark-primary text-3xl font-bold leading-tight">
+                                {% if rutina_activa %}{{ rutina_activa.Nombre }}{% else %}Sin rutina asignada{% endif %}
+                            </p>
+                            <p
+                                class="text-text-light-secondary dark:text-text-dark-secondary text-base font-normal leading-normal">
+                                {% if rutina_activa %}Plan de Entrenamiento{% else %}Contacta a tu entrenador{% endif %}
+                            </p>
+                        </div>
+                        {% if sesion_activa %}
+                        <div class="flex flex-col items-end gap-3">
+                            <div id="session-timer" class="text-2xl font-bold text-primary">
+                                <span id="timer-display">00:00:00</span>
+                            </div>
+                            {% if sesion_activa.EsEntrenamientoLibre %}
+                            <div class="w-full">
+                                <label
+                                    class="block text-sm font-medium mb-2 text-text-light-primary dark:text-text-dark-primary">Notas
+                                    de la sesión:</label>
+                                <textarea id="notas-sesion"
+                                    class="w-full p-3 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark"
+                                    rows="3"
+                                    placeholder="¿Qué hiciste hoy?">{{ sesion_activa.NotasSesion|default:"" }}</textarea>
+                            </div>
+                            {% endif %}
+                            <form method="POST" action="{% url 'terminar_sesion' %}"
+                                onsubmit="return guardarNotas(this);">
+                                {% csrf_token %}
+                                <input type="hidden" name="notas" id="notas-hidden" />
+                                <button type="submit"
+                                    class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-lg flex items-center gap-2 transition-colors duration-200">
+                                    <span class="material-symbols-outlined">stop_circle</span>
+                                    <span>Terminar Sesión</span>
+                                </button>
+                            </form>
+                        </div>
+                        {% else %}
+                        <div class="flex flex-col items-end gap-3">
+                            <form method="POST" action="{% url 'iniciar_sesion' %}" class="flex flex-col gap-3">
+                                {% csrf_token %}
+                                <div class="flex items-center gap-2">
+                                    <input type="hidden" name="rutina_id" value="{{ rutina_activa.id }}">
+                                    <label
+                                        class="flex items-center gap-2 text-sm bg-card-light dark:bg-card-dark px-3 py-2 rounded-lg border border-border-light dark:border-border-dark">
+                                        <input type="checkbox" name="entrenamiento_libre" id="entrenamiento-libre"
+                                            class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" />
+                                        <span>Entrenamiento Libre</span>
+                                    </label>
+                                </div>
+                                <button type="submit"
+                                    class="bg-primary hover:bg-primary/90 text-white font-semibold py-2 px-6 rounded-lg flex items-center gap-2 transition-colors duration-200">
+                                    <span class="material-symbols-outlined">play_circle</span>
+                                    <span>Iniciar Sesión</span>
+                                </button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% if ya_completado_hoy and not sesion_activa %}
+                    <div
+                        class="mb-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg flex items-center gap-3">
+                        <span class="text-2xl">✅</span>
+                        <div>
+                            <p class="font-semibold text-green-800 dark:text-green-200">¡Día completado!</p>
+                            <p class="text-sm text-green-700 dark:text-green-300">Ya completaste todos los ejercicios de
+                                {{ dia_actual }} esta semana. ¡Buen trabajo!</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div
+                            class="lg:col-span-2 flex flex-col gap-6 p-6 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+                            <h3 class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary">
+                                Ejercicios del Día</h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm">
+                                    <thead
+                                        class="text-xs text-text-light-secondary dark:text-text-dark-secondary uppercase bg-background-light dark:bg-background-dark">
+                                        <tr>
+                                            <th class="px-4 py-3" scope="col">Ejercicio</th>
+                                            <th class="px-4 py-3 text-center" scope="col">Series</th>
+                                            <th class="px-4 py-3 text-center" scope="col">Reps</th>
+                                            <th class="px-4 py-3 text-center" scope="col">Peso</th>
+                                            <th class="px-4 py-3" scope="col">Completado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-text-light-primary dark:text-text-dark-primary">
+                                        {% if ejercicios_hoy %}
+                                        {% for dia_ejercicio in ejercicios_hoy %}
+                                        <tr class="border-b border-border-light dark:border-border-dark">
+                                            <td class="px-4 py-3 font-medium">{{ dia_ejercicio.EjercicioID.Nombre }}
+                                            </td>
+                                            <td class="px-4 py-3 text-center">{{ dia_ejercicio.Series|default:"-" }}
+                                            </td>
+                                            <td class="px-4 py-3 text-center">
+                                                {{ dia_ejercicio.Repeticiones|default:"-" }}
+                                            </td>
+                                            <td
+                                                class="px-4 py-3 text-center text-text-light-secondary dark:text-text-dark-secondary">
+                                                {{ dia_ejercicio.peso_display }}
+                                            </td>
+                                            <td class="px-4 py-3 text-center">
+                                                {{ dia_ejercicio.checkbox_html|safe }}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% else %}
+                                        <tr>
+                                            <td colspan="5"
+                                                class="px-4 py-8 text-center text-text-light-secondary dark:text-text-dark-secondary">
+                                                No tienes ejercicios programados para hoy.
+                                            </td>
+                                        </tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-6">
+                            <div
+                                class="p-6 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+                                <h3
+                                    class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary mb-4">
+                                    Mis Planes de Rutina</h3>
+                                <div class="flex flex-col gap-3">
+                                    {% if rutinas %}
+                                    {% for rutina in rutinas %}
+                                    <a href="?rutina_id={{ rutina.id }}" class="block">
+                                        <div
+                                            class="flex justify-between items-center p-4 rounded-lg transition-colors {% if rutina.is_active %}bg-primary/10 border border-primary/20{% else %}bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark hover:border-primary/50{% endif %}">
+                                            <div>
+                                                <p
+                                                    class="font-semibold {% if rutina.is_active %}text-primary{% else %}text-text-light-primary dark:text-text-dark-primary{% endif %}">
+                                                    {{ rutina.Nombre }}
+                                                </p>
+                                                <p
+                                                    class="text-sm text-text-light-secondary dark:text-text-dark-secondary">
+                                                    {% if rutina.EsPlantilla %}Plantilla{% else %}Plan Personalizado{%
+                                                    endif %}
+                                                </p>
+                                            </div>
+                                            {% if rutina.is_active %}
+                                            <span
+                                                class="text-primary text-sm font-medium bg-primary/10 px-2 py-1 rounded">Activa</span>
+                                            {% else %}
+                                            <span
+                                                class="text-text-light-secondary dark:text-text-dark-secondary text-sm">Seleccionar</span>
+                                            {% endif %}
+                                        </div>
+                                    </a>
+                                    {% endfor %}
+                                    {% else %}
+                                    <p
+                                        class="text-sm text-text-light-secondary dark:text-text-dark-secondary text-center py-4">
+                                        No tienes planes de rutina asignados.
+                                    </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div
+                                class="p-6 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+                                <h3
+                                    class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary mb-4">
+                                    Historial de Sesiones</h3>
+                                <div class="flex flex-col gap-3">
+                                    {% if historial_sesiones %}
+                                    {% for sesion in historial_sesiones %}
+                                    <a href="{% url 'detalle_sesion' sesion.id %}"
+                                        class="flex justify-between items-center pb-3 {% if not forloop.last %}border-b border-border-light dark:border-border-dark{% endif %} hover:bg-background-light dark:hover:bg-background-dark p-2 rounded transition-colors">
+                                        <div>
+                                            <p class="font-medium text-text-light-primary dark:text-text-dark-primary">
+                                                {% if sesion.EsEntrenamientoLibre %}🆓 Entrenamiento Libre{% else %}{{
+                                                sesion.RutinaID.Nombre }}{% endif %}
+                                            </p>
+                                            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">
+                                                {{ sesion.FechaInicio|date:"d/m/Y H:i" }} · {{ sesion.DuracionMinutos }}
+                                                min
+                                            </p>
+                                        </div>
+                                        <span class="text-primary text-sm font-semibold">✓</span>
+                                    </a>
+                                    {% endfor %}
+                                    {% else %}
+                                    <p
+                                        class="text-sm text-text-light-secondary dark:text-text-dark-secondary text-center py-4">
+                                        Aún no tienes sesiones completadas.
+                                    </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Save notes before submitting terminar sesion form
+        function guardarNotas(form) {
+            const notasTextarea = document.getElementById('notas-sesion');
+            const notasHidden = document.getElementById('notas-hidden');
+            if (notasTextarea && notasHidden) {
+                notasHidden.value = notasTextarea.value;
+            }
+            return true;
+        }
+    </script>
+
+    {% if sesion_activa %}
+    <script>
+        // Session Timer
+        const startTime = new Date('{{ sesion_activa.FechaInicio|date:"c" }}').getTime();
+
+        function updateTimer() {
+            const now = new Date().getTime();
+            const elapsed = now - startTime;
+
+            const hours = Math.floor(elapsed / (1000 * 60 * 60));
+            const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
+
+            const display =
+                String(hours).padStart(2, '0') + ':' +
+                String(minutes).padStart(2, '0') + ':' +
+                String(seconds).padStart(2, '0');
+
+            document.getElementById('timer-display').textContent = display;
+        }
+
+        // Update every second
+        updateTimer();
+        setInterval(updateTimer, 1000);
+
+        // AJAX Toggle Exercise
+        function toggleEjercicio(checkbox) {
+            const ejercicioId = checkbox.dataset.ejercicioId;
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            fetch('{% url "toggle_ejercicio" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({
+                    ejercicio_id: ejercicioId
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Progreso:', data.progreso);
+
+                        // Auto-end session if all completed
+                        if (data.todos_completados) {
+                            if (confirm('¡Felicidades! Completaste todos los ejercicios. ¿Quieres terminar la sesión?')) {
+                                document.querySelector('form[action="{% url "terminar_sesion" %}"]').submit();
+                            }
+                        }
+                    } else {
+                        alert('Error: ' + data.error);
+                        checkbox.checked = !checkbox.checked; // Revert
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al actualizar ejercicio');
+                    checkbox.checked = !checkbox.checked; // Revert
+                });
+        }
+    </script>
+    {% endif %}
+
+</body>
+
+</html>

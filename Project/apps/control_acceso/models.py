@@ -160,3 +160,59 @@ class ComidaAlimento(models.Model):
     class Meta:
         db_table = "comida_alimento"
         ordering = ["DiaComidaID"]
+
+
+# === TABLA SesionEntrenamiento ===
+class SesionEntrenamiento(models.Model):
+    RutinaID = models.ForeignKey(RutinaSemanal, on_delete=models.CASCADE, related_name="sesiones", null=True, blank=True)
+    SocioMembresiaID = models.ForeignKey("pagos.SocioMembresia", on_delete=models.CASCADE, related_name="sesiones_entrenamiento")
+    FechaInicio = models.DateTimeField()
+    FechaFin = models.DateTimeField(null=True, blank=True)
+    DuracionMinutos = models.IntegerField(null=True, blank=True)
+    DiaSemana = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(6)])  # 0-6
+    
+    # Free training mode
+    EsEntrenamientoLibre = models.BooleanField(default=False)
+    NotasSesion = models.TextField(null=True, blank=True, help_text="Notas sobre qué se hizo en la sesión")
+
+    def __str__(self):
+        if self.EsEntrenamientoLibre:
+            return f"Sesión Libre {self.id} - {self.FechaInicio.strftime('%d/%m/%Y')}"
+        return f"Sesión {self.id} - {self.FechaInicio.strftime('%d/%m/%Y')}"
+
+    class Meta:
+        db_table = "sesion_entrenamiento"
+        ordering = ["-FechaInicio"]
+
+
+# === TABLA EjercicioSesionCompletado ===
+class EjercicioSesionCompletado(models.Model):
+    SesionID = models.ForeignKey(SesionEntrenamiento, on_delete=models.CASCADE, related_name="ejercicios_completados")
+    DiaRutinaEjercicioID = models.ForeignKey(DiaRutinaEjercicio, on_delete=models.CASCADE)
+    Completado = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Sesión {self.SesionID_id} - Ejercicio {self.DiaRutinaEjercicioID_id} - {'✓' if self.Completado else '✗'}"
+
+    class Meta:
+        db_table = "ejercicio_sesion_completado"
+        unique_together = [["SesionID", "DiaRutinaEjercicioID"]]
+
+
+# === TABLA CompletionTracking ===
+class CompletionTracking(models.Model):
+    SocioMembresiaID = models.ForeignKey("pagos.SocioMembresia", on_delete=models.CASCADE, related_name="completions")
+    RutinaID = models.ForeignKey(RutinaSemanal, on_delete=models.CASCADE)
+    DiaSemana = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(6)])
+    Semana = models.CharField(max_length=7, help_text="Formato: YYYY-WW")  # e.g., "2025-47"
+    Completado = models.BooleanField(default=True)
+    FechaCompletado = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+        return f"{dias[self.DiaSemana]} - Semana {self.Semana}"
+
+    class Meta:
+        db_table = "completion_tracking"
+        unique_together = [["SocioMembresiaID", "RutinaID", "DiaSemana", "Semana"]]
+        ordering = ["-FechaCompletado"]

@@ -60,7 +60,7 @@
               <p class="text-sm font-semibold leading-normal">Inicio</p>
             </div>
             <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
-              href="#">
+              href="{% url 'mi_rutina' %}">
               <span class="material-symbols-outlined">fitness_center</span>
               <p class="text-sm font-medium leading-normal">Mi Rutina</p>
             </a>
@@ -242,8 +242,8 @@
                     <tr class="border-b border-border-light dark:border-border-dark">
                       <td class="px-4 py-3 font-medium">{{ dia_ejercicio.EjercicioID.Nombre }}</td>
                       <td class="px-4 py-3">{{ dia_ejercicio.Series }}</td>
-                      <td class="px-4 py-3 text-text-light-secondary dark:text-text-dark-secondary">{{
-                        dia_ejercicio.Repeticiones }}</td>
+                      <td class="px-4 py-3 text-text-light-secondary dark:text-text-dark-secondary">
+                        {{ dia_ejercicio.Repeticiones }}</td>
                     </tr>
                     {% empty %}
                     <tr>

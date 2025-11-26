@@ -41,14 +41,14 @@ def login_view(request):
         messages.success(request, f"Bienvenido, {usuario.Email}.")
 
         if rol_real == "socio":
-            return redirect("panel_control")
+            return redirect("socio_panel")
 
         elif rol_real == "entrenador":
             return redirect("panel_entrenador")  
         elif rol_real == "administrativo":
             return redirect("panel_admin")  
 
-        return redirect("panel_control")
+        return redirect("socio_panel")
 
     return render(request, "seguridad/login.html")
 

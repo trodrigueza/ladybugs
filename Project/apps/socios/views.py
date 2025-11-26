@@ -250,10 +250,411 @@ def panel_de_control_view(request):
     return render(request, "socio/PanelDeControl.html", context)
 
 @login_requerido
+def mi_rutina_view(request):
+    from apps.control_acceso.models import SesionEntrenamiento, EjercicioSesionCompletado
+    
+    usuario_id = request.session.get('usuario_id')
+    
+    try:
+        usuario = Usuario.objects.get(id=usuario_id)
+        socio = Socio.objects.get(Email=usuario.Email)
+    except (Usuario.DoesNotExist, Socio.DoesNotExist):
+        messages.error(request, "No se encontró el perfil de socio asociado.")
+        return redirect('login')
+    
+    # Obtener todas las rutinas del socio
+    rutinas = RutinaSemanal.objects.filter(SocioID=socio).prefetch_related('dias_ejercicios__EjercicioID')
+    
+    # Rutina activa (la primera no plantilla, o la primera en general)
+    rutina_activa = rutinas.filter(EsPlantilla=False).first() or rutinas.first()
+    
+    # Convert query to list and add selected attribute for template
+    rutinas = list(rutinas)
+    for r in rutinas:
+        r.selected_attr = 'selected' if r == rutina_activa else ''
+    
+    # Obtener ejercicios SOLO del día actual
+    ejercicios_hoy = []
+    dia_actual = datetime.now().weekday()
+    dia_actual_nombre = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'][dia_actual]
+    
+    if rutina_activa:
+        ejercicios_hoy = list(DiaRutinaEjercicio.objects.filter(
+            RutinaID=rutina_activa,
+            DiaSemana=dia_actual
+        ).select_related('EjercicioID').order_by('id'))
+    
+    # Check if today was already completed this week
+    from apps.control_acceso.models import CompletionTracking
+    ya_completado_hoy = False
+    if rutina_activa:
+        now = timezone.now()
+        semana_actual = now.strftime('%Y-%W')
+        membresias = SocioMembresia.objects.filter(SocioID=socio)
+        ya_completado_hoy = CompletionTracking.objects.filter(
+            SocioMembresiaID__in=membresias,
+            RutinaID=rutina_activa,
+            DiaSemana=dia_actual,
+            Semana=semana_actual,
+            Completado=True
+        ).exists()
+    
+    
+    # Detectar sesión activa
+    membresias = SocioMembresia.objects.filter(SocioID=socio)
+    sesion_activa = SesionEntrenamiento.objects.filter(
+        SocioMembresiaID__in=membresias,
+        FechaFin__isnull=True
+    ).first()
+    
+    # Obtener ejercicios completados en la sesión activa
+    ejercicios_completados_ids = set()
+    # Add is_completed attribute to each exercise
+    for ejercicio in ejercicios_hoy:
+        ejercicio.is_completed = ejercicio.id in ejercicios_completados_ids
+        ejercicio.can_check = sesion_activa is not None
+        # Pre-calculate peso display
+        if ejercicio.PesoObjetivo:
+            ejercicio.peso_display = f"{ejercicio.PesoObjetivo} kg"
+        else:
+            ejercicio.peso_display = "-"
+        
+        # Pre-render checkbox HTML
+        if ejercicio.can_check:
+            checked = 'checked' if ejercicio.is_completed else ''
+            ejercicio.checkbox_html = f'<input class="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer" type="checkbox" data-ejercicio-id="{ejercicio.id}" {checked} onchange="toggleEjercicio(this)" />'
+        else:
+            ejercicio.checkbox_html = '<input class="h-5 w-5 rounded border-gray-300 text-gray-400 cursor-not-allowed" type="checkbox" disabled />'
+    
+    # Historial de sesiones (últimas 5)
+    historial_sesiones = SesionEntrenamiento.objects.filter(
+        SocioMembresiaID__in=membresias,
+        FechaFin__isnull=False
+    ).order_by('-FechaInicio')[:5]
+    
+    context = {
+        'socio': socio,
+        'rutinas': rutinas,
+        'rutina_activa': rutina_activa,
+        'ejercicios_hoy': ejercicios_hoy,
+        'dia_actual': dia_actual_nombre,
+        'sesion_activa': sesion_activa,
+        'ejercicios_completados_ids': ejercicios_completados_ids,
+        'historial_sesiones': historial_sesiones,
+        'ya_completado_hoy': ya_completado_hoy,
+    }
+    
+    return render(request, "socio/MiRutina.html", context)
+
+@login_requerido
 def planel_inicio_entrenador_view(request):
     return render(request, "Entrenador/PaneldeInicio.html")
 
 @login_requerido
 def panel_admin_view(request):
     return render(request, "Administrador/PaneldeInicio.html")
+
+# === SESSION TRACKING VIEWS ===
+
+@login_requerido
+def iniciar_sesion_view(request):
+    from apps.control_acceso.models import SesionEntrenamiento, EjercicioSesionCompletado
+    from django.http import JsonResponse
+    
+    if request.method == "POST":
+        usuario_id = request.session.get('usuario_id')
+        
+        try:
+            usuario = Usuario.objects.get(id=usuario_id)
+            socio = Socio.objects.get(Email=usuario.Email)
+            
+            # Check for free training mode
+            entrenamiento_libre = request.POST.get('entrenamiento_libre') == 'on'
+            rutina_id = request.POST.get('rutina_id')
+            
+            # Get selected routine (or None for free training)
+            rutina = None
+            if not entrenamiento_libre:
+                if rutina_id:
+                    try:
+                        rutina = RutinaSemanal.objects.get(id=rutina_id, SocioID=socio)
+                    except RutinaSemanal.DoesNotExist:
+                        messages.error(request, "Rutina no encontrada.")
+                        return redirect('mi_rutina')
+                else:
+                    rutina = RutinaSemanal.objects.filter(SocioID=socio, EsPlantilla=False).first()
+                
+                if not rutina:
+                    messages.error(request, "No tienes una rutina asignada.")
+                    return redirect('mi_rutina')
+            
+            # Verificar que no haya sesión activa
+            membresias = SocioMembresia.objects.filter(SocioID=socio)
+            sesion_activa = SesionEntrenamiento.objects.filter(
+                SocioMembresiaID__in=membresias,
+                FechaFin__isnull=True
+            ).first()
+            
+            if sesion_activa:
+                messages.warning(request, "Ya tienes una sesión activa.")
+                return redirect('mi_rutina')
+            
+            # Crear nueva sesión
+            membresia = membresias.first()
+            if not membresia:
+                messages.error(request, "No tienes una membresía activa.")
+                return redirect('mi_rutina')
+            
+            dia_semana = datetime.now().weekday()
+            sesion = SesionEntrenamiento.objects.create(
+                RutinaID=rutina,
+                SocioMembresiaID=membresia,
+                FechaInicio=timezone.now(),
+                DiaSemana=dia_semana,
+                EsEntrenamientoLibre=entrenamiento_libre
+            )
+            
+            # Crear registros de ejercicios solo si NO es entrenamiento libre
+            if not entrenamiento_libre and rutina:
+                ejercicios_dia = DiaRutinaEjercicio.objects.filter(
+                    RutinaID=rutina,
+                    DiaSemana=dia_semana
+                )
+                
+                for ejercicio in ejercicios_dia:
+                    EjercicioSesionCompletado.objects.create(
+                        SesionID=sesion,
+                        DiaRutinaEjercicioID=ejercicio,
+                        Completado=False
+                    )
+            
+            modo = "libre" if entrenamiento_libre else rutina.Nombre
+            messages.success(request, f"¡Sesión iniciada ({modo})! Buena suerte.")
+            return redirect('mi_rutina')
+            
+        except (Usuario.DoesNotExist, Socio.DoesNotExist):
+            messages.error(request, "Error al iniciar sesión.")
+            return redirect('mi_rutina')
+    
+    return redirect('mi_rutina')
+
+
+@login_requerido
+def toggle_ejercicio_view(request):
+    from apps.control_acceso.models import SesionEntrenamiento, EjercicioSesionCompletado
+    from django.http import JsonResponse
+    import json
+    
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            ejercicio_id = data.get('ejercicio_id')
+            
+            usuario_id = request.session.get('usuario_id')
+            usuario = Usuario.objects.get(id=usuario_id)
+            socio = Socio.objects.get(Email=usuario.Email)
+            
+            # Buscar sesión activa
+            membresias = SocioMembresia.objects.filter(SocioID=socio)
+            sesion_activa = SesionEntrenamiento.objects.filter(
+                SocioMembresiaID__in=membresias,
+                FechaFin__isnull=True
+            ).first()
+            
+            if not sesion_activa:
+                return JsonResponse({'error': 'No hay sesión activa'}, status=400)
+            
+            # Toggle ejercicio
+            ejercicio_sesion = EjercicioSesionCompletado.objects.get(
+                SesionID=sesion_activa,
+                DiaRutinaEjercicioID_id=ejercicio_id
+            )
+            
+            ejercicio_sesion.Completado = not ejercicio_sesion.Completado
+            ejercicio_sesion.save()
+            
+            # Verificar si todos están completados
+            total = sesion_activa.ejercicios_completados.count()
+            completados = sesion_activa.ejercicios_completados.filter(Completado=True).count()
+            
+            return JsonResponse({
+                'success': True,
+                'completado': ejercicio_sesion.Completado,
+                'progreso': f'{completados}/{total}',
+                'todos_completados': completados == total
+            })
+            
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+@login_requerido
+def detalle_sesion_view(request, sesion_id):
+    """View to show details of a completed session"""
+    from apps.control_acceso.models import SesionEntrenamiento
+    
+    usuario_id = request.session.get('usuario_id')
+    
+    try:
+        usuario = Usuario.objects.get(id=usuario_id)
+        socio = Socio.objects.get(Email=usuario.Email)
+        
+        # Get session and verify it belongs to this socio
+        membresias = SocioMembresia.objects.filter(SocioID=socio)
+        sesion = SesionEntrenamiento.objects.filter(
+            id=sesion_id,
+            SocioMembresiaID__in=membresias
+        ).first()
+        
+        if not sesion:
+            messages.error(request, "Sesión no encontrada.")
+            return redirect('mi_rutina')
+        
+        # Get exercises for this session
+        ejercicios = []
+        completados_count = 0
+        total_count = 0
+        
+        if not sesion.EsEntrenamientoLibre:
+            ejercicios = list(sesion.ejercicios_completados.all().select_related(
+                'DiaRutinaEjercicioID__EjercicioID'
+            ))
+            total_count = len(ejercicios)
+            completados_count = sum(1 for ej in ejercicios if ej.Completado)
+        
+        context = {
+            'sesion': sesion,
+            'ejercicios': ejercicios,
+            'total_count': total_count,
+            'completados_count': completados_count,
+        }
+        
+        return render(request, "socio/DetalleSesion.html", context)
+        
+    except (Usuario.DoesNotExist, Socio.DoesNotExist):
+        messages.error(request, "Error al cargar sesión.")
+        return redirect('mi_rutina')
+
+
+@login_requerido
+def terminar_sesion_view(request):
+    from apps.control_acceso.models import SesionEntrenamiento
+    from django.http import JsonResponse
+    
+    if request.method == "POST":
+        usuario_id = request.session.get('usuario_id')
+        
+        try:
+            usuario = Usuario.objects.get(id=usuario_id)
+            socio = Socio.objects.get(Email=usuario.Email)
+            
+            # Buscar sesión activa
+            membresias = SocioMembresia.objects.filter(SocioID=socio)
+            sesion_activa = SesionEntrenamiento.objects.filter(
+                SocioMembresiaID__in=membresias,
+                FechaFin__isnull=True
+            ).first()
+            
+            if not sesion_activa:
+                messages.warning(request, "No tienes una sesión activa.")
+                return redirect('mi_rutina')
+            
+            # Save notes if provided
+            notas = request.POST.get('notas', '').strip()
+            if notas:
+                sesion_activa.NotasSesion = notas
+            
+            # Terminar sesión
+            sesion_activa.FechaFin = timezone.now()
+            duracion = (sesion_activa.FechaFin - sesion_activa.FechaInicio).total_seconds() / 60
+            sesion_activa.DuracionMinutos = int(duracion)
+            sesion_activa.save()
+            
+            # Check for weekly completion (only for non-free training)
+            if not sesion_activa.EsEntrenamientoLibre and sesion_activa.RutinaID:
+                from apps.control_acceso.models import CompletionTracking
+                
+                # Check if all exercises were completed
+                total_ejercicios = sesion_activa.ejercicios_completados.count()
+                ejercicios_completados = sesion_activa.ejercicios_completados.filter(Completado=True).count()
+                
+                if total_ejercicios > 0 and ejercicios_completados == total_ejercicios:
+                    # Calculate current week (ISO week format: YYYY-WW)
+                    now = timezone.now()
+                    semana = now.strftime('%Y-%W')
+                    
+                    # Create or update completion record
+                    CompletionTracking.objects.update_or_create(
+                        SocioMembresiaID=sesion_activa.SocioMembresiaID,
+                        RutinaID=sesion_activa.RutinaID,
+                        DiaSemana=sesion_activa.DiaSemana,
+                        Semana=semana,
+                        defaults={'Completado': True}
+                    )
+                    
+                    messages.success(request, f"🎉 ¡Sesión completada! Todos los ejercicios de hoy finalizados. Duración: {int(duracion)} min.")
+                else:
+                    messages.success(request, f"Sesión terminada. Duración: {int(duracion)} minutos.")
+            else:
+                messages.success(request, f"Sesión terminada. Duración: {int(duracion)} minutos.")
+            return redirect('mi_rutina')
+            
+        except (Usuario.DoesNotExist, Socio.DoesNotExist):
+            messages.error(request, "Error al terminar sesión.")
+            return redirect('mi_rutina')
+    
+    return redirect('mi_rutina')
+
+
+@login_requerido
+def toggle_ejercicio_view(request):
+    from apps.control_acceso.models import SesionEntrenamiento, EjercicioSesionCompletado
+    from django.http import JsonResponse
+    import json
+    
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            ejercicio_id = data.get('ejercicio_id')
+            
+            usuario_id = request.session.get('usuario_id')
+            usuario = Usuario.objects.get(id=usuario_id)
+            socio = Socio.objects.get(Email=usuario.Email)
+            
+            # Buscar sesión activa
+            membresias = SocioMembresia.objects.filter(SocioID=socio)
+            sesion_activa = SesionEntrenamiento.objects.filter(
+                SocioMembresiaID__in=membresias,
+                FechaFin__isnull=True
+            ).first()
+            
+            if not sesion_activa:
+                return JsonResponse({'error': 'No hay sesión activa'}, status=400)
+            
+            # Toggle ejercicio
+            ejercicio_sesion = EjercicioSesionCompletado.objects.get(
+                SesionID=sesion_activa,
+                DiaRutinaEjercicioID_id=ejercicio_id
+            )
+            
+            ejercicio_sesion.Completado = not ejercicio_sesion.Completado
+            ejercicio_sesion.save()
+            
+            # Verificar si todos están completados
+            total = sesion_activa.ejercicios_completados.count()
+            completados = sesion_activa.ejercicios_completados.filter(Completado=True).count()
+            
+            return JsonResponse({
+                'success': True,
+                'completado': ejercicio_sesion.Completado,
+                'progreso': f'{completados}/{total}',
+                'todos_completados': completados == total
+            })
+            
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 
