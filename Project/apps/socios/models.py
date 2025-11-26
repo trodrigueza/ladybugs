@@ -14,6 +14,7 @@ class Socio(models.Model):
 
     Password = models.CharField(max_length=128, null=True, blank=True)
     Rol = models.CharField(max_length=20, default='Socio')
+    Altura = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, help_text="Altura en metros")
     def __str__(self):
         return f"{self.NombreCompleto} ({self.Rol})"
 
