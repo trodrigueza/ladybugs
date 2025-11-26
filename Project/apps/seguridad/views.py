@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-
 from apps.seguridad.models import Usuario
 from apps.seguridad.servicios.autenticacion import (
     autenticar_usuario,
     registrar_logout,
 )
-
+from django.shortcuts import render
+from apps.socios.models import Socio
 
 def login_view(request):
     if request.method == "POST":
@@ -30,7 +30,7 @@ def login_view(request):
 
         rol_real = usuario.RolID.NombreRol.lower()
 
-        if rol_seleccionado != rol_real:
+        if rol_seleccionado.lower() != rol_real:
             messages.error(request, "No tienes permisos para iniciar sesión como ese rol.")
             return render(request, "seguridad/login.html", {"email": email})
         
@@ -69,3 +69,8 @@ def logout_view(request):
     messages.success(request, "Has cerrado sesión correctamente.")
 
     return redirect("login")
+
+
+def gestionar_usuarios_view(request):
+    socios = Socio.objects.prefetch_related("membresias").all()
+    return render(request, "Administrador/GestionUsuario.html", {"socios": socios})

@@ -1,4 +1,3 @@
-#Decorador: evita ingreso al panel de control, sin previo registro 
 from functools import wraps
 from django.shortcuts import redirect
 from django.contrib import messages

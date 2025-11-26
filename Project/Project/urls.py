@@ -4,6 +4,7 @@ from django.urls import path
 from apps.socios import views as socios_views
 from apps.seguridad.views import login_view, logout_view
 
+from apps.seguridad import views as seguridad_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,6 +26,11 @@ urlpatterns = [
     path('socio/mi-rutina/terminar_sesion/', socios_views.terminar_sesion_view, name='terminar_sesion'),
     path('socio/mi-rutina/toggle_ejercicio/', socios_views.toggle_ejercicio_view, name='toggle_ejercicio'),
     path('socio/mi-rutina/sesion/<int:sesion_id>/', socios_views.detalle_sesion_view, name='detalle_sesion'),
+    
+    
     path('administrativo/panel/', socios_views.panel_admin_view, name='panel_admin'),
+    path('administrativo/gestionar-usuarios/', seguridad_views.gestionar_usuarios_view, name='gestionar_usuarios'),
+    
+    
     path('entrenador/panel/', socios_views.planel_inicio_entrenador_view, name='entrenador_panel')
 ]

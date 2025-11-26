@@ -352,6 +352,28 @@ def planel_inicio_entrenador_view(request):
 
 @login_requerido
 def panel_admin_view(request):
+    usuario_id = request.session.get('usuario_id')
+
+    try:
+        usuario = Usuario.objects.get(id=usuario_id)
+    except Usuario.DoesNotExist:
+        messages.error(request, "Usuario no encontrado.")
+        return redirect('login')
+
+    rol = ''
+    try:
+        rol = usuario.RolID.NombreRol.strip().lower() if usuario.RolID and usuario.RolID.NombreRol else ''
+    except Exception:
+        rol = ''
+
+    if rol != 'administrativo':
+        messages.error(request, "No tienes permisos para acceder al panel administrativo.")
+        if rol == 'entrenador':
+            return redirect('panel_entrenador')
+        if rol == 'socio':
+            return redirect('socio_panel')
+        return redirect('login')
+
     return render(request, "Administrador/PaneldeInicio.html")
 
 # === SESSION TRACKING VIEWS ===

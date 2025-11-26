@@ -3,6 +3,7 @@
 from django.contrib.auth.hashers import check_password
 from django.utils import timezone
 from apps.seguridad.models import Usuario, RegistroAuditoria
+from django.contrib.auth.hashers import make_password
 
 
 def registrar_evento_auditoria(usuario, tipo_accion, detalle):
@@ -48,6 +49,25 @@ def autenticar_usuario(email, password_plano):
         return usuario
 
     # Contraseña incorrecta
+    # Fallback: algunos usuarios fueron creados manualmente con la contraseña en texto plano.
+    # Si el campo PasswordHash coincide exactamente con el password plano, actualizamos
+    # el campo a un hash seguro y permitimos el acceso (migración automática).
+    try:
+        if usuario.PasswordHash == password_plano:
+            usuario.PasswordHash = make_password(password_plano)
+            usuario.UltimoAcceso = timezone.now()
+            usuario.save(update_fields=["PasswordHash", "UltimoAcceso"])
+
+            registrar_evento_auditoria(
+                usuario=usuario,
+                tipo_accion="LOGIN_EXITOSO",
+                detalle="Inicio de sesión correcto (upgrade de hash)",
+            )
+            return usuario
+    except Exception:
+        # En caso de cualquier error durante la migración, continuar con el flujo de fallo
+        pass
+
     registrar_evento_auditoria(
         usuario=usuario,
         tipo_accion="LOGIN_FALLIDO",
