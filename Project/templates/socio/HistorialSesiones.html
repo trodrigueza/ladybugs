@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Sesiones - Sistema de Gimnasio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+</head>
+
+<body
+    class="font-['Inter'] bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Header -->
+        <div class="mb-6">
+            <a href="{% url 'mi_rutina' %}"
+                class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-4">
+                <span class="material-symbols-outlined">arrow_back</span>
+                <span>Volver a Mi Rutina</span>
+            </a>
+            <h1 class="text-3xl font-bold text-slate-900 dark:text-slate-100">Historial de Sesiones</h1>
+        </div>
+
+        <!-- Historial List -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
+            <div class="flex flex-col gap-3">
+                {% if historial_sesiones %}
+                {% for sesion in historial_sesiones %}
+                <a href="{% url 'detalle_sesion' sesion.id %}"
+                    class="flex justify-between items-center pb-3 {% if not forloop.last %}border-b border-border-light dark:border-border-dark{% endif %} hover:bg-slate-50 dark:hover:bg-slate-700 p-3 rounded transition-colors">
+                    <div>
+                        <p class="font-medium text-slate-900 dark:text-slate-100 text-lg">
+                            {{ sesion.nombre_display }}
+                        </p>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">
+                            {{ sesion.FechaInicio|date:"l, d \d\e F \d\e Y \a \l\a\s H:i" }} · {{ sesion.DuracionMinutos
+                            }} min
+                        </p>
+                    </div>
+                    <span class="material-symbols-outlined text-blue-600">arrow_forward_ios</span>
+                </a>
+                {% endfor %}
+                {% else %}
+                <p class="text-center text-slate-600 dark:text-slate-400 py-8">
+                    Aún no tienes sesiones completadas.
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

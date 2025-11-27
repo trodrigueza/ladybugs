@@ -33,7 +33,7 @@
                 <div>
                     <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
                         {% if sesion.EsEntrenamientoLibre %}
-                        🆓 Entrenamiento Libre
+                        Entrenamiento Libre
                         {% else %}
                         {{ sesion.RutinaID.Nombre }}
                         {% endif %}
@@ -70,10 +70,8 @@
                 {% for ej in ejercicios %}
                 <div
                     class="flex items-center gap-3 p-3 rounded-lg {% if ej.Completado %}bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800{% else %}bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600{% endif %}">
-                    <span class="text-2xl">{% if ej.Completado %}✅{% else %}⬜{% endif %}</span>
                     <div class="flex-1">
-                        <div class="font-medium text-slate-900 dark:text-slate-100">{{
-                            ej.DiaRutinaEjercicioID.EjercicioID.Nombre }}</div>
+                        <div class="font-medium text-slate-900 dark:text-slate-100">{{ ej.nombre_ejercicio }}</div>
                         <div class="text-sm text-slate-600 dark:text-slate-400">
                             {{ ej.DiaRutinaEjercicioID.Series }} series × {{ ej.DiaRutinaEjercicioID.Repeticiones }}
                             reps
@@ -93,7 +91,7 @@
                         <div class="text-sm text-slate-600 dark:text-slate-400">Completados</div>
                     </div>
                     <div>
-                        <div class="text-2xl font-bold text-slate-400">{{ total_count - completados_count }}</div>
+                        <div class="text-2xl font-bold text-slate-400">{{ pendientes_count }}</div>
                         <div class="text-sm text-slate-600 dark:text-slate-400">Pendientes</div>
                     </div>
                 </div>

@@ -1,11 +1,20 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db import IntegrityError
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+from django.utils import timezone
+from datetime import datetime
+import json
 
 from .servicios.registro_db import create_socio_from_dict, ValidationError
 from apps.seguridad.servicios.registro_usuario import crear_usuario_para_socio
 from apps.seguridad.decoradores import login_requerido
+from .models import Socio, Medicion
+from apps.pagos.models import SocioMembresia, PlanMembresia, Pago, AlertaPago
+from apps.control_acceso.models import (
+    RutinaSemanal, DiaRutinaEjercicio, Ejercicio, 
+    SesionEntrenamiento, EjercicioSesionCompletado, CompletionTracking
+)
 
 
 def register_view(request):
@@ -92,14 +101,76 @@ def panel_de_control_view(request):
         return redirect('login')
 
     # --- Estadísticas ---
-    # 1. Racha (Simulada por ahora, o cálculo complejo de Asistencia)
-    # Para MVP: Contar asistencias de los últimos 7 días
+    # 1. Racha (Consecutive training days with 1-day grace period)
     membresias = SocioMembresia.objects.filter(SocioID=socio)
-    asistencias_recientes = Asistencia.objects.filter(
+    
+    # Get all completed sessions ordered by date (newest first)
+    sesiones_completadas = SesionEntrenamiento.objects.filter(
         SocioMembresiaID__in=membresias,
-        FechaHoraEntrada__gte=timezone.now() - timezone.timedelta(days=7)
-    ).count()
-    racha_dias = asistencias_recientes # Simplificación
+        FechaFin__isnull=False
+    ).order_by('-FechaInicio').values_list('FechaInicio', flat=True)
+    
+    # Calculate streak
+    racha_dias = 0
+    racha_en_peligro = False
+    mensaje_racha = ""
+    
+    if sesiones_completadas:
+        hoy = timezone.now().date()
+        dias_unicos = set()
+        
+        # Get unique training days
+        for dt in sesiones_completadas:
+            dias_unicos.add(dt.date())
+        
+        dias_unicos = sorted(dias_unicos, reverse=True)
+        
+        # Check if trained today
+        entreno_hoy = hoy in dias_unicos
+        
+        # Check if trained yesterday
+        ayer = hoy - timezone.timedelta(days=1)
+        entreno_ayer = ayer in dias_unicos
+        
+        # Check if today is weekend
+        es_fin_de_semana = hoy.weekday() in [5, 6]  # Saturday=5, Sunday=6
+        
+        # Calculate consecutive days
+        if entreno_hoy or entreno_ayer:
+            fecha_actual = hoy if entreno_hoy else ayer
+            racha_dias = 1
+            dias_sin_entrenar = 0
+            
+            for i in range(1, 365):  # Max 1 year lookback
+                fecha_anterior = fecha_actual - timezone.timedelta(days=i)
+                dia_semana = fecha_anterior.weekday()
+                
+                if fecha_anterior in dias_unicos:
+                    racha_dias += 1
+                    dias_sin_entrenar = 0
+                else:
+                    # Skip weekends in the count
+                    if dia_semana not in [5, 6]:  # Not Saturday or Sunday
+                        dias_sin_entrenar += 1
+                        if dias_sin_entrenar > 1:  # Grace period of 1 weekday
+                            break
+            
+            # Check if streak is at risk
+            if not entreno_hoy and entreno_ayer:
+                if es_fin_de_semana:
+                    mensaje_racha = f"🌴 Es fin de semana, está bien si descansas :) No perderás tu racha de {racha_dias} días"
+                else:
+                    racha_en_peligro = True
+                    mensaje_racha = f"⚠️ ¡Si hoy no entrenas perderás tu racha de {racha_dias} días!"
+            elif entreno_hoy:
+                mensaje_racha = f"¡Genial! Llevas {racha_dias} {'día' if racha_dias == 1 else 'días'} seguidos"
+            elif es_fin_de_semana and not entreno_hoy:
+                mensaje_racha = f"🌴 Es fin de semana, está bien si descansas :) Tienes {racha_dias} {'día' if racha_dias == 1 else 'días'} de racha"
+        else:
+            # No recent activity
+            mensaje_racha = "Comienza tu racha entrenando hoy"
+    else:
+        mensaje_racha = "Comienza tu racha entrenando hoy"
 
     # 2. Peso Actual
     ultima_medicion = Medicion.objects.filter(SocioID=socio).order_by('-Fecha').first()
@@ -193,17 +264,6 @@ def panel_de_control_view(request):
             else:
                 mensaje_peso = "Mantén el esfuerzo constante"
     
-    # Mensaje dinámico para racha
-    mensaje_racha = "¡Comienza tu racha hoy!"
-    if racha_dias == 0:
-        mensaje_racha = "¡Comienza tu racha hoy!"
-    elif 1 <= racha_dias <= 5:
-        mensaje_racha = "¡Bien! Sigue así"
-    elif 6 <= racha_dias <= 14:
-        mensaje_racha = "¡Excelente racha!"
-    else:
-        mensaje_racha = "¡Increíble dedicación!"
-
     # --- Rutina de Hoy ---
     dia_semana_actual = datetime.now().weekday() # 0=Lunes
     rutina_hoy = []
@@ -233,6 +293,7 @@ def panel_de_control_view(request):
     context = {
         'socio': socio,
         'racha_dias': racha_dias,
+        'racha_en_peligro': racha_en_peligro,
         'peso_actual': peso_actual,
         'fecha_peso': fecha_peso,
         'imc_actual': imc_actual,
@@ -266,39 +327,47 @@ def mi_rutina_view(request):
     rutinas = RutinaSemanal.objects.filter(SocioID=socio).prefetch_related('dias_ejercicios__EjercicioID')
     
     # Rutina activa (la primera no plantilla, o la primera en general)
-    rutina_activa = rutinas.filter(EsPlantilla=False).first() or rutinas.first()
+    rutina_id = request.GET.get('rutina_id')
+    rutina_activa = None
+    es_modo_libre = False
+    
+    if rutina_id == 'free':
+        es_modo_libre = True
+        rutina_activa = None
+    elif rutina_id:
+        rutina_activa = rutinas.filter(id=rutina_id).first()
+    
+    if not rutina_activa and not es_modo_libre:
+        rutina_activa = rutinas.filter(EsPlantilla=False).first() or rutinas.first()
     
     # Convert query to list and add selected attribute for template
     rutinas = list(rutinas)
     for r in rutinas:
         r.selected_attr = 'selected' if r == rutina_activa else ''
+        r.icon_name = 'check_circle' if r == rutina_activa else 'arrow_forward_ios'
     
     # Obtener ejercicios SOLO del día actual
     ejercicios_hoy = []
     dia_actual = datetime.now().weekday()
-    dia_actual_nombre = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'][dia_actual]
+    dias_semana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+    dia_nombre = dias_semana[dia_actual]
     
     if rutina_activa:
-        ejercicios_hoy = list(DiaRutinaEjercicio.objects.filter(
-            RutinaID=rutina_activa,
-            DiaSemana=dia_actual
-        ).select_related('EjercicioID').order_by('id'))
+        ejercicios_hoy = list(rutina_activa.dias_ejercicios.filter(DiaSemana=dia_actual).select_related('EjercicioID'))
     
-    # Check if today was already completed this week
-    from apps.control_acceso.models import CompletionTracking
+    # Verificar si ya completó la rutina de hoy
     ya_completado_hoy = False
     if rutina_activa:
-        now = timezone.now()
-        semana_actual = now.strftime('%Y-%W')
+        # Check CompletionTracking
+        semana_actual = datetime.now().strftime("%Y-%W")
         membresias = SocioMembresia.objects.filter(SocioID=socio)
         ya_completado_hoy = CompletionTracking.objects.filter(
             SocioMembresiaID__in=membresias,
             RutinaID=rutina_activa,
-            DiaSemana=dia_actual,
             Semana=semana_actual,
+            DiaSemana=dia_actual,
             Completado=True
         ).exists()
-    
     
     # Detectar sesión activa
     membresias = SocioMembresia.objects.filter(SocioID=socio)
@@ -308,7 +377,10 @@ def mi_rutina_view(request):
     ).first()
     
     # Obtener ejercicios completados en la sesión activa
-    ejercicios_completados_ids = set()
+    ejercicios_completados_ids = []
+    if sesion_activa:
+        ejercicios_completados_ids = list(sesion_activa.ejercicios_completados.values_list('DiaRutinaEjercicioID', flat=True))
+    
     # Add is_completed attribute to each exercise
     for ejercicio in ejercicios_hoy:
         ejercicio.is_completed = ejercicio.id in ejercicios_completados_ids
@@ -326,22 +398,32 @@ def mi_rutina_view(request):
         else:
             ejercicio.checkbox_html = '<input class="h-5 w-5 rounded border-gray-300 text-gray-400 cursor-not-allowed" type="checkbox" disabled />'
     
-    # Historial de sesiones (últimas 5)
+    # Historial de sesiones (limit to 3)
     historial_sesiones = SesionEntrenamiento.objects.filter(
         SocioMembresiaID__in=membresias,
         FechaFin__isnull=False
-    ).order_by('-FechaInicio')[:5]
+    ).select_related('RutinaID').order_by('-FechaInicio')[:3]
+    
+    # Pre-calculate display name to avoid template formatting issues
+    historial_sesiones = list(historial_sesiones)
+    for s in historial_sesiones:
+        if s.EsEntrenamientoLibre:
+            s.nombre_display = "Entrenamiento Libre"
+        elif s.RutinaID:
+            s.nombre_display = s.RutinaID.Nombre
+        else:
+            s.nombre_display = "Sesión sin nombre"
     
     context = {
         'socio': socio,
         'rutinas': rutinas,
         'rutina_activa': rutina_activa,
         'ejercicios_hoy': ejercicios_hoy,
-        'dia_actual': dia_actual_nombre,
+        'dia_actual': dia_nombre,
         'sesion_activa': sesion_activa,
-        'ejercicios_completados_ids': ejercicios_completados_ids,
-        'historial_sesiones': historial_sesiones,
         'ya_completado_hoy': ya_completado_hoy,
+        'historial_sesiones': historial_sesiones,
+        'es_modo_libre': es_modo_libre,
     }
     
     return render(request, "socio/MiRutina.html", context)
@@ -538,19 +620,27 @@ def detalle_sesion_view(request, sesion_id):
         ejercicios = []
         completados_count = 0
         total_count = 0
+        pendientes_count = 0
         
         if not sesion.EsEntrenamientoLibre:
             ejercicios = list(sesion.ejercicios_completados.all().select_related(
                 'DiaRutinaEjercicioID__EjercicioID'
             ))
+            
+            # Pre-calculate exercise names to avoid template formatting issues
+            for ej in ejercicios:
+                ej.nombre_ejercicio = ej.DiaRutinaEjercicioID.EjercicioID.Nombre
+            
             total_count = len(ejercicios)
             completados_count = sum(1 for ej in ejercicios if ej.Completado)
+            pendientes_count = total_count - completados_count
         
         context = {
             'sesion': sesion,
             'ejercicios': ejercicios,
             'total_count': total_count,
             'completados_count': completados_count,
+            'pendientes_count': pendientes_count,
         }
         
         return render(request, "socio/DetalleSesion.html", context)
@@ -680,3 +770,35 @@ def toggle_ejercicio_view(request):
     
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
+@login_requerido
+def historial_sesiones_view(request):
+    usuario_id = request.session.get('usuario_id')
+    
+    try:
+        usuario = Usuario.objects.get(id=usuario_id)
+        socio = Socio.objects.get(Email=usuario.Email)
+    except (Usuario.DoesNotExist, Socio.DoesNotExist):
+        messages.error(request, "No se encontró el perfil de socio asociado.")
+        return redirect('login')
+    
+    membresias = SocioMembresia.objects.filter(SocioID=socio)
+    
+    historial_sesiones = SesionEntrenamiento.objects.filter(
+        SocioMembresiaID__in=membresias,
+        FechaFin__isnull=False
+    ).select_related('RutinaID').order_by('-FechaInicio')
+    
+    # Pre-calculate display name
+    historial_sesiones = list(historial_sesiones)
+    for s in historial_sesiones:
+        if s.EsEntrenamientoLibre:
+            s.nombre_display = "Entrenamiento Libre"
+        elif s.RutinaID:
+            s.nombre_display = s.RutinaID.Nombre
+        else:
+            s.nombre_display = "Sesión sin nombre"
+            
+    context = {
+        'historial_sesiones': historial_sesiones
+    }
+    return render(request, "socio/HistorialSesiones.html", context)

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>GluteOS - Mi Nutrición</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0f49bd",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "card-light": "#ffffff",
+                        "card-dark": "#1a2230",
+                        "text-light-primary": "#101622",
+                        "text-dark-primary": "#f6f6f8",
+                        "text-light-secondary": "#616f89",
+                        "text-dark-secondary": "#9ca3af",
+                        "border-light": "#e5e7eb",
+                        "border-dark": "#374151"
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+
+<body class="font-display bg-background-light dark:bg-background-dark">
+    <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+        <div class="flex min-h-screen">
+            <aside
+                class="w-64 flex-shrink-0 bg-card-light dark:bg-card-dark border-r border-border-light dark:border-border-dark flex flex-col">
+                <div
+                    class="flex items-center gap-3 p-6 text-primary h-[65px] border-b border-border-light dark:border-border-dark">
+                    <span class="material-symbols-outlined text-3xl">exercise</span>
+                    <h2 class="text-xl font-bold leading-tight">GluteOS</h2>
+                </div>
+                <div class="flex h-full flex-col justify-between p-4">
+                    <div class="flex flex-col gap-2">
+                        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
+                            href="#">
+                            <span class="material-symbols-outlined">home</span>
+                            <p class="text-sm font-medium leading-normal">Inicio</p>
+                        </a>
+                        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
+                            href="#">
+                            <span class="material-symbols-outlined">fitness_center</span>
+                            <p class="text-sm font-medium leading-normal">Mi Rutina</p>
+                        </a>
+                        <div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary">
+                            <span class="material-symbols-outlined">restaurant_menu</span>
+                            <p class="text-sm font-semibold leading-normal">Mi Nutrición</p>
+                        </div>
+                        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
+                            href="#">
+                            <span class="material-symbols-outlined">monitoring</span>
+                            <p class="text-sm font-medium leading-normal">Progreso</p>
+                        </a>
+                        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
+                            href="#">
+                            <span class="material-symbols-outlined">chat</span>
+                            <p class="text-sm font-medium leading-normal">Mensajes</p>
+                        </a>
+                        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
+                            href="#">
+                            <span class="material-symbols-outlined">account_circle</span>
+                            <p class="text-sm font-medium leading-normal">Mi Perfil</p>
+                        </a>
+                    </div>
+                    <div class="flex flex-col">
+                        <div class="border-t border-border-light dark:border-border-dark my-2"></div>
+                        <div class="flex gap-3 items-center p-2">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+                                data-alt="Avatar de Socio"
+                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDWzszGb7-h98h-Jrd9T1hbE8E2Lbd_jXTb_WV8vAYDLLtsJmPSJr4xS36kBeHzwbsDvlWrhv-zyIuZ1wO7MLq0G4zQulVzzzCbvrdgJZpZM-fWC2t2XFdToIc8xOHU3ptEj5Ucr7GcAxPLaxoOue-j946bQ7ZzZCWijNeRNnKAO3FJwLtEXl2tdNEi8Ijmhqycb4sCiIEflO_IGVbGBFXQ9sEkjFWQvukIC4D8AcZunJuE3DG-PQsiT5TzVZCkG5DQxg3KMSDrRxk");'>
+                            </div>
+                            <div class="flex flex-col">
+                                <h1
+                                    class="text-text-light-primary dark:text-text-dark-primary text-sm font-semibold leading-normal">
+                                    Sofia Reyes</h1>
+                                <p
+                                    class="text-text-light-secondary dark:text-text-dark-secondary text-xs font-normal leading-normal">
+                                    Socio Activo</p>
+                            </div>
+                        </div>
+                        <a class="flex items-center gap-3 px-3 py-2 mt-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-red-500/10 hover:text-red-500 transition-colors duration-200"
+                            href="#">
+                            <span class="material-symbols-outlined">logout</span>
+                            <p class="text-sm font-medium leading-normal">Cerrar Sesión</p>
+                        </a>
+                    </div>
+                </div>
+            </aside>
+            <main class="flex-1 flex flex-col">
+                <header
+                    class="flex h-[65px] items-center justify-between whitespace-nowrap border-b border-solid border-border-light dark:border-border-dark px-8 bg-card-light dark:bg-card-dark sticky top-0 z-10">
+                    <div class="flex items-center gap-8">
+                        <h1 class="text-text-light-primary dark:text-text-dark-primary text-xl font-bold">Mi Plan de
+                            Nutrición</h1>
+                    </div>
+                    <div class="flex flex-1 justify-end gap-4 items-center">
+                        <button
+                            class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-background-light dark:bg-background-dark text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200">
+                            <span class="material-symbols-outlined text-xl">notifications</span>
+                        </button>
+                        <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+                            data-alt="Avatar de Socio"
+                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAuOmqqYO5uarzaaMM7B8ne3H7CC_-d66tOhErsM3PBLvIn5g_9oiHC4A7ggjALfgxot8ou5C2rJQfM9mvnnpLvbklHMXju1EyD2DkTFnb2eCVfdnRUrUHjRKF5vyY8pmGdVpu0Pc1bf4qit3559LGTfxcwrf38aUX9L9OzEmQKRpt87ow87eSlVRx81D0W4nydfeksec5gQHLdrIQ-Me7MMXVqX8W7JEfrPPCMflB26aQdvEp32kV60AY5kvAijpUoIQYqoygf1zs");'>
+                        </div>
+                    </div>
+                </header>
+                <div class="p-8">
+                    <div class="flex flex-wrap justify-between items-center gap-4 mb-8">
+                        <div class="flex flex-col gap-1">
+                            <p
+                                class="text-text-light-primary dark:text-text-dark-primary text-3xl font-bold leading-tight">
+                                Plan de Definición Muscular</p>
+                            <p
+                                class="text-text-light-secondary dark:text-text-dark-secondary text-base font-normal leading-normal">
+                                Tu guía de comidas para hoy, martes 23 de Julio.</p>
+                        </div>
+                        <button
+                            class="bg-primary text-white text-sm font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-primary/90 transition-colors">
+                            <span class="material-symbols-outlined text-base">history</span>
+                            <span>Ver Historial de Comidas</span>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div
+                            class="flex flex-col gap-2 rounded-xl p-5 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+                            <div
+                                class="flex items-center gap-2 text-text-light-secondary dark:text-text-dark-secondary">
+                                <span
+                                    class="material-symbols-outlined text-lg text-primary">local_fire_department</span>
+                                <p class="text-sm font-medium">Calorías Totales</p>
+                            </div>
+                            <div class="flex items-end gap-2">
+                                <p
+                                    class="text-text-light-primary dark:text-text-dark-primary tracking-tight text-3xl font-bold leading-none">
+                                    1850</p>
+                                <p
+                                    class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-medium leading-tight pb-1">
+                                    / 2000 kcal</p>
+                            </div>
+                        </div>
+                        <div
+                            class="flex flex-col gap-2 rounded-xl p-5 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+                            <div
+                                class="flex items-center gap-2 text-text-light-secondary dark:text-text-dark-secondary">
+                                <span class="material-symbols-outlined text-lg text-yellow-500">egg</span>
+                                <p class="text-sm font-medium">Proteínas</p>
+                            </div>
+                            <div class="flex items-end gap-2">
+                                <p
+                                    class="text-text-light-primary dark:text-text-dark-primary tracking-tight text-3xl font-bold leading-none">
+                                    140g</p>
+                                <p
+                                    class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-medium leading-tight pb-1">
+                                    / 150g</p>
+                            </div>
+                        </div>
+                        <div
+                            class="flex flex-col gap-2 rounded-xl p-5 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+                            <div
+                                class="flex items-center gap-2 text-text-light-secondary dark:text-text-dark-secondary">
+                                <span class="material-symbols-outlined text-lg text-green-500">spa</span>
+                                <p class="text-sm font-medium">Carbohidratos</p>
+                            </div>
+                            <div class="flex items-end gap-2">
+                                <p
+                                    class="text-text-light-primary dark:text-text-dark-primary tracking-tight text-3xl font-bold leading-none">
+                                    180g</p>
+                                <p
+                                    class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-medium leading-tight pb-1">
+                                    / 200g</p>
+                            </div>
+                        </div>
+                        <div
+                            class="flex flex-col gap-2 rounded-xl p-5 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+                            <div
+                                class="flex items-center gap-2 text-text-light-secondary dark:text-text-dark-secondary">
+                                <span class="material-symbols-outlined text-lg text-red-500">oil_barrel</span>
+                                <p class="text-sm font-medium">Grasas</p>
+                            </div>
+                            <div class="flex items-end gap-2">
+                                <p
+                                    class="text-text-light-primary dark:text-text-dark-primary tracking-tight text-3xl font-bold leading-none">
+                                    65g</p>
+                                <p
+                                    class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-medium leading-tight pb-1">
+                                    / 70g</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2 flex flex-col gap-6">
+                            <div
+                                class="p-6 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3
+                                        class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary">
+                                        Desayuno (08:00 AM)</h3>
+                                    <button
+                                        class="flex items-center gap-2 text-primary text-sm font-semibold hover:opacity-80 transition-opacity">
+                                        <span class="material-symbols-outlined text-lg">check_circle</span>
+                                        <span>Marcar como completado</span>
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div
+                                        class="flex items-start gap-4 p-4 rounded-lg bg-background-light dark:bg-background-dark">
+                                        <span
+                                            class="material-symbols-outlined text-primary text-2xl mt-1">restaurant</span>
+                                        <div>
+                                            <p
+                                                class="font-semibold text-text-light-primary dark:text-text-dark-primary">
+                                                Avena con Frutos Rojos y Nueces</p>
+                                            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">
+                                                350 kcal | P: 15g, C: 45g, G: 12g</p>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="flex items-start gap-4 p-4 rounded-lg bg-background-light dark:bg-background-dark">
+                                        <span
+                                            class="material-symbols-outlined text-primary text-2xl mt-1">local_cafe</span>
+                                        <div>
+                                            <p
+                                                class="font-semibold text-text-light-primary dark:text-text-dark-primary">
+                                                Café Negro</p>
+                                            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">5
+                                                kcal</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="p-6 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3
+                                        class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary">
+                                        Almuerzo (01:00 PM)</h3>
+                                    <button
+                                        class="flex items-center gap-2 text-primary text-sm font-semibold hover:opacity-80 transition-opacity">
+                                        <span class="material-symbols-outlined text-lg">check_circle</span>
+                                        <span>Marcar como completado</span>
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div
+                                        class="flex items-start gap-4 p-4 rounded-lg bg-background-light dark:bg-background-dark">
+                                        <span
+                                            class="material-symbols-outlined text-primary text-2xl mt-1">restaurant</span>
+                                        <div>
+                                            <p
+                                                class="font-semibold text-text-light-primary dark:text-text-dark-primary">
+                                                Pechuga de Pollo a la Plancha con Quinoa y Brócoli</p>
+                                            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">
+                                                550 kcal | P: 50g, C: 40g, G: 20g</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="p-6 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3
+                                        class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary">
+                                        Cena (08:00 PM)</h3>
+                                    <button
+                                        class="flex items-center gap-2 text-text-light-secondary dark:text-text-dark-secondary text-sm font-semibold cursor-not-allowed">
+                                        <span class="material-symbols-outlined text-lg">radio_button_unchecked</span>
+                                        <span>Marcar como completado</span>
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div
+                                        class="flex items-start gap-4 p-4 rounded-lg bg-background-light dark:bg-background-dark">
+                                        <span
+                                            class="material-symbols-outlined text-primary text-2xl mt-1">restaurant</span>
+                                        <div>
+                                            <p
+                                                class="font-semibold text-text-light-primary dark:text-text-dark-primary">
+                                                Salmón al Horno con Espárragos</p>
+                                            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">
+                                                450 kcal | P: 40g, C: 10g, G: 28g</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-6">
+                            <div
+                                class="flex flex-col gap-4 p-6 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+                                <h3 class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary">
+                                    Evolución de Peso</h3>
+                                <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary -mt-2">Últimos
+                                    30 días. ¡Sigue así!</p>
+                                <div class="relative h-48">
+                                    <svg class="w-full h-full" fill="none" preserveAspectRatio="none" stroke-width="2"
+                                        viewBox="0 0 400 150" xmlns="http://www.w3.org/2000/svg">
+                                        <path class="stroke-primary/20"
+                                            d="M 0 50 C 50 70, 100 60, 150 80 S 250 120, 300 100 S 400 130, 400 130">
+                                        </path>
+                                        <path class="stroke-primary"
+                                            d="M 0 50 C 50 70, 100 60, 150 80 S 250 120, 300 100 S 350 120, 400 130"
+                                            filter="url(#glow)"></path>
+                                    </svg>
+                                    <defs>
+                                        <filter id="glow">
+                                            <fegaussianblur result="coloredBlur" stddeviation="4"></fegaussianblur>
+                                            <femerge>
+                                                <femergenode in="coloredBlur"></femergenode>
+                                                <femergenode in="SourceGraphic"></femergenode>
+                                            </femerge>
+                                        </filter>
+                                    </defs>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <div class="text-center">
+                                        <p class="font-bold text-text-light-primary dark:text-text-dark-primary">66.5 kg
+                                        </p>
+                                        <p class="text-xs text-text-light-secondary dark:text-text-dark-secondary">
+                                            Inicio</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="font-bold text-red-600 dark:text-red-500">-1.5 kg</p>
+                                        <p class="text-xs text-text-light-secondary dark:text-text-dark-secondary">
+                                            Cambio</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="font-bold text-text-light-primary dark:text-text-dark-primary">65.0 kg
+                                        </p>
+                                        <p class="text-xs text-text-light-secondary dark:text-text-dark-secondary">
+                                            Actual</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-4 p-6 rounded-xl bg-primary text-white">
+                                <h3 class="text-lg font-semibold">Recomendación del Día</h3>
+                                <p class="text-sm font-light">Para un snack post-entreno, prueba un batido de proteína
+                                    con plátano. Te ayudará a la recuperación muscular y a mantenerte saciada.</p>
+                                <a class="text-sm font-bold underline hover:opacity-80" href="#">Ver receta</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+</body>
+
+</html>

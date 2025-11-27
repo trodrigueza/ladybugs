@@ -141,17 +141,6 @@
                             <div id="session-timer" class="text-2xl font-bold text-primary">
                                 <span id="timer-display">00:00:00</span>
                             </div>
-                            {% if sesion_activa.EsEntrenamientoLibre %}
-                            <div class="w-full">
-                                <label
-                                    class="block text-sm font-medium mb-2 text-text-light-primary dark:text-text-dark-primary">Notas
-                                    de la sesión:</label>
-                                <textarea id="notas-sesion"
-                                    class="w-full p-3 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark"
-                                    rows="3"
-                                    placeholder="¿Qué hiciste hoy?">{{ sesion_activa.NotasSesion|default:"" }}</textarea>
-                            </div>
-                            {% endif %}
                             <form method="POST" action="{% url 'terminar_sesion' %}"
                                 onsubmit="return guardarNotas(this);">
                                 {% csrf_token %}
@@ -168,20 +157,11 @@
                             <form method="POST" action="{% url 'iniciar_sesion' %}" class="flex flex-col gap-3">
                                 {% csrf_token %}
                                 <div class="flex items-center gap-2">
-                                    <select name="rutina_id" id="rutina-selector"
-                                        class="p-2 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark"
-                                        onchange="toggleFreeTraining(this)">
-                                        {% for rutina in rutinas %}
-                                        <option value="{{ rutina.id }}" {{ rutina.selected_attr }}>{{ rutina.Nombre }}
-                                        </option>
-                                        {% endfor %}
-                                    </select>
-                                    <label class="flex items-center gap-2 text-sm">
-                                        <input type="checkbox" name="entrenamiento_libre" id="entrenamiento-libre"
-                                            class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                                            onchange="toggleFreeTraining(this.form.querySelector('#rutina-selector'))" />
-                                        <span>Libre</span>
-                                    </label>
+                                    {% if es_modo_libre %}
+                                    <input type="hidden" name="entrenamiento_libre" value="on">
+                                    {% else %}
+                                    <input type="hidden" name="rutina_id" value="{{ rutina_activa.id }}">
+                                    {% endif %}
                                 </div>
                                 <button type="submit"
                                     class="bg-primary hover:bg-primary/90 text-white font-semibold py-2 px-6 rounded-lg flex items-center gap-2 transition-colors duration-200">
@@ -195,7 +175,6 @@
                     {% if ya_completado_hoy and not sesion_activa %}
                     <div
                         class="mb-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg flex items-center gap-3">
-                        <span class="text-2xl">✅</span>
                         <div>
                             <p class="font-semibold text-green-800 dark:text-green-200">¡Día completado!</p>
                             <p class="text-sm text-green-700 dark:text-green-300">Ya completaste todos los ejercicios de
@@ -208,6 +187,19 @@
                             class="lg:col-span-2 flex flex-col gap-6 p-6 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
                             <h3 class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary">
                                 Ejercicios del Día</h3>
+
+                            {% if sesion_activa %}
+                            <div class="w-full mb-4">
+                                <label
+                                    class="block text-sm font-medium mb-2 text-text-light-primary dark:text-text-dark-primary">Notas
+                                    de la sesión:</label>
+                                <textarea id="notas-sesion"
+                                    class="w-full p-3 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark"
+                                    rows="3"
+                                    placeholder="¿Qué hiciste hoy?">{{ sesion_activa.NotasSesion|default:"" }}</textarea>
+                            </div>
+                            {% endif %}
+
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-sm">
                                     <thead
@@ -259,41 +251,88 @@
                                     class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary mb-4">
                                     Mis Planes de Rutina</h3>
                                 <div class="flex flex-col gap-3">
+                                    {% if rutinas %}
                                     {% for rutina in rutinas %}
+                                    {% if sesion_activa %}
                                     <div
-                                        class="flex justify-between items-center p-4 rounded-lg {% if rutina == rutina_activa %}bg-primary/10{% else %}border border-border-light dark:border-border-dark{% endif %}">
-                                        <div>
-                                            <p
-                                                class="font-semibold {% if rutina == rutina_activa %}text-primary{% else %}text-text-light-primary dark:text-text-dark-primary{% endif %}">
-                                                {{ rutina.Nombre }}</p>
-                                            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">
-                                                {% if rutina.EsPlantilla %}Plantilla{% else %}Plan Activo{% endif %}
-                                            </p>
-                                        </div>
-                                        <span
-                                            class="material-symbols-outlined {% if rutina == rutina_activa %}text-primary{% else %}text-text-light-secondary dark:text-text-dark-secondary{% endif %}">arrow_forward_ios</span>
+                                        class="flex justify-between items-center p-4 rounded-lg transition-colors {% if rutina == rutina_activa %}bg-primary/10 border border-primary/20{% else %}border border-border-light dark:border-border-dark opacity-50 cursor-not-allowed{% endif %}">
+                                        {% else %}
+                                        <a href="?rutina_id={{ rutina.id }}"
+                                            class="flex justify-between items-center p-4 rounded-lg transition-colors {% if rutina == rutina_activa %}bg-primary/10 border border-primary/20{% else %}border border-border-light dark:border-border-dark hover:bg-background-light dark:hover:bg-background-dark{% endif %}">
+                                            {% endif %}
+                                            <div>
+                                                <p
+                                                    class="font-semibold {% if rutina == rutina_activa %}text-primary{% else %}text-text-light-primary dark:text-text-dark-primary{% endif %}">
+                                                    {{ rutina.Nombre }}
+                                                </p>
+                                                <p
+                                                    class="text-sm text-text-light-secondary dark:text-text-dark-secondary">
+                                                    {% if rutina.EsPlantilla %}Plantilla{% else %}Plan Activo{% endif %}
+                                                </p>
+                                            </div>
+                                            <span
+                                                class="material-symbols-outlined {% if rutina == rutina_activa %}text-primary{% else %}text-text-light-secondary dark:text-text-dark-secondary{% endif %}">
+                                                {{ rutina.icon_name }}
+                                            </span>
+                                            {% if sesion_activa %}
                                     </div>
-                                    {% empty %}
+                                    {% else %}
+                                    </a>
+                                    {% endif %}
+                                    {% endfor %}
+
+                                    <!-- Free Mode Option -->
+                                    {% if sesion_activa %}
+                                    <div
+                                        class="flex justify-between items-center p-4 rounded-lg transition-colors {% if es_modo_libre %}bg-primary/10 border border-primary/20{% else %}border border-border-light dark:border-border-dark opacity-50 cursor-not-allowed{% endif %}">
+                                        {% else %}
+                                        <a href="?rutina_id=free"
+                                            class="flex justify-between items-center p-4 rounded-lg transition-colors {% if es_modo_libre %}bg-primary/10 border border-primary/20{% else %}border border-border-light dark:border-border-dark hover:bg-background-light dark:hover:bg-background-dark{% endif %}">
+                                            {% endif %}
+                                            <div>
+                                                <p
+                                                    class="font-semibold {% if es_modo_libre %}text-primary{% else %}text-text-light-primary dark:text-text-dark-primary{% endif %}">
+                                                    Entrenamiento Libre
+                                                </p>
+                                                <p
+                                                    class="text-sm text-text-light-secondary dark:text-text-dark-secondary">
+                                                    Sin rutina predefinida
+                                                </p>
+                                            </div>
+                                            <span
+                                                class="material-symbols-outlined {% if es_modo_libre %}text-primary{% else %}text-text-light-secondary dark:text-text-dark-secondary{% endif %}">
+                                                {% if es_modo_libre %}check_circle{% else %}arrow_forward_ios{% endif %}
+                                            </span>
+                                            {% if sesion_activa %}
+                                    </div>
+                                    {% else %}
+                                    </a>
+                                    {% endif %}
+
+                                    {% else %}
                                     <p
                                         class="text-sm text-text-light-secondary dark:text-text-dark-secondary text-center py-4">
                                         No tienes planes de rutina asignados.
                                     </p>
-                                    {% endfor %}
+                                    {% endif %}
                                 </div>
                             </div>
                             <div
                                 class="p-6 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
-                                <h3
-                                    class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary mb-4">
-                                    Historial de Sesiones</h3>
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3
+                                        class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary">
+                                        Historial</h3>
+                                    <a href="{% url 'historial_sesiones' %}"
+                                        class="text-sm text-primary hover:underline">Ver todas</a>
+                                </div>
                                 <div class="flex flex-col gap-3">
                                     {% for sesion in historial_sesiones %}
                                     <a href="{% url 'detalle_sesion' sesion.id %}"
                                         class="flex justify-between items-center pb-3 {% if not forloop.last %}border-b border-border-light dark:border-border-dark{% endif %} hover:bg-background-light dark:hover:bg-background-dark p-2 rounded transition-colors">
                                         <div>
                                             <p class="font-medium text-text-light-primary dark:text-text-dark-primary">
-                                                {% if sesion.EsEntrenamientoLibre %}🆓 Entrenamiento Libre{% else %}{{
-                                                sesion.RutinaID.Nombre }}{% endif %}
+                                                {{ sesion.nombre_display }}
                                             </p>
                                             <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">
                                                 {{ sesion.FechaInicio|date:"d/m/Y H:i" }} · {{ sesion.DuracionMinutos }}
