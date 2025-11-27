@@ -136,31 +136,43 @@ def panel_de_control_view(request):
 
     if sesiones_completadas:
         hoy = timezone.now().date()
-        dias_unicos = set()
-
-        # Get unique training days
-        for dt in sesiones_completadas:
-            dias_unicos.add(dt.date())
-
+        dias_unicos = set(dt.date() for dt in sesiones_completadas)
         dias_unicos = sorted(dias_unicos, reverse=True)
 
-        # Check if trained today
         entreno_hoy = hoy in dias_unicos
-
-        # Check if trained yesterday
         ayer = hoy - timezone.timedelta(days=1)
         entreno_ayer = ayer in dias_unicos
+        es_fin_de_semana = hoy.weekday() in [5, 6]
 
-        # Check if today is weekend
-        es_fin_de_semana = hoy.weekday() in [5, 6]  # Saturday=5, Sunday=6
+        ultimo_dia_entreno = dias_unicos[0] if dias_unicos else None
+        weekend_gap = False
+        if not entreno_hoy and not entreno_ayer and ultimo_dia_entreno:
+            dias_desde_ultimo = (hoy - ultimo_dia_entreno).days
+            if dias_desde_ultimo > 1:
+                dias_intermedios = [
+                    ultimo_dia_entreno + timezone.timedelta(days=i)
+                    for i in range(1, dias_desde_ultimo + 1)
+                ]
+                if dias_intermedios:
+                    dias_previos = dias_intermedios[:-1]
+                    if dias_previos and all(
+                        d.weekday() in [5, 6] for d in dias_previos
+                    ):
+                        weekend_gap = True
 
-        # Calculate consecutive days
-        if entreno_hoy or entreno_ayer:
-            fecha_actual = hoy if entreno_hoy else ayer
+        fecha_actual = None
+        if entreno_hoy:
+            fecha_actual = hoy
+        elif entreno_ayer:
+            fecha_actual = ayer
+        elif weekend_gap and ultimo_dia_entreno:
+            fecha_actual = ultimo_dia_entreno
+
+        if fecha_actual:
             racha_dias = 1
             dias_sin_entrenar = 0
 
-            for i in range(1, 365):  # Max 1 year lookback
+            for i in range(1, 365):
                 fecha_anterior = fecha_actual - timezone.timedelta(days=i)
                 dia_semana = fecha_anterior.weekday()
 
@@ -168,14 +180,14 @@ def panel_de_control_view(request):
                     racha_dias += 1
                     dias_sin_entrenar = 0
                 else:
-                    # Skip weekends in the count
-                    if dia_semana not in [5, 6]:  # Not Saturday or Sunday
+                    if dia_semana not in [5, 6]:
                         dias_sin_entrenar += 1
-                        if dias_sin_entrenar > 1:  # Grace period of 1 weekday
+                        if dias_sin_entrenar > 1:
                             break
 
-            # Check if streak is at risk
-            if not entreno_hoy and entreno_ayer:
+            if entreno_hoy:
+                mensaje_racha = f"¡Genial! Llevas {racha_dias} {'día' if racha_dias == 1 else 'días'} seguidos"
+            elif entreno_ayer:
                 if es_fin_de_semana:
                     mensaje_racha = f"🌴 Es fin de semana, está bien si descansas :) No perderás tu racha de {racha_dias} días"
                 else:
@@ -183,12 +195,12 @@ def panel_de_control_view(request):
                     mensaje_racha = (
                         f"⚠️ ¡Si hoy no entrenas perderás tu racha de {racha_dias} días!"
                     )
-            elif entreno_hoy:
-                mensaje_racha = f"¡Genial! Llevas {racha_dias} {'día' if racha_dias == 1 else 'días'} seguidos"
-            elif es_fin_de_semana and not entreno_hoy:
+            elif weekend_gap:
+                racha_en_peligro = True
+                mensaje_racha = f"⚠️ Tu racha de {racha_dias} días sigue tras el fin de semana. Retoma hoy para mantenerla."
+            elif es_fin_de_semana:
                 mensaje_racha = f"🌴 Es fin de semana, está bien si descansas :) Tienes {racha_dias} {'día' if racha_dias == 1 else 'días'} de racha"
         else:
-            # No recent activity
             mensaje_racha = "Comienza tu racha entrenando hoy"
     else:
         mensaje_racha = "Comienza tu racha entrenando hoy"
@@ -345,29 +357,69 @@ def mi_rutina_view(request):
         return redirect("login")
 
     # Obtener todas las rutinas del socio
-    rutinas = RutinaSemanal.objects.filter(SocioID=socio).prefetch_related(
+    rutinas_qs = RutinaSemanal.objects.filter(SocioID=socio).prefetch_related(
         "dias_ejercicios__EjercicioID"
     )
 
-    # Rutina activa (la primera no plantilla, o la primera en general)
     rutina_id = request.GET.get("rutina_id")
     rutina_activa = None
     es_modo_libre = False
 
+    ultima_rutina_id = request.session.get("ultima_rutina_id")
+    modo_libre_guardado = request.session.get("modo_libre_activo", False)
+
     if rutina_id == "free":
         es_modo_libre = True
-        rutina_activa = None
+        request.session["modo_libre_activo"] = True
+        request.session.pop("ultima_rutina_id", None)
     elif rutina_id:
-        rutina_activa = rutinas.filter(id=rutina_id).first()
+        rutina_activa = rutinas_qs.filter(id=rutina_id).first()
+        if rutina_activa:
+            request.session["ultima_rutina_id"] = rutina_activa.id
+            request.session["modo_libre_activo"] = False
+    elif modo_libre_guardado:
+        es_modo_libre = True
+    elif ultima_rutina_id:
+        rutina_activa = rutinas_qs.filter(id=ultima_rutina_id).first()
 
     if not rutina_activa and not es_modo_libre:
-        rutina_activa = rutinas.filter(EsPlantilla=False).first() or rutinas.first()
+        rutina_activa = (
+            rutinas_qs.filter(EsPlantilla=False).first() or rutinas_qs.first()
+        )
+        if rutina_activa:
+            request.session["ultima_rutina_id"] = rutina_activa.id
+            request.session["modo_libre_activo"] = False
+    elif es_modo_libre:
+        request.session["modo_libre_activo"] = True
+        request.session.pop("ultima_rutina_id", None)
+
+    rutinas = list(rutinas_qs)
 
     # Convert query to list and add selected attribute for template
-    rutinas = list(rutinas)
     for r in rutinas:
         r.selected_attr = "selected" if r == rutina_activa else ""
         r.icon_name = "check_circle" if r == rutina_activa else "arrow_forward_ios"
+
+    membresias = SocioMembresia.objects.filter(SocioID=socio)
+    sesion_activa = (
+        SesionEntrenamiento.objects.filter(
+            SocioMembresiaID__in=membresias, FechaFin__isnull=True
+        )
+        .select_related("RutinaID")
+        .first()
+    )
+
+    if sesion_activa:
+        if sesion_activa.EsEntrenamientoLibre or not sesion_activa.RutinaID:
+            es_modo_libre = True
+            rutina_activa = None
+            request.session["modo_libre_activo"] = True
+            request.session.pop("ultima_rutina_id", None)
+        else:
+            rutina_activa = sesion_activa.RutinaID
+            es_modo_libre = False
+            request.session["ultima_rutina_id"] = rutina_activa.id
+            request.session["modo_libre_activo"] = False
 
     # Obtener ejercicios SOLO del día actual
     ejercicios_hoy = []
@@ -393,9 +445,7 @@ def mi_rutina_view(request):
     # Verificar si ya completó la rutina de hoy
     ya_completado_hoy = False
     if rutina_activa:
-        # Check CompletionTracking
         semana_actual = datetime.now().strftime("%Y-%W")
-        membresias = SocioMembresia.objects.filter(SocioID=socio)
         ya_completado_hoy = CompletionTracking.objects.filter(
             SocioMembresiaID__in=membresias,
             RutinaID=rutina_activa,
@@ -404,17 +454,11 @@ def mi_rutina_view(request):
             Completado=True,
         ).exists()
 
-    # Detectar sesión activa
-    membresias = SocioMembresia.objects.filter(SocioID=socio)
-    sesion_activa = SesionEntrenamiento.objects.filter(
-        SocioMembresiaID__in=membresias, FechaFin__isnull=True
-    ).first()
-
     # Obtener ejercicios completados en la sesión activa
     ejercicios_completados_ids = []
     if sesion_activa:
         ejercicios_completados_ids = list(
-            sesion_activa.ejercicios_completados.values_list(
+            sesion_activa.ejercicios_completados.filter(Completado=True).values_list(
                 "DiaRutinaEjercicioID", flat=True
             )
         )
@@ -432,7 +476,11 @@ def mi_rutina_view(request):
         # Pre-render checkbox HTML
         if ejercicio.can_check:
             checked = "checked" if ejercicio.is_completed else ""
-            ejercicio.checkbox_html = f'<input class="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer" type="checkbox" data-ejercicio-id="{ejercicio.id}" {checked} onchange="toggleEjercicio(this)" />'
+            ejercicio.checkbox_html = (
+                f'<input class="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer" '
+                f'type="checkbox" data-ejercicio-id="{ejercicio.id}" data-initial-state="{checked}" {checked} '
+                f'onchange="toggleEjercicio(this)" />'
+            )
         else:
             ejercicio.checkbox_html = '<input class="h-5 w-5 rounded border-gray-300 text-gray-400 cursor-not-allowed" type="checkbox" disabled />'
 
@@ -599,64 +647,6 @@ def iniciar_sesion_view(request):
 
 
 @login_requerido
-def toggle_ejercicio_view(request):
-    import json
-
-    from django.http import JsonResponse
-
-    from apps.control_acceso.models import (
-        EjercicioSesionCompletado,
-        SesionEntrenamiento,
-    )
-
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            ejercicio_id = data.get("ejercicio_id")
-
-            usuario_id = request.session.get("usuario_id")
-            usuario = Usuario.objects.get(id=usuario_id)
-            socio = Socio.objects.get(Email=usuario.Email)
-
-            # Buscar sesión activa
-            membresias = SocioMembresia.objects.filter(SocioID=socio)
-            sesion_activa = SesionEntrenamiento.objects.filter(
-                SocioMembresiaID__in=membresias, FechaFin__isnull=True
-            ).first()
-
-            if not sesion_activa:
-                return JsonResponse({"error": "No hay sesión activa"}, status=400)
-
-            # Toggle ejercicio
-            ejercicio_sesion = EjercicioSesionCompletado.objects.get(
-                SesionID=sesion_activa, DiaRutinaEjercicioID_id=ejercicio_id
-            )
-
-            ejercicio_sesion.Completado = not ejercicio_sesion.Completado
-            ejercicio_sesion.save()
-
-            # Verificar si todos están completados
-            total = sesion_activa.ejercicios_completados.count()
-            completados = sesion_activa.ejercicios_completados.filter(
-                Completado=True
-            ).count()
-
-            return JsonResponse(
-                {
-                    "success": True,
-                    "completado": ejercicio_sesion.Completado,
-                    "progreso": f"{completados}/{total}",
-                    "todos_completados": completados == total,
-                }
-            )
-
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=400)
-
-    return JsonResponse({"error": "Invalid request"}, status=400)
-
-
-@login_requerido
 def detalle_sesion_view(request, sesion_id):
     """View to show details of a completed session"""
     from apps.control_acceso.models import SesionEntrenamiento
@@ -693,6 +683,12 @@ def detalle_sesion_view(request, sesion_id):
             # Pre-calculate exercise names to avoid template formatting issues
             for ej in ejercicios:
                 ej.nombre_ejercicio = ej.DiaRutinaEjercicioID.EjercicioID.Nombre
+                series = ej.DiaRutinaEjercicioID.Series or "-"
+                reps = ej.DiaRutinaEjercicioID.Repeticiones or "-"
+                detalle = f"{series} series × {reps} reps"
+                if ej.DiaRutinaEjercicioID.PesoObjetivo:
+                    detalle += f" | {ej.DiaRutinaEjercicioID.PesoObjetivo} kg"
+                ej.detalle_texto = detalle
 
             total_count = len(ejercicios)
             completados_count = sum(1 for ej in ejercicios if ej.Completado)
@@ -837,14 +833,37 @@ def toggle_ejercicio_view(request):
                 Completado=True
             ).count()
 
-            return JsonResponse(
-                {
-                    "success": True,
-                    "completado": ejercicio_sesion.Completado,
-                    "progreso": f"{completados}/{total}",
-                    "todos_completados": completados == total,
-                }
-            )
+            respuesta = {
+                "success": True,
+                "completado": ejercicio_sesion.Completado,
+                "progreso": f"{completados}/{total}",
+                "todos_completados": completados == total,
+            }
+
+            # Terminar sesión automáticamente cuando todos los ejercicios se completan
+            if completados == total and total > 0:
+                sesion_activa.FechaFin = timezone.now()
+                duracion = (
+                    sesion_activa.FechaFin - sesion_activa.FechaInicio
+                ).total_seconds() / 60
+                sesion_activa.DuracionMinutos = int(duracion)
+                sesion_activa.save()
+
+                if not sesion_activa.EsEntrenamientoLibre and sesion_activa.RutinaID:
+                    total_ejercicios = total
+                    if total_ejercicios == completados:
+                        semana = timezone.now().strftime("%Y-%W")
+                        CompletionTracking.objects.update_or_create(
+                            SocioMembresiaID=sesion_activa.SocioMembresiaID,
+                            RutinaID=sesion_activa.RutinaID,
+                            DiaSemana=sesion_activa.DiaSemana,
+                            Semana=semana,
+                            defaults={"Completado": True},
+                        )
+
+                respuesta["sesion_finalizada"] = True
+
+            return JsonResponse(respuesta)
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)

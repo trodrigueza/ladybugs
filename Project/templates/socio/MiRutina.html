@@ -407,41 +407,38 @@
         setInterval(updateTimer, 1000);
 
         // AJAX Toggle Exercise
-        function toggleEjercicio(checkbox) {
+        async function toggleEjercicio(checkbox) {
             const ejercicioId = checkbox.dataset.ejercicioId;
-            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            if (!ejercicioId) return;
 
-            fetch('{% url "toggle_ejercicio" %}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken
-                },
-                body: JSON.stringify({
-                    ejercicio_id: ejercicioId
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        console.log('Progreso:', data.progreso);
+            checkbox.disabled = true;
+            checkbox.classList.add('opacity-50');
 
-                        // Auto-end session if all completed
-                        if (data.todos_completados) {
-                            if (confirm('¡Felicidades! Completaste todos los ejercicios. ¿Quieres terminar la sesión?')) {
-                                document.querySelector('form[action="{% url "terminar_sesion" %}"]').submit();
-                            }
-                        }
-                    } else {
-                        alert('Error: ' + data.error);
-                        checkbox.checked = !checkbox.checked; // Revert
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error al actualizar ejercicio');
-                    checkbox.checked = !checkbox.checked; // Revert
+            try {
+                const response = await fetch('{% url "toggle_ejercicio" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    },
+                    body: JSON.stringify({ ejercicio_id: ejercicioId })
                 });
+
+                const data = await response.json();
+                if (!response.ok || !data.success) {
+                    throw new Error(data.error || 'No se pudo actualizar el ejercicio');
+                }
+
+                if (data.todos_completados && data.sesion_finalizada) {
+                    window.location.reload();
+                }
+            } catch (error) {
+                alert(error.message || 'Error al actualizar el ejercicio');
+                checkbox.checked = !checkbox.checked;
+            } finally {
+                checkbox.disabled = false;
+                checkbox.classList.remove('opacity-50');
+            }
         }
     </script>
     {% endif %}
