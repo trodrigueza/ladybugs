@@ -179,12 +179,13 @@
                   Tu guía de comidas para hoy, {{ dia_actual_nombre }}.
                 </p>
               </div>
-              <button
+              <a
                 class="bg-primary text-white text-sm font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-primary/90 transition-colors"
+                href="{% url 'historial_comidas' %}"
               >
                 <span class="material-symbols-outlined text-base">history</span>
                 <span>Ver Historial de Comidas</span>
-              </button>
+              </a>
             </div>
             <div
               class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
@@ -278,20 +279,40 @@
                 <div
                   class="p-6 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark"
                 >
-                  <div class="flex justify-between items-center mb-4">
+                  <div
+                    class="flex flex-wrap items-start justify-between gap-3 mb-4"
+                  >
                     <h3
                       class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary"
                     >
                       {{ comida.tipo_display }}
                     </h3>
-                    <button
-                      class="flex items-center gap-2 text-primary text-sm font-semibold hover:opacity-80 transition-opacity"
-                    >
-                      <span class="material-symbols-outlined text-lg"
-                        >check_circle</span
+                    <div class="flex flex-wrap items-center gap-3">
+                      <button
+                        class="{{ boton_base_clase }} {{ comida.boton_clase }}"
+                        data-base-class="{{ boton_base_clase }}"
+                        data-class-completed="{{ comida.boton_clase_completado }}"
+                        data-class-pending="{{ comida.boton_clase_pendiente }}"
+                        data-text-completed="{{ comida.boton_texto_completado }}"
+                        data-text-pending="{{ comida.boton_texto_pendiente }}"
+                        data-icon-completed="{{ comida.boton_icono_completado }}"
+                        data-icon-pending="{{ comida.boton_icono_pendiente }}"
+                        data-dia-comida-id="{{ comida.id }}"
+                        data-completed="{{ comida.completado|yesno:'true,false' }}"
+                        type="button"
                       >
-                      <span>Marcar como completado</span>
-                    </button>
+                        <span class="material-symbols-outlined text-lg">
+                          {{ comida.boton_icono }}
+                        </span>
+                        <span class="mark-text">{{ comida.boton_texto }}</span>
+                      </button>
+                      <span
+                        class="completion-status text-xs text-text-light-secondary dark:text-text-dark-secondary"
+                        data-completion-label
+                      >
+                        {{ comida.estado_registro }}
+                      </span>
+                    </div>
                   </div>
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {% for alimento in comida.alimentos_list %}
@@ -423,7 +444,10 @@
 
     <script>
       // Parse chart data from Django
-      const chartData = JSON.parse("{{ chart_data_json|safe }}");
+      const rawChartData = "{{ chart_data_json|escapejs }}";
+      const chartData = rawChartData
+        ? JSON.parse(rawChartData)
+        : { labels: [], peso: [] };
       const canvas = document.getElementById("weightEvolutionChart");
       const noDataMessage = document.getElementById("noChartDataMessage");
 
@@ -476,6 +500,85 @@
         canvas.style.display = "none";
         noDataMessage.classList.remove("hidden");
       }
+
+      const toggleMealUrl = "{% url 'toggle_comida' %}";
+
+      function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(";").shift();
+      }
+
+      const csrfToken = getCookie("csrftoken");
+
+      async function toggleMealCompletion(button) {
+        const mealId = button.getAttribute("data-dia-comida-id");
+        if (!mealId) return;
+
+        button.disabled = true;
+        button.classList.add("opacity-70");
+
+        try {
+          const response = await fetch(toggleMealUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrfToken || "",
+            },
+            body: JSON.stringify({ dia_comida_id: mealId }),
+          });
+          const data = await response.json();
+          if (!response.ok || !data.success) {
+            throw new Error(data.error || "No se pudo actualizar la comida.");
+          }
+
+          const isCompleted = data.completado;
+          const baseClass = button.dataset.baseClass || "";
+          const completedClass = button.dataset.classCompleted || "";
+          const pendingClass = button.dataset.classPending || "";
+          const iconCompleted = button.dataset.iconCompleted || "task_alt";
+          const iconPending = button.dataset.iconPending || "check_circle";
+          const textCompleted =
+            button.dataset.textCompleted || "Comida completada";
+          const textPending =
+            button.dataset.textPending || "Marcar como completado";
+
+          const iconEl = button.querySelector(".material-symbols-outlined");
+          const textEl = button.querySelector(".mark-text");
+          const statusLabel = button.parentElement.querySelector(
+            "[data-completion-label]",
+          );
+
+          button.dataset.completed = isCompleted ? "true" : "false";
+          const targetClass = isCompleted ? completedClass : pendingClass;
+          button.className = `${baseClass} ${targetClass}`.trim();
+          if (iconEl) {
+            iconEl.textContent = isCompleted ? iconCompleted : iconPending;
+          }
+          if (textEl) {
+            textEl.textContent = isCompleted ? textCompleted : textPending;
+          }
+
+          if (statusLabel) {
+            if (isCompleted) {
+              statusLabel.textContent = data.hora
+                ? `Registrada a las ${data.hora}`
+                : "Registrada hoy";
+            } else {
+              statusLabel.textContent = "";
+            }
+          }
+        } catch (error) {
+          alert(error.message || "Error al actualizar la comida.");
+        } finally {
+          button.disabled = false;
+          button.classList.remove("opacity-70");
+        }
+      }
+
+      document.querySelectorAll(".mark-meal-button").forEach((button) => {
+        button.addEventListener("click", () => toggleMealCompletion(button));
+      });
     </script>
   </body>
 </html>

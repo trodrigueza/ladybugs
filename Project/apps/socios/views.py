@@ -19,7 +19,7 @@ from apps.pagos.models import AlertaPago, Pago, PlanMembresia, SocioMembresia
 from apps.seguridad.decoradores import login_requerido
 from apps.seguridad.servicios.registro_usuario import crear_usuario_para_socio
 
-from .models import Medicion, Socio
+from .models import Medicion, RegistroComidaDiaria, Socio
 from .servicios.registro_db import ValidationError, create_socio_from_dict
 
 
@@ -931,6 +931,8 @@ def mi_nutricion_view(request):
     ]
     dia_actual_nombre = dias_semana[dia_actual]
 
+    fecha_actual = timezone.localdate()
+
     # Get meals for today
     comidas_hoy = list(
         DiaComida.objects.filter(
@@ -939,6 +941,28 @@ def mi_nutricion_view(request):
         .prefetch_related("alimentos__AlimentoID")
         .order_by("id")
     )
+
+    registros_hoy = {
+        registro.DiaComidaID_id: registro
+        for registro in RegistroComidaDiaria.objects.filter(
+            SocioID=socio,
+            Fecha=fecha_actual,
+            DiaComidaID__in=[c.id for c in comidas_hoy],
+        )
+    }
+
+    boton_estilos = {
+        True: {
+            "icono": "task_alt",
+            "texto": "Comida completada",
+            "clase": "bg-green-50 text-green-700 border border-green-500",
+        },
+        False: {
+            "icono": "check_circle",
+            "texto": "Marcar como completado",
+            "clase": "bg-primary text-white",
+        },
+    }
 
     # Pre-calculate totals
     calorias_total = 0
@@ -1007,6 +1031,48 @@ def mi_nutricion_view(request):
             proteinas_total += ca.prot_total
             carbohidratos_total += ca.carb_total
             grasas_total += ca.gras_total
+
+        registro = registros_hoy.get(comida.id)
+        if registro:
+            comida.completado = registro.Completado
+            comida.completado_hora = (
+                timezone.localtime(registro.HoraCompletado).strftime("%H:%M")
+                if registro.HoraCompletado
+                else ""
+            )
+        else:
+            comida.completado = False
+            comida.completado_hora = ""
+
+        config_actual = boton_estilos[comida.completado]
+        comida.boton_icono = config_actual["icono"]
+        comida.boton_texto = config_actual["texto"]
+        comida.boton_clase = config_actual["clase"]
+
+        comida.boton_icono_completado = boton_estilos[True]["icono"]
+        comida.boton_texto_completado = boton_estilos[True]["texto"]
+        comida.boton_clase_completado = boton_estilos[True]["clase"]
+
+        comida.boton_icono_pendiente = boton_estilos[False]["icono"]
+        comida.boton_texto_pendiente = boton_estilos[False]["texto"]
+        comida.boton_clase_pendiente = boton_estilos[False]["clase"]
+
+        if comida.completado:
+            if comida.completado_hora:
+                comida.estado_registro = f"Registrada a las {comida.completado_hora}"
+            else:
+                comida.estado_registro = "Registrada hoy"
+        else:
+            comida.estado_registro = ""
+
+        if comida.completado:
+            comida.boton_icono = "task_alt"
+            comida.boton_texto = "Comida completada"
+            comida.boton_clase = "bg-green-50 text-green-700 border border-green-500"
+        else:
+            comida.boton_icono = "check_circle"
+            comida.boton_texto = "Marcar como completado"
+            comida.boton_clase = "bg-primary text-white"
 
     # --- Weight data for chart and stats ---
     hace_30_dias = timezone.now() - timezone.timedelta(days=30)
@@ -1085,6 +1151,196 @@ def mi_nutricion_view(request):
         "cambio_peso_color": cambio_peso_color,
         "chart_data_json": json.dumps(chart_data),
         "daily_tip": daily_tip,
+        "boton_base_clase": "mark-meal-button inline-flex items-center gap-2 text-sm font-semibold rounded-lg px-3 py-2 transition-colors",
     }
 
     return render(request, "socio/MiNutrición.html", context)
+
+
+@login_requerido
+def toggle_comida_view(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "Método no permitido"}, status=405)
+
+    usuario_id = request.session.get("usuario_id")
+
+    try:
+        usuario = Usuario.objects.get(id=usuario_id)
+        socio = Socio.objects.get(Email=usuario.Email)
+    except (Usuario.DoesNotExist, Socio.DoesNotExist):
+        return JsonResponse({"error": "Sesión inválida"}, status=401)
+
+    try:
+        body = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Formato inválido"}, status=400)
+
+    dia_comida_id = body.get("dia_comida_id")
+    if not dia_comida_id:
+        return JsonResponse(
+            {"error": "Falta el identificador de la comida"}, status=400
+        )
+
+    from apps.control_acceso.models import DiaComida, PlanNutricional
+
+    dia_comida = get_object_or_404(DiaComida, id=dia_comida_id)
+
+    plan = PlanNutricional.objects.filter(SocioID=socio).first()
+    if not plan or dia_comida.PlanNutricionalID_id != plan.id:
+        return JsonResponse(
+            {"error": "No estás autorizado para modificar esta comida"}, status=403
+        )
+
+    fecha_actual = timezone.localdate()
+    registro, created = RegistroComidaDiaria.objects.get_or_create(
+        SocioID=socio,
+        DiaComidaID=dia_comida,
+        Fecha=fecha_actual,
+        defaults={"Completado": True, "HoraCompletado": timezone.now()},
+    )
+
+    if not created:
+        registro.Completado = not registro.Completado
+        registro.HoraCompletado = timezone.now() if registro.Completado else None
+        registro.save()
+
+    hora_display = (
+        timezone.localtime(registro.HoraCompletado).strftime("%H:%M")
+        if registro.HoraCompletado
+        else ""
+    )
+
+    return JsonResponse(
+        {
+            "success": True,
+            "completado": registro.Completado,
+            "hora": hora_display,
+            "dia_comida_id": dia_comida_id,
+        }
+    )
+
+
+@login_requerido
+def historial_comidas_view(request):
+    dias_consulta = request.GET.get("dias", "7")
+    try:
+        dias_consulta = max(1, min(30, int(dias_consulta)))
+    except ValueError:
+        dias_consulta = 7
+
+    usuario_id = request.session.get("usuario_id")
+
+    try:
+        usuario = Usuario.objects.get(id=usuario_id)
+        socio = Socio.objects.get(Email=usuario.Email)
+    except (Usuario.DoesNotExist, Socio.DoesNotExist):
+        messages.error(request, "No se encontró el perfil de socio asociado.")
+        return redirect("login")
+
+    from apps.control_acceso.models import DiaComida, PlanNutricional
+
+    plan = PlanNutricional.objects.filter(SocioID=socio).first()
+    if not plan:
+        opciones_rango = [7, 14, 21, 30]
+        context = {
+            "socio": socio,
+            "tiene_plan": False,
+            "historial_dias": [],
+            "dias_consulta": dias_consulta,
+            "opciones_rango": [
+                {"valor": opcion, "selected": dias_consulta == opcion}
+                for opcion in opciones_rango
+            ],
+        }
+        return render(request, "socio/HistorialComidas.html", context)
+
+    dias_semana = [
+        "Lunes",
+        "Martes",
+        "Miércoles",
+        "Jueves",
+        "Viernes",
+        "Sábado",
+        "Domingo",
+    ]
+
+    dias_plan = (
+        DiaComida.objects.filter(PlanNutricionalID=plan)
+        .prefetch_related("alimentos__AlimentoID")
+        .order_by("DiaSemana", "id")
+    )
+    dias_por_semana = {}
+    for dia in dias_plan:
+        dias_por_semana.setdefault(dia.DiaSemana, []).append(dia)
+
+    fecha_hoy = timezone.localdate()
+    fecha_inicio = fecha_hoy - timezone.timedelta(days=dias_consulta - 1)
+    registros = RegistroComidaDiaria.objects.filter(
+        SocioID=socio, Fecha__range=(fecha_inicio, fecha_hoy), Completado=True
+    ).select_related("DiaComidaID")
+    registros_map = {
+        (registro.Fecha, registro.DiaComidaID_id): registro for registro in registros
+    }
+
+    historial_dias = []
+    for offset in range(dias_consulta):
+        fecha_dia = fecha_hoy - timezone.timedelta(days=offset)
+        dia_semana_idx = fecha_dia.weekday()
+        comidas_plan_dia = dias_por_semana.get(dia_semana_idx, [])
+
+        if not comidas_plan_dia:
+            continue
+
+        comidas_render = []
+        completadas = 0
+
+        for comida in comidas_plan_dia:
+            registro = registros_map.get((fecha_dia, comida.id))
+            completado = registro.Completado if registro else False
+            if completado:
+                completadas += 1
+
+            alimentos_nombres = ", ".join(
+                ca.AlimentoID.Nombre for ca in comida.alimentos.all()
+            )
+            alimentos_texto = (
+                alimentos_nombres if alimentos_nombres else "Sin alimentos configurados"
+            )
+
+            comidas_render.append(
+                {
+                    "nombre": comida.TipoComida or "Comida",
+                    "completado": completado,
+                    "hora": timezone.localtime(registro.HoraCompletado).strftime(
+                        "%H:%M"
+                    )
+                    if registro and registro.HoraCompletado
+                    else "",
+                    "alimentos_texto": alimentos_texto,
+                }
+            )
+
+        if completadas > 0:
+            historial_dias.append(
+                {
+                    "fecha": fecha_dia,
+                    "fecha_display": fecha_dia.strftime("%d %b %Y"),
+                    "dia_semana": dias_semana[dia_semana_idx],
+                    "total": len(comidas_plan_dia),
+                    "completadas": completadas,
+                    "comidas": comidas_render,
+                }
+            )
+
+    opciones_rango = [7, 14, 21, 30]
+    context = {
+        "socio": socio,
+        "tiene_plan": True,
+        "historial_dias": historial_dias,
+        "dias_consulta": dias_consulta,
+        "opciones_rango": [
+            {"valor": opcion, "selected": dias_consulta == opcion}
+            for opcion in opciones_rango
+        ],
+    }
+    return render(request, "socio/HistorialComidas.html", context)
