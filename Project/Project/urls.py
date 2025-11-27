@@ -27,6 +27,7 @@ urlpatterns = [
     path('socio/mi-rutina/toggle_ejercicio/', socios_views.toggle_ejercicio_view, name='toggle_ejercicio'),
     path('socio/mi-rutina/historial/', socios_views.historial_sesiones_view, name='historial_sesiones'),
     path('socio/mi-rutina/sesion/<int:sesion_id>/', socios_views.detalle_sesion_view, name='detalle_sesion'),
+    path('socio/mi-nutricion/', socios_views.mi_nutricion_view, name='mi_nutricion'),
     
     
     path('administrativo/panel/', socios_views.panel_admin_view, name='panel_admin'),
