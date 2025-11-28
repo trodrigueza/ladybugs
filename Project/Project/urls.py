@@ -28,5 +28,7 @@ urlpatterns = [
     path('administrativo/panel/', socios_views.panel_admin_view, name='panel_admin'),
     path('administrativo/gestionar-usuarios/', seguridad_views.gestionar_usuarios_view, name='gestionar_usuarios'),
 
-    path('entrenador/panel/', socios_views.planel_inicio_entrenador_view, name='entrenador_panel')
+    path('entrenador/panel/', socios_views.planel_inicio_entrenador_view, name='entrenador_panel'),
+
+    path('entrenador/routines/nueva/', socios_views.crear_rutina_entrenador_view, name='crear_rutina_entrenador'),
 ]

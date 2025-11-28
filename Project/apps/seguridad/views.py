@@ -44,7 +44,7 @@ def login_view(request):
             return redirect("socio_panel")
 
         elif rol_real == "entrenador":
-            return redirect("panel_entrenador")  
+            return redirect("entrenador_panel")  
         elif rol_real == "administrativo":
             return redirect("panel_admin")  
 

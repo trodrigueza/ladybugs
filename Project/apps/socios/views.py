@@ -18,9 +18,12 @@ from apps.control_acceso.models import (
 from apps.pagos.models import AlertaPago, Pago, PlanMembresia, SocioMembresia
 from apps.seguridad.decoradores import login_requerido
 from apps.seguridad.servicios.registro_usuario import crear_usuario_para_socio
+from apps.socios.servicios.rutinas import obtener_o_crear_rutina_base
 
 from .models import Medicion, RegistroComidaDiaria, Socio
 from .servicios.registro_db import ValidationError, create_socio_from_dict
+
+
 
 
 def register_view(request):
@@ -518,9 +521,33 @@ def mi_rutina_view(request):
     return render(request, "socio/MiRutina.html", context)
 
 
+#  ----------------- ENTRENADOR ---------------------
+
 @login_requerido
 def planel_inicio_entrenador_view(request):
     return render(request, "Entrenador/PaneldeInicio.html")
+
+@login_requerido
+def crear_rutina_entrenador_view(request):
+    # Modificaciones en logica
+    return render(request, "Entrenador/PlanificadorRutina.html")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 @login_requerido
@@ -548,7 +575,7 @@ def panel_admin_view(request):
             request, "No tienes permisos para acceder al panel administrativo."
         )
         if rol == "entrenador":
-            return redirect("panel_entrenador")
+            return redirect("entrenador_panel")
         if rol == "socio":
             return redirect("socio_panel")
         return redirect("login")
