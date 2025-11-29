@@ -70,7 +70,21 @@ urlpatterns = [
      views_entrenador.actualizar_ejercicio_ajax,
      name="ajax_actualizar_ejercicio"),
 
-     
+
+    path("ajax/agregar-ejercicio/<int:rutina_id>/",
+        views_entrenador.ajax_agregar_ejercicio,
+        name="ajax_agregar_ejercicio_alt"),
+
+    path("ajax/eliminar-ejercicio/<int:rutina_id>/",
+        views_entrenador.ajax_eliminar_ejercicio,
+        name="ajax_eliminar_ejercicio_alt"),
+
+    path("ajax/obtener-ejercicios-dia/<int:rutina_id>/<int:dia>/",
+        views_entrenador.obtener_ejercicios_dia_ajax,
+        name="ajax_obtener_ejercicios_dia_alt"),
+
+
+
 
 
 ]
