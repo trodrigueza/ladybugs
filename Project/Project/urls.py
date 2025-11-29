@@ -1,9 +1,8 @@
-from apps.seguridad import views as seguridad_views
-from apps.seguridad.views import login_view, logout_view
-from apps.socios import views as socios_views
 from django.contrib import admin
 from django.urls import path
-
+from apps.socios import views as socios_views
+from apps.seguridad.views import login_view, logout_view
+from apps.seguridad import views as seguridad_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     # LOGIN / LOGOUT
@@ -19,16 +18,18 @@ urlpatterns = [
     path('socio/mi-rutina/iniciar_sesion/', socios_views.iniciar_sesion_view, name='iniciar_sesion'),
     path('socio/mi-rutina/terminar_sesion/', socios_views.terminar_sesion_view, name='terminar_sesion'),
     path('socio/mi-rutina/toggle_ejercicio/', socios_views.toggle_ejercicio_view, name='toggle_ejercicio'),
-    path('socio/mi-rutina/historial/', socios_views.historial_sesiones_view, name='historial_sesiones'),
     path('socio/mi-rutina/sesion/<int:sesion_id>/', socios_views.detalle_sesion_view, name='detalle_sesion'),
-    path('socio/mi-nutricion/', socios_views.mi_nutricion_view, name='mi_nutricion'),
-    path('socio/mi-nutricion/toggle-comida/', socios_views.toggle_comida_view, name='toggle_comida'),
-    path('socio/mi-nutricion/historial/', socios_views.historial_comidas_view, name='historial_comidas'),
-
-    path('administrativo/panel/', socios_views.panel_admin_view, name='panel_admin'),
-    path('administrativo/gestionar-usuarios/', seguridad_views.gestionar_usuarios_view, name='gestionar_usuarios'),
-
+    path('Administrativo/panel/', socios_views.panel_admin_view, name='panel_admin'),
+    
+    path('Administrativo/gestionar-usuarios/', seguridad_views.gestionar_usuarios_view, name='gestionar_usuarios'),
+    path('Administrativo/gestionar-usuarios/agregar-usuario/', seguridad_views.seleccionar_tipo_usuario_view, name='agregar_usuario'),
+    path('Administrativo/gestionar-usuarios/crear-usuario/<str:tipo_rol>/', seguridad_views.crear_usuario_view, name='crear_usuario'),
+    path('Administrativo/gestionar-usuarios/editar-socio/<int:socio_id>/', seguridad_views.editar_socio_view, name='editar_socio'),
+    path('Administrativo/gestionar-usuarios/editar-usuario/<int:usuario_id>/', seguridad_views.editar_usuario_view, name='editar_usuario'),
+    path('Administrativo/gestionar-usuarios/eliminar-socio/<int:socio_id>/', seguridad_views.eliminar_socio_view, name='eliminar_socio'),
+    path('Administrativo/gestionar-usuarios/eliminar/<str:tipo>/<int:entidad_id>/', seguridad_views.eliminar_entidad_view, name='eliminar_entidad'),
     path('entrenador/panel/', socios_views.planel_inicio_entrenador_view, name='entrenador_panel'),
 
-    path('entrenador/routines/nueva/', socios_views.crear_rutina_entrenador_view, name='crear_rutina_entrenador'),
+    path("Administrativo/gestionar-usuarios/crear-socio/", seguridad_views.crear_socio_view, name="crear_socio"),
+    path("Administrativo/gestionar-usuarios/crear-membresia/<int:socio_id>/", seguridad_views.crear_membresia_view, name="crear_membresia"),
 ]
