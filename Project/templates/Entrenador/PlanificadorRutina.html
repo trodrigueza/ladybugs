@@ -1,281 +1,433 @@
+{% load static %}
+
 <!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GluteOS - Planificador de Rutinas</title>
 
-<html class="light" lang="es"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>GluteOS - Planificador de Rutinas</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
-<script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#0f49bd",
-                        "background-light": "#f6f6f8",
-                        "background-dark": "#101622",
-                    },
-                    fontFamily: {
-                        "display": ["Manrope", "sans-serif"]
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                },
-            },
-        }
-    </script>
-<style>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+    <style>
         .material-symbols-outlined {
-            font-variation-settings:
-                'FILL' 0,
-                'wght' 400,
-                'GRAD' 0,
-                'opsz' 24
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+        .exercise-item:hover { background: #f3f4f6; }
+        .dropzone:hover { border-color: #0f49bd; color: #0f49bd; }
     </style>
+
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "gluteos-blue": "#1A237E",
+              "gluteos-blue-dark": "#161d68",
+              "card-light": "#ffffff",
+              "border-light": "#dbdfe6",
+            },
+            fontFamily: { "display": ["Manrope", "sans-serif"] }
+          },
+        },
+      }
+    </script>
 </head>
-<body class="font-display bg-background-light dark:bg-background-dark">
+
+<body class="bg-gray-100">
+
 <div class="flex h-screen w-full">
-<!-- SideNavBar -->
-<aside class="flex flex-col w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800">
-<div class="flex flex-col h-full justify-between p-4">
-<div class="flex flex-col gap-4">
-<div class="flex items-center gap-3 px-2">
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="GluteOS logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD7aTZ6D0J1Rwm0_GX34nBNf-SxvD7SOmIRoBK0XIJEfM5n2W3DSrJ8C1q-3GatBavmqb9xcyGPwhUCPmX0Ny-XoLtqT1cxjbsOQts2q-G93ZEegvDyB1cUuMq1ZnE0ZEjxfWf_wew0kKqxH-6XrQd5YwlFe3rwC8iOOQ8o5azQMyhoperR1H6c_tdzBovCCwsa-oX9Kh6YtPeSsJ6oCLkeEgbNwcW3_WGcarSI32sFlQH5ncMBvQWJJipzcFtbztpfS5LVIq92v_k");'></div>
-<div class="flex flex-col">
-<h1 class="text-gray-900 dark:text-white text-base font-bold leading-normal">GluteOS</h1>
-<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">Admin Panel</p>
-</div>
-</div>
-<nav class="flex flex-col gap-2 mt-4">
-<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
-<span class="material-symbols-outlined">dashboard</span>
-<p class="text-sm font-medium leading-normal">Dashboard</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary dark:bg-primary/20 dark:text-white" href="#">
-<span class="material-symbols-outlined !font-bold" style="font-variation-settings: 'FILL' 1;">fitness_center</span>
-<p class="text-sm font-bold leading-normal">Rutinas</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
-<span class="material-symbols-outlined">group</span>
-<p class="text-sm font-medium leading-normal">Usuarios</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
-<span class="material-symbols-outlined">restaurant_menu</span>
-<p class="text-sm font-medium leading-normal">Nutrición</p>
-</a>
-</nav>
-</div>
-<div class="flex flex-col gap-1">
-<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
-<span class="material-symbols-outlined">settings</span>
-<p class="text-sm font-medium leading-normal">Ajustes</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
-<span class="material-symbols-outlined">logout</span>
-<p class="text-sm font-medium leading-normal">Logout</p>
-</a>
-</div>
-</div>
-</aside>
-<!-- Main Content -->
-<main class="flex-1 flex flex-col h-screen overflow-y-auto">
-<div class="p-6">
-<!-- PageHeading -->
-<div class="flex flex-wrap justify-between items-center gap-3">
-<div class="flex flex-col gap-1">
-<p class="text-gray-900 dark:text-white text-3xl font-black leading-tight tracking-tight">Planificador de Rutinas</p>
-<p class="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal">Crea, modifica y asigna rutinas de ejercicio a los usuarios.</p>
-</div>
-</div>
-<div class="grid grid-cols-1 xl:grid-cols-12 gap-6 mt-6">
-<!-- Left Column: Exercise Library -->
-<div class="xl:col-span-3 flex flex-col gap-4 bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800">
-<!-- SectionHeader -->
-<h2 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-tight">Biblioteca de Ejercicios</h2>
-<!-- SearchBar -->
-<div class="relative">
-<label class="flex flex-col w-full">
-<div class="flex w-full flex-1 items-stretch rounded-lg h-11">
-<div class="text-gray-500 dark:text-gray-400 flex bg-gray-100 dark:bg-gray-800 items-center justify-center pl-3.5 rounded-l-lg">
-<span class="material-symbols-outlined">search</span>
-</div>
-<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border-none bg-gray-100 dark:bg-gray-800 focus:border-none h-full placeholder:text-gray-500 dark:placeholder:text-gray-400 pl-2 text-sm font-normal leading-normal" placeholder="Buscar ejercicio..." value=""/>
-</div>
-</label>
-</div>
-<!-- Chips -->
-<div class="flex gap-2 flex-wrap">
-<button class="flex h-8 shrink-0 items-center justify-center gap-x-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 px-3 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-<p class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal">Grupo Muscular</p>
-<span class="material-symbols-outlined text-base">expand_more</span>
-</button>
-<button class="flex h-8 shrink-0 items-center justify-center gap-x-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 px-3 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-<p class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal">Equipamiento</p>
-<span class="material-symbols-outlined text-base">expand_more</span>
-</button>
+
+    <!-- ===================================================== -->
+    <!-- SIDEBAR AZUL -->
+    <!-- ===================================================== -->
+    <aside class="flex w-64 flex-col bg-gluteos-blue p-4 text-white">
+        <div class="flex items-center gap-3 px-3 py-4 text-white">
+            <span class="material-symbols-outlined text-3xl">fitness_center</span>
+            <h2 class="text-xl font-bold">GluteOS</h2>
+        </div>
+
+        <div class="flex h-full flex-col justify-between">
+            <div class="flex flex-col gap-2 pt-4">
+                <a href="{% url 'entrenador_panel' %}"
+                   class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-blue-800">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <p class="text-sm font-medium">Dashboard</p>
+                </a>
+
+                <a href="{% url 'crear_rutina_entrenador' %}"
+                   class="flex items-center gap-3 rounded-lg bg-blue-800 px-3 py-2">
+                    <span class="material-symbols-outlined">fitness_center</span>
+                    <p class="text-sm font-medium">Rutinas</p>
+                </a>
+            </div>
+
+            <div class="flex flex-col gap-1">
+                <div class="mb-4 flex gap-3 px-3 py-2">
+                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+                         style="background-image: url('https://via.placeholder.com/100');"></div>
+                    <div class="flex flex-col">
+                        <h1 class="text-base font-medium">Coach</h1>
+                        <p class="text-sm text-slate-300">Entrenador</p>
+                    </div>
+                </div>
+
+                <a onclick="openLogoutModal()" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-blue-800 cursor-pointer">
+                    <span class="material-symbols-outlined">logout</span>
+                    <p class="text-sm font-medium">Salir</p>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ===================================================== -->
+    <!-- PANEL DE EJERCICIOS (IZQUIERDA) -->
+    <!-- ===================================================== -->
+    <div class="flex flex-1">
+
+        <aside class="w-1/4 bg-white border-r border-gray-200 p-4 overflow-y-auto">
+            <h2 class="text-xl font-bold mb-4">Biblioteca de Ejercicios</h2>
+
+            <input type="text" placeholder="Buscar..." class="w-full mb-3 p-2 border rounded-lg">
+
+            <div id="lista-ejercicios" class="flex flex-col gap-2">
+                {% for e in ejercicios %}
+                <div class="exercise-item p-2 flex justify-between items-center rounded cursor-pointer"
+                    draggable="true" data-id="{{ e.id }}" data-nombre="{{ e.Nombre }}">
+                    <p class="text-sm font-semibold">{{ e.Nombre }}</p>
+                    <span class="material-symbols-outlined">add</span>
+                </div>
+                {% empty %}
+                <p class="text-gray-500">No hay ejercicios registrados.</p>
+                {% endfor %}
+            </div>
+        </aside>
+
+        <!-- ===================================================== -->
+        <!-- PANEL CENTRAL – CONSTRUCTOR DE RUTINA -->
+        <!-- ===================================================== -->
+        <main class="flex-1 p-6 overflow-y-auto">
+
+            <script>
+                const RUTINA_ID = "{{ rutina.id|default:'' }}";
+            </script>
+
+            <h1 class="text-3xl font-bold mb-6">Planificador de Rutinas</h1>
+
+            <!-- Selector de día -->
+            <div class="grid grid-cols-7 gap-2 mb-6 text-center font-medium">
+                <div class="day p-2 rounded cursor-pointer bg-blue-100" data-dia="0">LU</div>
+                <div class="day p-2 rounded cursor-pointer" data-dia="1">MA</div>
+                <div class="day p-2 rounded cursor-pointer" data-dia="2">MI</div>
+                <div class="day p-2 rounded cursor-pointer" data-dia="3">JU</div>
+                <div class="day p-2 rounded cursor-pointer" data-dia="4">VI</div>
+                <div class="day p-2 rounded cursor-pointer" data-dia="5">SA</div>
+                <div class="day p-2 rounded cursor-pointer" data-dia="6">DO</div>
+            </div>
+
+            <h3 id="titulo-dia" class="text-xl font-bold mb-3">Rutina del Lunes</h3>
+
+            <!-- Contenedor de ejercicios asignados -->
+            <div id="contenedor-ejercicios-dia" class="flex flex-col gap-3">
+                {% for asignacion in ejercicios_dia %}
+                <div class="ej-asignado bg-white p-4 rounded shadow border" data-id="{{ asignacion.id }}">
+
+                    <div class="flex justify-between mb-3">
+                        <p class="font-semibold">{{ asignacion.EjercicioID.Nombre }}</p>
+
+                        <button class="btn-eliminar text-red-500" data-id="{{ asignacion.id }}">
+                            <span class="material-symbols-outlined">close</span>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-4 gap-3">
+                        <div>
+                            <label class="text-xs">Series</label>
+                            <input type="number" value="{{ asignacion.Series }}" class="form-input w-full">
+                        </div>
+
+                        <div>
+                            <label class="text-xs">Reps</label>
+                            <input type="number" value="{{ asignacion.Repeticiones }}" class="form-input w-full">
+                        </div>
+
+                        <div>
+                            <label class="text-xs">Peso</label>
+                            <input type="number" value="{{ asignacion.PesoObjetivo }}" class="form-input w-full">
+                        </div>
+
+                        <div>
+                            <label class="text-xs">Tempo</label>
+                            <input type="text" value="{{ asignacion.Tempo }}" class="form-input w-full">
+                        </div>
+                    </div>
+
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Zona de drop -->
+            <div id="drop-zone"
+                class="dropzone mt-6 p-10 text-center border-2 border-dashed border-gray-400 rounded-lg text-gray-500">
+                Arrastra ejercicios aquí
+            </div>
+
+        </main>
+
+        <!-- ===================================================== -->
+        <!-- PANEL DERECHO – CREAR RUTINA -->
+        <!-- ===================================================== -->
+        <aside class="w-1/4 bg-white border-l border-gray-200 p-4">
+
+            <form method="post">
+                {% csrf_token %}
+
+                <h2 class="text-xl font-bold mb-4">Crear Rutina</h2>
+
+                <label class="block text-sm font-medium mb-1">Nombre de la Rutina</label>
+                <input type="text" name="nombre_rutina"
+                    class="w-full p-2 border rounded mb-4"
+                    placeholder="Ej: Fuerza Semana 1" required>
+
+                <label class="block text-sm font-medium mb-1">Seleccionar cliente</label>
+                <select name="socio_id" class="w-full p-2 border rounded mb-4" required>
+                    <option value="">-- Seleccionar cliente --</option>
+                    {% for socio in socios %}
+                        <option value="{{ socio.id }}">{{ socio.NombreCompleto }} ({{ socio.Email }})</option>
+                    {% endfor %}
+                </select>
+
+                <input type="hidden" name="dias_entrenamiento" id="input-dias" value="LMXJVSD">
+
+                <button type="submit" class="w-full bg-gluteos-blue text-white p-3 rounded-lg font-semibold">
+                    Guardar Rutina
+                </button>
+            </form>
+
+        </aside>
+
+    </div>
 </div>
 
-
-
-
-<!-- Exercise List -->
-<div class="flex flex-col gap-2 overflow-y-auto h-[calc(100vh-22rem)] pr-1">
-<div class="flex items-center gap-3 p-2.5 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-12" data-alt="Image of a squat exercise" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDkVe3tRiGhShh6aLpsVOmLBrhtUJVTqXDelJBx7bdtFpGm5qXCnYP3B0F1akdRBg0qav5f-LpiaMWffUlkTrAZpmUCuCM7AWAWWdcfOjb_LIX8x-KrGKNWuiiqDGjbT0vq5y2TTBnFbv7lWKnz2K9bsEiEYEVGoCFqlJ2pcTcfze1mgB11v9Exvtk2-FRluAng7aFTKEhAApUOJGQiP9FrY5lezb5bDa8Z6L6KJ8U0Zcspcz0Rv3UijziQccxR-CCMyFU3MFwinF8");'></div>
-<p class="text-gray-800 dark:text-gray-200 text-sm font-semibold">Sentadilla con Barra</p>
-</div>
-<div class="flex items-center gap-3 p-2.5 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-12" data-alt="Image of a bench press exercise" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCEfuUMli8zPLZNeSdCrKjLaecLHgpDAWmz2MOWwZPnt25gMR629rg9LHdyLfxOuWa9DhLQQVMh3iFG1IOmawPM_HT60LV4EfG-o5vyC5Z4DiKp8sCHkK-SciN8mqHzb9vfM7Q6a0uAgWKpUPWvHld5rYkCvtgcMqP4uOPeGf50nYbOCRQmGr9jfSzmf48O58KYaG5duXGg1ceQTM_JRgH5FtfpRF5kv-rd6Qt-fSZl8deDcaCqYVcx1sRFXiiAs5l-w55Ao83tWPI");'></div>
-<p class="text-gray-800 dark:text-gray-200 text-sm font-semibold">Press de Banca</p>
-</div>
-<div class="flex items-center gap-3 p-2.5 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-12" data-alt="Image of a deadlift exercise" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCLBCI5nH-NzlYR3YkDxd_Y-wxEMjv1x-WhrqBu7byIKYtRgej7k6g6rL4WzRvjOy5JSSC6m5o8pVjhHhhkSTWwDhptsGSejZaUf36eTxiJHjntokYnt3mVUjIRerVxma3AdZIbi-eBtvi6IAtWdty_OR0xVwjmaw6QdYi9pQGrXBxOPdy8c24Th_dqA5T2cPYSIPH3apAoniFJ1Rkv4KMf8fnybI-pi-eV0p3L7fOhbbzADqENqLo8dyFwE-g6vFHz8DOiZ2tXPps");'></div>
-<p class="text-gray-800 dark:text-gray-200 text-sm font-semibold">Peso Muerto</p>
-</div>
-<div class="flex items-center gap-3 p-2.5 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-12" data-alt="Image of a pull-up exercise" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD6sM1R289kGNS-F9CKlPsifH3KI5E3OhhdxnFVbBesOqDCHfaUvvsmKwMQvnvZcJRLzeSvPPq8JTyfRO3qcAJMvyGAcl1WQqV1Of3VhBNAFzmWdhutp5Oq2r8S54H_cWIY2R0GgwwW9DAqq4_BZ-lD7ebVuWmhGd_jd9FlOZEcaSDKo7KXT_yTuApE8ib1A8wLN0K2xFrg5ePriBIHdPcrVibYSO7oUPpfh3DClAQ1S1lX1N_alAVhLEKFwXDZ5VrPuO1twQYRx3Q");'></div>
-<p class="text-gray-800 dark:text-gray-200 text-sm font-semibold">Dominadas</p>
-</div>
-<div class="flex items-center gap-3 p-2.5 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-12" data-alt="Image of a plank exercise" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCLmfu9OQ9rHWwXIzBxzmCLjkXLd7YkRQIKI_oK7Ogq0BgCcrYgxRE_avNZGsAoqsFiv3jx-LSko0OBi36zRk_DVuxNLsfahWTpGsdOLaslN78GAVYxJ0lWcp-qxv1DRmdeQl0I07f8yo4-sl0qSid7wK2YVvznSGTrBQVpLh4yrv3DxQg2_0RPJTDRsk5PdPipztvd2J_CT7qsQfmFHQz_CZZ0iftRLC4ectadYS4NOaQOkHUmQQnMZJiCKt3tCvzf4PY8osv4UEE");'></div>
-<p class="text-gray-800 dark:text-gray-200 text-sm font-semibold">Plancha Abdominal</p>
-</div>
-<div class="flex items-center gap-3 p-2.5 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-12" data-alt="Image of a bicep curl exercise" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA0UFYW4bUk47dwXNviN9bCxzeBhiSaQs0DTDJxPeVGHqrw0ChCHGGqpNYDdWsoUeEGxvn6LFb7k0tGzNvOYGLDUz7-Qc60F3b9VkN6e0RPHQyEKXVUyJQ5fsVvkYb_hPtGo4gFHvhW70BL9S4US4-KiNzD32zg12VrtpmdXUV747RVMph5q-7aJKLrgYHbu-AzzVjD9I1uOVp7Kd3-ofrdAQBvZKxIttB7HTAj8I925a0xdZLICqZmn_ssKU1WoINgFGZHJfr0uko");'></div>
-<p class="text-gray-800 dark:text-gray-200 text-sm font-semibold">Curl de Bíceps</p>
-</div>
-</div>
+<!-- Logout Modal -->
+<div id="logoutModal"
+     class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+  <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm">
+    
+    <h2 class="text-lg font-bold mb-3">¿Cerrar sesión?</h2>
+    <p class="text-gray-600 text-sm mb-6">Tu sesión se cerrará.</p>
+    
+    <div class="flex justify-end gap-3">
+      <button onclick="closeLogoutModal()"
+              class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">
+        Cancelar
+      </button>
+      
+      <button onclick="logoutNow()"
+              class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700">
+        Salir
+      </button>
+    </div>
+  </div>
 </div>
 
+<script>
+function openLogoutModal() { document.getElementById("logoutModal").classList.remove("hidden"); }
+function closeLogoutModal() { document.getElementById("logoutModal").classList.add("hidden"); }
+function logoutNow() { window.location.href = "/logout/"; }
+</script>
 
-<!-- Center Column: Routine Builder -->
-<div class="xl:col-span-6 flex flex-col gap-4">
-<div class="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800">
-<!-- Calendar -->
-<div class="flex items-center justify-between mb-4">
-<button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300">
-<span class="material-symbols-outlined">chevron_left</span>
-</button>
-<h3 class="text-gray-900 dark:text-white font-bold">Julio 2024</h3>
-<button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300">
-<span class="material-symbols-outlined">chevron_right</span>
-</button>
-</div>
-<div class="grid grid-cols-7 gap-2 text-center text-sm">
-<div class="text-gray-500 dark:text-gray-400 font-medium">LU</div>
-<div class="text-gray-500 dark:text-gray-400 font-medium">MA</div>
-<div class="text-gray-500 dark:text-gray-400 font-medium">MI</div>
-<div class="text-gray-500 dark:text-gray-400 font-medium">JU</div>
-<div class="text-gray-500 dark:text-gray-400 font-medium">VI</div>
-<div class="text-gray-500 dark:text-gray-400 font-medium">SA</div>
-<div class="text-gray-500 dark:text-gray-400 font-medium">DO</div>
-<!-- Days -->
-<div class="p-2 rounded-full relative"><span class="absolute top-1 right-1 h-1.5 w-1.5 rounded-full bg-primary"></span>1</div>
-<div class="p-2 rounded-full">2</div>
-<div class="p-2 bg-primary text-white rounded-full font-bold">3</div>
-<div class="p-2 rounded-full relative"><span class="absolute top-1 right-1 h-1.5 w-1.5 rounded-full bg-primary"></span>4</div>
-<div class="p-2 rounded-full">5</div>
-<div class="p-2 rounded-full relative"><span class="absolute top-1 right-1 h-1.5 w-1.5 rounded-full bg-primary"></span>6</div>
-<div class="p-2 rounded-full">7</div>
-<!-- ... more days -->
-<div class="p-2 rounded-full">8</div>
-<div class="p-2 rounded-full">9</div>
-<div class="p-2 rounded-full">10</div>
-<div class="p-2 rounded-full">11</div>
-<div class="p-2 rounded-full">12</div>
-<div class="p-2 rounded-full">13</div>
-<div class="p-2 rounded-full">14</div>
-</div>
-</div>
-<!-- Routine Builder -->
-<div class="flex-1 bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800">
-<div class="flex justify-between items-center mb-4">
-<h3 class="text-lg font-bold text-gray-900 dark:text-white">Rutina para Miércoles, 3 de Julio</h3>
-<button class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors">
-<span class="material-symbols-outlined text-base">delete</span> Limpiar Día
-                               </button>
-</div>
-<div class="space-y-3">
-<!-- Exercise Card -->
-<div class="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-gray-500 cursor-grab">drag_indicator</span>
-<p class="font-semibold text-gray-800 dark:text-gray-200">Sentadilla con Barra</p>
-</div>
-<button class="text-gray-500 hover:text-red-500">
-<span class="material-symbols-outlined text-xl">close</span>
-</button>
-</div>
-<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3 pl-8">
-<div>
-<label class="text-xs text-gray-500 dark:text-gray-400">Series</label>
-<input class="form-input mt-1 w-full text-sm rounded-md bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 focus:ring-primary/50 focus:border-primary" type="text" value="4"/>
-</div>
-<div>
-<label class="text-xs text-gray-500 dark:text-gray-400">Repeticiones</label>
-<input class="form-input mt-1 w-full text-sm rounded-md bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 focus:ring-primary/50 focus:border-primary" type="text" value="10"/>
-</div>
-<div>
-<label class="text-xs text-gray-500 dark:text-gray-400">Peso (kg)</label>
-<input class="form-input mt-1 w-full text-sm rounded-md bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 focus:ring-primary/50 focus:border-primary" type="text" value="80"/>
-</div>
-<div>
-<label class="text-xs text-gray-500 dark:text-gray-400">Descanso (s)</label>
-<input class="form-input mt-1 w-full text-sm rounded-md bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 focus:ring-primary/50 focus:border-primary" type="text" value="60"/>
-</div>
-</div>
-</div>
-<!-- Drop Area -->
-<div class="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg py-10 flex flex-col items-center justify-center text-center">
-<span class="material-symbols-outlined text-3xl text-gray-400 dark:text-gray-500">add_circle</span>
-<p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Arrastra ejercicios aquí para construir la rutina</p>
-</div>
-</div>
-</div>
-</div>
-<!-- Right Column: Assignment -->
-<div class="xl:col-span-3 flex flex-col gap-4 bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 h-fit">
-<h2 class="text-lg font-bold text-gray-900 dark:text-white">Asignar a Usuario</h2>
-<!-- User Selection -->
-<div class="relative">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
-<input class="form-input w-full pl-10 rounded-lg border-gray-300 dark:border-gray-700 bg-transparent dark:text-white focus:ring-primary/50 focus:border-primary" placeholder="Buscar cliente..." type="text"/>
-</div>
-<!-- Selected User -->
-<div class="flex items-center gap-3 p-3 bg-primary/10 dark:bg-primary/20 rounded-lg">
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Profile picture of Javier Milei" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAu8xYG9biFwZsjPo_SB1i7AuDeIiAh2uMi8sm8Qlb9faGdampw15IeUhsTR7NrYtuLehT1kyV1lufY7slcDQKdg_fJaCb9JU2oOgk7edd5VwTUu-v0TWfiFxDPF7V-9-ZNzH2Z-78Xxton-zSV2y88A3Fw1ioTqWCjIJsqPPAKghoBLQP9K2e6OLdNnzmkHjdJs2kUp-iUTMdtH8k4FIV8zpxQ8XmAq8dRTMveTPt-HxnpZBllivPx3LBCW3eJDmKg5lrFYWQtD2s");'></div>
-<div class="flex flex-col">
-<p class="text-sm font-semibold text-gray-900 dark:text-white">Javier Milei</p>
-<p class="text-xs text-gray-500 dark:text-gray-400">Plan: Premium</p>
-</div>
-</div>
-<!-- Routine Details -->
-<div>
-<label class="text-sm font-medium text-gray-700 dark:text-gray-300">Nombre de la Rutina</label>
-<input class="form-input mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-transparent dark:text-white focus:ring-primary/50 focus:border-primary" type="text" value="Fuerza y Potencia - Semana 1"/>
-</div>
-<div>
-<label class="text-sm font-medium text-gray-700 dark:text-gray-300">Duración (Semanas)</label>
-<input class="form-input mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-transparent dark:text-white focus:ring-primary/50 focus:border-primary" type="number" value="4"/>
-</div>
-<!-- Action Buttons -->
-<div class="flex flex-col gap-3 mt-4">
-<button class="w-full text-center rounded-lg h-11 text-sm font-semibold bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">Guardar como Plantilla</button>
-<button class="w-full text-center rounded-lg h-11 text-sm font-semibold bg-primary text-white hover:bg-primary/90 transition-colors">Asignar a Usuario</button>
-</div>
-</div>
-</div>
-</div>
-</main>
-</div>
-</body></html>
+<!-- ====================================================== -->
+<!-- JAVASCRIPT DEL PLANIFICADOR (BUFFER + AJAX COMPLETO) -->
+<!-- ====================================================== -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const RUTINA_ID = "{{ rutina.id|default:'' }}";
+    const contenedorEjerciciosDia = document.getElementById("contenedor-ejercicios-dia");
+    const dropZone = document.getElementById("drop-zone");
+    const dias = document.querySelectorAll(".day");
+    const tituloDia = document.getElementById("titulo-dia");
+
+    let diaActual = 0;
+    let ejerciciosTemporales = [];
+
+    const nombresDias = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
+
+    function getCSRF() {
+        return document.querySelector("[name=csrfmiddlewaretoken]").value;
+    }
+
+
+    function agregarTarjetaDOM(id, nombre, series=4, reps=10, peso=0, tempo="2-0-2") {
+        const card = document.createElement("div");
+        card.className = "ej-asignado bg-white p-4 rounded shadow border mb-2";
+        card.dataset.id = id;
+
+        card.innerHTML = `
+            <div class="flex justify-between mb-3">
+                <p class="font-semibold">${nombre}</p>
+                <button class="btn-eliminar text-red-500" data-id="${id}">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-4 gap-3">
+                <div>
+                    <label class="text-xs">Series</label>
+                    <input type="number" value="${series}" class="form-input w-full">
+                </div>
+                <div>
+                    <label class="text-xs">Reps</label>
+                    <input type="number" value="${reps}" class="form-input w-full">
+                </div>
+                <div>
+                    <label class="text-xs">Peso</label>
+                    <input type="number" value="${peso}" class="form-input w-full">
+                </div>
+                <div>
+                    <label class="text-xs">Tempo</label>
+                    <input type="text" value="${tempo}" class="form-input w-full">
+                </div>
+            </div>
+        `;
+
+        contenedorEjerciciosDia.appendChild(card);
+    }
+
+
+    async function cargarEjerciciosBD(dia) {
+        if (!RUTINA_ID) return;
+
+        const res = await fetch(`/ajax/obtener-ejercicios-dia/${RUTINA_ID}/${dia}/`);
+        const data = await res.json();
+
+        contenedorEjerciciosDia.innerHTML = "";
+
+        data.ejercicios.forEach(e => {
+            agregarTarjetaDOM(e.id, e.nombre, e.series, e.reps, e.peso, e.tempo);
+        });
+    }
+
+
+    dias.forEach((d) => {
+        d.addEventListener("click", async function () {
+            dias.forEach(el => el.classList.remove("bg-blue-100"));
+            d.classList.add("bg-blue-100");
+
+            diaActual = parseInt(d.dataset.dia);
+            tituloDia.textContent = "Rutina del " + nombresDias[diaActual];
+
+            if (RUTINA_ID) {
+                cargarEjerciciosBD(diaActual);
+            } else {
+                contenedorEjerciciosDia.innerHTML = "";
+                ejerciciosTemporales
+                    .filter(e => e.dia == diaActual)
+                    .forEach(e => agregarTarjetaDOM("temp", e.nombre, e.series, e.reps, e.peso, e.tempo));
+            }
+        });
+    });
+
+
+    const ejerciciosItems = document.querySelectorAll(".exercise-item");
+
+    ejerciciosItems.forEach(item => {
+        item.addEventListener("dragstart", function (e) {
+            e.dataTransfer.setData("application/json", JSON.stringify({
+                id: item.dataset.id,
+                nombre: item.dataset.nombre
+            }));
+        });
+    });
+
+    dropZone.addEventListener("dragover", e => {
+        e.preventDefault();
+        dropZone.classList.add("border-blue-500", "text-blue-500");
+    });
+
+    dropZone.addEventListener("dragleave", () => {
+        dropZone.classList.remove("border-blue-500", "text-blue-500");
+    });
+
+    dropZone.addEventListener("drop", async function (e) {
+        e.preventDefault();
+        dropZone.classList.remove("border-blue-500", "text-blue-500");
+
+        const data = JSON.parse(e.dataTransfer.getData("application/json"));
+
+        if (!RUTINA_ID) {
+            ejerciciosTemporales.push({
+                ejercicio_id: data.id,
+                nombre: data.nombre,
+                series: 4,
+                reps: 10,
+                peso: 0,
+                tempo: "2-0-2",
+                dia: diaActual
+            });
+
+            agregarTarjetaDOM("temp", data.nombre);
+            return;
+        }
+
+        const res = await fetch(`/ajax/agregar-ejercicio/${RUTINA_ID}/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCSRF(),
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `ejercicio_id=${data.id}&dia=${diaActual}&series=4&reps=10&peso=0&tempo=2-0-2`
+        });
+
+        const result = await res.json();
+
+        if (!result.ok) {
+            alert(result.error);
+            return;
+        }
+
+        agregarTarjetaDOM(result.id, data.nombre);
+    });
+
+
+    contenedorEjerciciosDia.addEventListener("click", async function (e) {
+        const btn = e.target.closest(".btn-eliminar");
+        if (!btn) return;
+
+        const id = btn.dataset.id;
+
+        if (!RUTINA_ID || id === "temp") {
+            ejerciciosTemporales = ejerciciosTemporales.filter(
+                ej => ej.nombre !== btn.closest(".ej-asignado").querySelector("p").textContent
+            );
+            btn.closest(".ej-asignado").remove();
+            return;
+        }
+
+        const res = await fetch(`/ajax/eliminar-ejercicio/${RUTINA_ID}/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCSRF(),
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `id=${id}`
+        });
+
+        const result = await res.json();
+
+        if (result.ok) {
+            btn.closest(".ej-asignado").remove();
+        }
+    });
+
+    if (RUTINA_ID) ejerciciosTemporales = [];
+
+});
+</script>
+
+</body>
+</html>
