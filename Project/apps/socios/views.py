@@ -550,6 +550,8 @@ def crear_rutina_entrenador_view(request):
 
 
 
+
+
 @login_requerido
 def panel_admin_view(request):
     usuario_id = request.session.get("usuario_id")
