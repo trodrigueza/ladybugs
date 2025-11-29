@@ -124,6 +124,41 @@ def create_test_data():
             "GrupoMuscular": "Hombros",
             "Descripcion": "Ejercicio de hombros",
         },
+        {
+            "Nombre": "Dominadas",
+            "GrupoMuscular": "Espalda",
+            "Descripcion": "Trabajo con peso corporal para espalda y brazos",
+        },
+        {
+            "Nombre": "Plancha",
+            "GrupoMuscular": "Core",
+            "Descripcion": "Ejercicio isométrico para abdomen y zona media",
+        },
+        {
+            "Nombre": "Zancadas",
+            "GrupoMuscular": "Piernas",
+            "Descripcion": "Ejercicio unilateral para cuádriceps y glúteos",
+        },
+        {
+            "Nombre": "Press de Piernas",
+            "GrupoMuscular": "Piernas",
+            "Descripcion": "Variación guiada para trabajar tren inferior",
+        },
+        {
+            "Nombre": "Curl de Bíceps",
+            "GrupoMuscular": "Brazos",
+            "Descripcion": "Aislamiento de bíceps con peso libre",
+        },
+        {
+            "Nombre": "Extensión de Tríceps",
+            "GrupoMuscular": "Brazos",
+            "Descripcion": "Trabajo de tríceps en polea o barra",
+        },
+        {
+            "Nombre": "Burpees",
+            "GrupoMuscular": "Full Body",
+            "Descripcion": "Ejercicio metabólico de cuerpo completo",
+        },
     ]
 
     ejercicios = {}
@@ -198,6 +233,185 @@ def create_test_data():
         print("Routine exercises created for Mon/Wed/Fri")
     else:
         print(f"Routine already exists: {rutina.Nombre}")
+
+    def to_decimal(value):
+        if value is None:
+            return None
+        return Decimal(str(value))
+
+    additional_routines = [
+        {
+            "nombre": "Full Body Equilibrado",
+            "dias_entrenamiento": "LMXJV",
+            "es_plantilla": False,
+            "ejercicios_por_dia": {
+                0: [
+                    {
+                        "nombre": "Sentadilla",
+                        "series": 4,
+                        "repeticiones": 8,
+                        "peso": 75,
+                    },
+                    {
+                        "nombre": "Press de Banca",
+                        "series": 4,
+                        "repeticiones": 8,
+                        "peso": 65,
+                    },
+                    {
+                        "nombre": "Dominadas",
+                        "series": 3,
+                        "repeticiones": 8,
+                        "peso": None,
+                    },
+                ],
+                1: [
+                    {
+                        "nombre": "Peso Muerto",
+                        "series": 4,
+                        "repeticiones": 6,
+                        "peso": 90,
+                    },
+                    {
+                        "nombre": "Remo con Barra",
+                        "series": 4,
+                        "repeticiones": 10,
+                        "peso": 55,
+                    },
+                    {
+                        "nombre": "Plancha",
+                        "series": 3,
+                        "repeticiones": 45,
+                        "peso": None,
+                    },
+                ],
+                3: [
+                    {"nombre": "Zancadas", "series": 4, "repeticiones": 12, "peso": 30},
+                    {
+                        "nombre": "Press Militar",
+                        "series": 3,
+                        "repeticiones": 10,
+                        "peso": 42,
+                    },
+                    {
+                        "nombre": "Curl de Bíceps",
+                        "series": 3,
+                        "repeticiones": 12,
+                        "peso": 12,
+                    },
+                ],
+                4: [
+                    {
+                        "nombre": "Press de Piernas",
+                        "series": 4,
+                        "repeticiones": 12,
+                        "peso": 120,
+                    },
+                    {
+                        "nombre": "Extensión de Tríceps",
+                        "series": 3,
+                        "repeticiones": 12,
+                        "peso": 20,
+                    },
+                ],
+            },
+        },
+        {
+            "nombre": "HIIT + Fuerza Express",
+            "dias_entrenamiento": "LXVSD",
+            "es_plantilla": True,
+            "ejercicios_por_dia": {
+                0: [
+                    {
+                        "nombre": "Burpees",
+                        "series": 5,
+                        "repeticiones": 15,
+                        "peso": None,
+                    },
+                    {
+                        "nombre": "Sentadilla",
+                        "series": 3,
+                        "repeticiones": 15,
+                        "peso": 60,
+                    },
+                ],
+                2: [
+                    {
+                        "nombre": "Dominadas",
+                        "series": 4,
+                        "repeticiones": 6,
+                        "peso": None,
+                    },
+                    {
+                        "nombre": "Press Militar",
+                        "series": 3,
+                        "repeticiones": 10,
+                        "peso": 40,
+                    },
+                    {
+                        "nombre": "Plancha",
+                        "series": 4,
+                        "repeticiones": 60,
+                        "peso": None,
+                    },
+                ],
+                5: [
+                    {
+                        "nombre": "Peso Muerto",
+                        "series": 4,
+                        "repeticiones": 5,
+                        "peso": 95,
+                    },
+                    {"nombre": "Zancadas", "series": 3, "repeticiones": 10, "peso": 35},
+                ],
+            },
+        },
+    ]
+
+    for rutina_data in additional_routines:
+        rutina_obj, rutina_created = RutinaSemanal.objects.get_or_create(
+            SocioID=socio,
+            Nombre=rutina_data["nombre"],
+            defaults={
+                "DiasEntrenamiento": rutina_data["dias_entrenamiento"],
+                "EsPlantilla": rutina_data["es_plantilla"],
+            },
+        )
+
+        if not rutina_created:
+            updated = False
+            if rutina_obj.DiasEntrenamiento != rutina_data["dias_entrenamiento"]:
+                rutina_obj.DiasEntrenamiento = rutina_data["dias_entrenamiento"]
+                updated = True
+            if rutina_obj.EsPlantilla != rutina_data["es_plantilla"]:
+                rutina_obj.EsPlantilla = rutina_data["es_plantilla"]
+                updated = True
+            if updated:
+                rutina_obj.save()
+
+        estado = "created" if rutina_created else "updated"
+        print(f"Routine {estado}: {rutina_obj.Nombre}")
+
+        asignaciones_configuradas = 0
+        for dia_semana, ejercicios_dia in rutina_data["ejercicios_por_dia"].items():
+            for ejercicio_cfg in ejercicios_dia:
+                ejercicio_obj = ejercicios[ejercicio_cfg["nombre"]]
+                DiaRutinaEjercicio.objects.update_or_create(
+                    RutinaID=rutina_obj,
+                    EjercicioID=ejercicio_obj,
+                    DiaSemana=dia_semana,
+                    defaults={
+                        "Series": ejercicio_cfg.get("series"),
+                        "Repeticiones": ejercicio_cfg.get("repeticiones"),
+                        "PesoObjetivo": to_decimal(ejercicio_cfg.get("peso")),
+                        "Tempo": "",
+                    },
+                )
+                asignaciones_configuradas += 1
+
+        print(
+            f"  -> {asignaciones_configuradas} ejercicios configurados para {rutina_obj.Nombre}"
+        )
 
     # 6. Create Weekly Routine for current day
     dia_semana_actual = datetime.now().weekday()

@@ -21,6 +21,7 @@ urlpatterns = [
     path('socio/mi-rutina/terminar_sesion/', socios_views.terminar_sesion_view, name='terminar_sesion'),
     path('socio/mi-rutina/toggle_ejercicio/', socios_views.toggle_ejercicio_view, name='toggle_ejercicio'),
     path('socio/mi-rutina/sesion/<int:sesion_id>/', socios_views.detalle_sesion_view, name='detalle_sesion'),
+    path('socio/mi-rutina/historial/', socios_views.historial_sesiones_view, name='historial_sesiones'),
     path('socio/mi-nutricion/', socios_views.mi_nutricion_view, name='mi_nutricion'),
     path('socio/mi-nutricion/toggle-comida/', socios_views.toggle_comida_view, name='toggle_comida'),
     path('socio/mi-nutricion/historial/', socios_views.historial_comidas_view, name='historial_comidas'),
