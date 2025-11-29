@@ -63,7 +63,7 @@
 <div class="flex flex-col gap-2">
 <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20" href="#">
 <span class="material-symbols-outlined text-primary">dashboard</span>
-<p class="text-primary text-sm font-bold">Dashboard</p>
+<p class="text-primary text-sm font-bold">Panel de Inicio</p>
 </a>
 <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10" href="{% url 'gestionar_usuarios' %}">
 <span class="material-symbols-outlined text-text-light dark:text-text-dark">group</span>
@@ -72,18 +72,6 @@
 <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10" href="{% url 'gestion_pagos' %}">
 <span class="material-symbols-outlined text-text-light dark:text-text-dark">credit_card</span>
 <p class="text-text-light dark:text-text-dark text-sm font-medium">Gestor de Pagos</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10" href="#">
-<span class="material-symbols-outlined text-text-light dark:text-text-dark">bar_chart</span>
-<p class="text-text-light dark:text-text-dark text-sm font-medium">Reportes</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10" href="#">
-<span class="material-symbols-outlined text-text-light dark:text-text-dark">fitness_center</span>
-<p class="text-text-light dark:text-text-dark text-sm font-medium">Planes y Rutinas</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10" href="#">
-<span class="material-symbols-outlined text-text-light dark:text-text-dark">settings</span>
-<p class="text-text-light dark:text-text-dark text-sm font-medium">Configuración</p>
 </a>
 </div>
 </div>
@@ -104,44 +92,29 @@
 <main class="flex-1 overflow-y-auto">
 <!-- TopNavBar -->
 <header class="flex items-center justify-end whitespace-nowrap border-b border-solid border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-10 py-3 sticky top-0 z-10">
-<div class="flex items-center gap-4">
-<div class="flex flex-col text-right">
-</div>
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCM6AMlpeeQ9rocoL027a_30LxZKqOFH8-sncbZGEGrIGdJ-XwQlok6fNGVMNhjSAKpppoGbaLhkyHA1o00RnPB-JTSMNCOO0xlttH6vftANU8lj9wBq1gOKIR-XEGGwLnvlQC5bgqV1itpb1z3_wv_yUM86l4r1BuWB8oCfUbhDEYiOdic1Y34aPZkX7kRKnJ2uL23revfHelj2Nr92VbYivpQ75spIwUq9eeBskiKHpfQdZv3XI2Vx8qbgR_G88Swz1NRVToq7EQ");'></div>
-</div>
 </header>
 <div class="p-6 md:p-10">
 <!-- PageHeading -->
 <div class="flex flex-wrap justify-between gap-4 items-center mb-6">
 <p class="text-text-light dark:text-text-dark text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">Panel de Administración</p>
-<div class="flex gap-2">
-<button class="flex items-center gap-2 justify-center rounded-lg bg-card-light dark:bg-card-dark text-text-light dark:text-text-dark px-4 py-2.5 text-sm font-semibold border border-border-light dark:border-border-dark hover:bg-background-light dark:hover:bg-background-dark">
-<span class="material-symbols-outlined text-base">picture_as_pdf</span>
-                                 Generar Reporte
-                             </button>
-<button class="flex items-center gap-2 justify-center rounded-lg bg-primary text-white px-4 py-2.5 text-sm font-semibold hover:bg-primary/90">
-<span class="material-symbols-outlined text-base">person_add</span>
-                                Agregar Nuevo Usuario
-                            </button>
-</div>
 </div>
 <!-- Stats -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
 <div class="flex flex-col gap-2 rounded-xl p-6 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
-<p class="text-text-secondary-light dark:text-text-secondary-dark text-sm font-medium">Total de Usuarios Activos</p>
-<p class="text-text-light dark:text-text-dark tracking-tight text-3xl font-bold">1,420</p>
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-sm font-medium">Total de Socios</p>
+<p class="text-text-light dark:text-text-dark tracking-tight text-3xl font-bold">{{ total_socios|default:0 }}</p>
 </div>
 <div class="flex flex-col gap-2 rounded-xl p-6 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
 <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm font-medium">Nuevos Registros (30d)</p>
-<p class="text-text-light dark:text-text-dark tracking-tight text-3xl font-bold">85</p>
+<p class="text-text-light dark:text-text-dark tracking-tight text-3xl font-bold">{{ nuevos_socios|default:0 }}</p>
 </div>
 <div class="flex flex-col gap-2 rounded-xl p-6 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
 <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm font-medium">Ingresos del Mes</p>
-<p class="text-text-light dark:text-text-dark tracking-tight text-3xl font-bold">$12,500</p>
+<p class="text-text-light dark:text-text-dark tracking-tight text-3xl font-bold">${{ ingresos_mes|floatformat:0|default:0 }}</p>
 </div>
 <div class="flex flex-col gap-2 rounded-xl p-6 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
 <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm font-medium">Suscripciones Activas</p>
-<p class="text-text-light dark:text-text-dark tracking-tight text-3xl font-bold">980</p>
+<p class="text-text-light dark:text-text-dark tracking-tight text-3xl font-bold">{{ suscripciones_activas|default:0 }}</p>
 </div>
 </div>
 <!-- Charts -->
@@ -149,76 +122,116 @@
 <div class="flex min-w-72 flex-col gap-4 rounded-xl border border-border-light dark:border-border-dark p-6 bg-card-light dark:bg-card-dark lg:col-span-2">
 <p class="text-text-light dark:text-text-dark text-base font-semibold">Actividad de la Plataforma</p>
 <div class="flex min-h-[240px] flex-1 flex-col gap-8 py-4">
+{% if datos %}
 <svg fill="none" height="100%" preserveaspectratio="none" viewbox="-3 0 478 150" width="100%" xmlns="http://www.w3.org/2000/svg">
-<path d="M0 109C18.1538 109 18.1538 21 36.3077 21C54.4615 21 54.4615 41 72.6154 41C90.7692 41 90.7692 93 108.923 93C127.077 93 127.077 33 145.231 33C163.385 33 163.385 101 181.538 101C199.692 101 199.692 61 217.846 61C236 61 236 45 254.154 45C272.308 45 272.308 121 290.462 121C308.615 121 308.615 149 326.769 149C344.923 149 344.923 1 363.077 1C381.231 1 381.231 81 399.385 81C417.538 81 417.538 129 435.692 129C453.846 129 453.846 25 472 25V149H326.769H0V109Z" fill="url(#paint0_linear_1131_5935)"></path>
-<path d="M0 109C18.1538 109 18.1538 21 36.3077 21C54.4615 21 54.4615 41 72.6154 41C90.7692 41 90.7692 93 108.923 93C127.077 93 127.077 33 145.231 33C163.385 33 163.385 101 181.538 101C199.692 101 199.692 61 217.846 61C236 61 236 45 254.154 45C272.308 45 272.308 121 290.462 121C308.615 121 308.615 149 326.769 149C344.923 149 344.923 1 363.077 1C381.231 1 381.231 81 399.385 81C417.538 81 417.538 129 435.692 129C453.846 129 453.846 25 472 25" stroke="#0f49bd" stroke-linecap="round" stroke-width="3"></path>
-<defs>
-<lineargradient gradientunits="userSpaceOnUse" id="paint0_linear_1131_5935" x1="236" x2="236" y1="1" y2="149">
-<stop stop-color="#0f49bd" stop-opacity="0.2"></stop>
-<stop offset="1" stop-color="#0f49bd" stop-opacity="0"></stop>
-</lineargradient>
-</defs>
+  {% with ancho=472 altura=150 %}
+  
+  <!-- Área rellena debajo de la línea -->
+  <path d="
+    M 0 {{ altura }}
+    {% for valor in datos %}
+      {% widthratio forloop.counter0 5 ancho as x %}
+      {% if valor == 0 %}
+        L {{ x }} {{ altura }}
+      {% else %}
+        {% widthratio valor max_valor altura as altura_barra %}
+        L {{ x }} {{ altura|add:"-"|add:altura_barra }}
+      {% endif %}
+    {% endfor %}
+    L {{ ancho }} {{ altura }}
+    Z
+  " fill="url(#paint0_linear_1131_5935)"></path>
+  
+  <!-- Línea principal -->
+  <path d="
+    {% for valor in datos %}
+      {% widthratio forloop.counter0 5 ancho as x %}
+      {% if valor == 0 %}
+        {% if forloop.first %}M {{ x }} {{ altura }}{% else %}L {{ x }} {{ altura }}{% endif %}
+      {% else %}
+        {% widthratio valor max_valor altura as altura_barra %}
+        {% if forloop.first %}M {{ x }} {{ altura|add:"-"|add:altura_barra }}{% else %}L {{ x }} {{ altura|add:"-"|add:altura_barra }}{% endif %}
+      {% endif %}
+    {% endfor %}
+  " stroke="#0f49bd" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" fill="none"></path>
+  
+  {% endwith %}
+  
+  <defs>
+    <lineargradient gradientunits="userSpaceOnUse" id="paint0_linear_1131_5935" x1="236" x2="236" y1="0" y2="150">
+      <stop stop-color="#0f49bd" stop-opacity="0.2"></stop>
+      <stop offset="1" stop-color="#0f49bd" stop-opacity="0"></stop>
+    </lineargradient>
+  </defs>
 </svg>
+{% else %}
+<div class="flex items-center justify-center h-full text-text-secondary-light dark:text-text-secondary-dark">
+  <p>No hay datos disponibles</p>
+</div>
+{% endif %}
 <div class="flex justify-around">
-<p class="text-text-secondary-light dark:text-text-secondary-dark text-xs font-bold tracking-wide">Ene</p>
-<p class="text-text-secondary-light dark:text-text-secondary-dark text-xs font-bold tracking-wide">Feb</p>
-<p class="text-text-secondary-light dark:text-text-secondary-dark text-xs font-bold tracking-wide">Mar</p>
-<p class="text-text-secondary-light dark:text-text-secondary-dark text-xs font-bold tracking-wide">Abr</p>
-<p class="text-text-secondary-light dark:text-text-secondary-dark text-xs font-bold tracking-wide">May</p>
-<p class="text-text-secondary-light dark:text-text-secondary-dark text-xs font-bold tracking-wide">Jun</p>
+  {% for mes in meses %}
+    <p class="text-text-secondary-light dark:text-text-secondary-dark text-xs font-bold tracking-wide">{{ mes }}</p>
+  {% endfor %}
 </div>
 </div>
 </div>
 <div class="flex min-w-72 flex-col gap-4 rounded-xl border border-border-light dark:border-border-dark p-6 bg-card-light dark:bg-card-dark">
-<p class="text-text-light dark:text-text-dark text-base font-semibold">Estado de Pagos</p>
+<p class="text-text-light dark:text-text-dark text-base font-semibold">Estado de Membresías</p>
 <div class="flex min-h-[240px] items-center justify-center relative">
+{% if total > 0 %}
 <svg class="w-48 h-48 transform -rotate-90" viewbox="0 0 120 120">
-<circle cx="60" cy="60" fill="none" r="54" stroke="#22c55e" stroke-dasharray="248.8 339.29" stroke-dashoffset="0" stroke-width="12"></circle> <!-- 70% Green -->
-<circle cx="60" cy="60" fill="none" r="54" stroke="#eab308" stroke-dasharray="67.85 339.29" stroke-dashoffset="-248.8" stroke-width="12"></circle> <!-- 20% Yellow -->
-<circle cx="60" cy="60" fill="none" r="54" stroke="#ef4444" stroke-dasharray="33.92 339.29" stroke-dashoffset="-316.65" stroke-width="12"></circle> <!-- 10% Red -->
+  <!-- Circunferencia = 2 * PI * radio = 2 * 3.14159 * 54 = 339.29 -->
+  {% widthratio activas total 339.29 as dash_activas %}
+  {% widthratio morosas total 339.29 as dash_morosas %}
+  {% widthratio expiradas total 339.29 as dash_expiradas %}
+  
+  <!-- Activas (Verde) - empieza en 0 -->
+  <circle cx="60" cy="60" fill="none" r="54" 
+          stroke="#22c55e" 
+          stroke-dasharray="{{ dash_activas }} 339.29" 
+          stroke-dashoffset="0" 
+          stroke-width="12"></circle>
+  
+  <!-- Morosas (Amarillo) - empieza después de las activas -->
+  <circle cx="60" cy="60" fill="none" r="54" 
+          stroke="#eab308" 
+          stroke-dasharray="{{ dash_morosas }} 339.29" 
+          stroke-dashoffset="-{{ dash_activas }}" 
+          stroke-width="12"></circle>
+  
+  <!-- Expiradas (Rojo) - empieza después de activas + morosas -->
+  {% with offset_combined=dash_activas|add:dash_morosas %}
+  <circle cx="60" cy="60" fill="none" r="54" 
+          stroke="#ef4444" 
+          stroke-dasharray="{{ dash_expiradas }} 339.29" 
+          stroke-dashoffset="-{{ offset_combined }}" 
+          stroke-width="12"></circle>
+  {% endwith %}
 </svg>
+{% else %}
+<svg class="w-48 h-48 transform -rotate-90" viewbox="0 0 120 120">
+  <circle cx="60" cy="60" fill="none" r="54" stroke="#e5e7eb" stroke-width="12"></circle>
+</svg>
+{% endif %}
 <div class="absolute flex flex-col items-center justify-center">
-<span class="text-3xl font-bold text-text-light dark:text-text-dark">980</span>
+<span class="text-3xl font-bold text-text-light dark:text-text-dark">{{ total|default:0 }}</span>
 <span class="text-sm text-text-secondary-light dark:text-text-secondary-dark">Total</span>
 </div>
 </div>
 <div class="flex justify-around text-sm">
-<div class="flex items-center gap-2"> <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div> <span class="text-text-secondary-light dark:text-text-secondary-dark">Pagado</span> </div>
-<div class="flex items-center gap-2"> <div class="w-2.5 h-2.5 rounded-full bg-yellow-500"></div> <span class="text-text-secondary-light dark:text-text-secondary-dark">Pendiente</span> </div>
-<div class="flex items-center gap-2"> <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div> <span class="text-text-secondary-light dark:text-text-secondary-dark">Vencido</span> </div>
+<div class="flex items-center gap-2"> 
+  <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div> 
+  <span class="text-text-secondary-light dark:text-text-secondary-dark">Activas ({{ activas|default:0 }})</span> 
 </div>
+<div class="flex items-center gap-2"> 
+  <div class="w-2.5 h-2.5 rounded-full bg-yellow-500"></div> 
+  <span class="text-text-secondary-light dark:text-text-secondary-dark">Morosas ({{ morosas|default:0 }})</span> 
 </div>
+<div class="flex items-center gap-2"> 
+  <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div> 
+  <span class="text-text-secondary-light dark:text-text-secondary-dark">Expiradas ({{ expiradas|default:0 }})</span> 
 </div>
-<!-- Alerts Table -->
-<div class="flex flex-col gap-4 rounded-xl border border-border-light dark:border-border-dark p-6 bg-card-light dark:bg-card-dark">
-<h3 class="text-text-light dark:text-text-dark text-base font-semibold">Notificaciones del Sistema</h3>
-<div class="overflow-x-auto">
-<table class="w-full text-left text-sm">
-<thead class="border-b border-border-light dark:border-border-dark">
-<tr>
-<th class="py-3 px-4 font-semibold text-text-secondary-light dark:text-text-secondary-dark">Tipo de Alerta</th>
-<th class="py-3 px-4 font-semibold text-text-secondary-light dark:text-text-secondary-dark">Descripción</th>
-<th class="py-3 px-4 font-semibold text-text-secondary-light dark:text-text-secondary-dark">Fecha</th>
-</tr>
-</thead>
-<tbody>
-<tr class="border-b border-border-light dark:border-border-dark">
-<td class="py-3 px-4 text-text-light dark:text-text-dark font-medium"><span class="inline-flex items-center rounded-md bg-yellow-100 dark:bg-yellow-900/50 px-2 py-1 text-xs font-medium text-yellow-800 dark:text-yellow-300">Advertencia</span></td>
-<td class="py-3 px-4 text-text-secondary-light dark:text-text-secondary-dark">15 pagos están por vencer en los próximos 3 días.</td>
-<td class="py-3 px-4 text-text-secondary-light dark:text-text-secondary-dark">hace 10 minutos</td>
-</tr>
-<tr class="border-b border-border-light dark:border-border-dark">
-<td class="py-3 px-4 text-text-light dark:text-text-dark font-medium"><span class="inline-flex items-center rounded-md bg-red-100 dark:bg-red-900/50 px-2 py-1 text-xs font-medium text-red-800 dark:text-red-300">Crítico</span></td>
-<td class="py-3 px-4 text-text-secondary-light dark:text-text-secondary-dark">Error en el sistema de pago. API de Stripe no responde.</td>
-<td class="py-3 px-4 text-text-secondary-light dark:text-text-secondary-dark">hace 45 minutos</td>
-</tr>
-<tr>
-<td class="py-3 px-4 text-text-light dark:text-text-dark font-medium"><span class="inline-flex items-center rounded-md bg-blue-100 dark:bg-blue-900/50 px-2 py-1 text-xs font-medium text-blue-800 dark:text-blue-300">Información</span></td>
-<td class="py-3 px-4 text-text-secondary-light dark:text-text-secondary-dark">Nueva solicitud de soporte recibida de usuario #1256.</td>
-<td class="py-3 px-4 text-text-secondary-light dark:text-text-secondary-dark">hace 2 horas</td>
-</tr>
-</tbody>
-</table>
 </div>
 </div>
 </div>

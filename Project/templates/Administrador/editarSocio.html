@@ -94,13 +94,14 @@
                 <!-- Email -->
                 <label class="flex flex-col">
                   <span class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">
-                    {{ form.Email.label }}
+                    {{ form.Email.label }} <span class="text-red-500">*</span>
                   </span>
                   <input
                     type="email"
                     name="Email"
                     value="{{ form.Email.value|default:'' }}"
                     class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                    required
                   />
                   {% if form.Email.errors %}
                     <span class="text-red-600 text-sm mt-1">{{ form.Email.errors.0 }}</span>
@@ -183,6 +184,25 @@
                   >{{ form.NotaOpcional.value|default:'' }}</textarea>
                   {% if form.NotaOpcional.errors %}
                     <span class="text-red-600 text-sm mt-1">{{ form.NotaOpcional.errors.0 }}</span>
+                  {% endif %}
+                </label>
+
+                <!-- Contraseña (Opcional en edición) -->
+                <label class="flex flex-col">
+                  <span class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">
+                    {{ form.password.label }}
+                  </span>
+                  <input
+                    type="password"
+                    name="password"
+                    class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="Dejar en blanco para mantener contraseña actual"
+                  />
+                  {% if form.password.errors %}
+                    <span class="text-red-600 text-sm mt-1">{{ form.password.errors.0 }}</span>
+                  {% endif %}
+                  {% if form.password.help_text %}
+                    <span class="text-gray-500 dark:text-gray-400 text-xs mt-1">{{ form.password.help_text }}</span>
                   {% endif %}
                 </label>
               </div>

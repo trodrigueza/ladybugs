@@ -12,8 +12,6 @@ urlpatterns = [
     # LOGIN / LOGOUT
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
-    # REGISTRO
-    path('register/', socios_views.register_view, name='register'),
     # HOME apunta al login
     path('', login_view, name='home'),
     # PANEL SEGÚN ROL

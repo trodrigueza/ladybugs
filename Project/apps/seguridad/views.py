@@ -45,7 +45,7 @@ def login_view(request):
         request.session["usuario_email"] = usuario.Email
         request.session["usuario_rol"] = rol_real
 
-        messages.success(request, f"Bienvenido, {usuario.Email}.")
+        # No agregar mensaje aquí, se mostrará en el panel correspondiente
 
         if rol_real == "socio":
             return redirect("socio_panel")
@@ -80,7 +80,21 @@ def logout_view(request):
 @admin_requerido
 def panel_admin_view(request):
     """Panel de administrador - requiere rol administrativo"""
-    return render(request, "Administrador/PaneldeInicio.html")
+    from apps.seguridad.servicios.estadisticas_dashboard import (
+        obtener_estadisticas_dashboard,
+        obtener_estadisticas_pagos_dashboard,
+        obtener_actividad_plataforma
+    )
+    
+    # Obtener todas las estadísticas desde el servicio
+    estadisticas = obtener_estadisticas_dashboard()
+    estadisticas_pagos = obtener_estadisticas_pagos_dashboard()
+    actividad = obtener_actividad_plataforma()
+    
+    # Combinar todos los diccionarios
+    context = {**estadisticas, **estadisticas_pagos, **actividad}
+    
+    return render(request, "Administrador/PaneldeInicio.html", context)
 
 
 @admin_requerido
@@ -211,8 +225,29 @@ def crear_socio_view(request):
     if request.method == "POST":
         socio_form = SocioForm(request.POST)
         if socio_form.is_valid():
+            password = socio_form.cleaned_data.get('password')
+            if not password:
+                messages.error(request, "La contraseña es obligatoria al crear un socio.")
+                return render(request, "Administrador/crearSocio.html", {"form": socio_form})
+            
+            # Guardar el socio
             socio = socio_form.save()
-            messages.success(request, f"Socio {socio.NombreCompleto} creado correctamente.")
+            
+            # Crear el Usuario asociado para que pueda iniciar sesión
+            from django.contrib.auth.hashers import make_password
+            
+            # Obtener el rol de Socio
+            rol_socio = Rol.objects.get(NombreRol='Socio')
+            
+            # Crear el usuario
+            usuario = Usuario.objects.create(
+                NombreUsuario=socio.Identificacion,  # Usar identificación como username
+                Email=socio.Email,
+                PasswordHash=make_password(password),
+                RolID=rol_socio
+            )
+            
+            messages.success(request, f"Socio {socio.NombreCompleto} y usuario creados correctamente.")
             # Redirige al formulario de membresía con el socio recién creado
             return redirect("crear_membresia", socio_id=socio.id)
     else:
@@ -229,7 +264,23 @@ def editar_socio_view(request, socio_id):
         socio_form = SocioForm(request.POST, instance=socio)
         if socio_form.is_valid():
             socio_form.save()
-            messages.success(request, f"Socio {socio.NombreCompleto} actualizado correctamente.")
+            
+            # Si se proporcionó una nueva contraseña, actualizar el Usuario asociado
+            password = socio_form.cleaned_data.get('password')
+            if password:
+                try:
+                    # Buscar el usuario por la identificación del socio
+                    usuario = Usuario.objects.get(NombreUsuario=socio.Identificacion)
+                    from django.contrib.auth.hashers import make_password
+                    usuario.PasswordHash = make_password(password)
+                    usuario.Email = socio.Email  # Actualizar email también
+                    usuario.save()
+                    messages.success(request, f"Socio {socio.NombreCompleto} y contraseña actualizados correctamente.")
+                except Usuario.DoesNotExist:
+                    messages.warning(request, f"Socio actualizado, pero no se encontró usuario asociado para actualizar contraseña.")
+            else:
+                messages.success(request, f"Socio {socio.NombreCompleto} actualizado correctamente.")
+            
             return redirect('gestionar_usuarios')
     else:
         socio_form = SocioForm(instance=socio)

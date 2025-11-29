@@ -1,10 +1,21 @@
 from django import forms
 from apps.socios.models import Socio
 from apps.pagos.models import SocioMembresia
-from apps.seguridad.models import Usuario
+from apps.seguridad.models import Usuario, Rol
+from django.contrib.auth.hashers import make_password
 
 
 class SocioForm(forms.ModelForm):
+    password = forms.CharField(
+        label="Contraseña",
+        widget=forms.PasswordInput(attrs={
+            'class': 'px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary',
+            'placeholder': 'Ingrese contraseña para el socio'
+        }),
+        required=False,
+        help_text="En creación: obligatorio. En edición: dejar en blanco para mantener la contraseña actual"
+    )
+    
     class Meta:
         model = Socio
         fields = ["Identificacion", "NombreCompleto", "Email", "Telefono", "FechaNacimiento", "Altura", "SaludBasica", "NotaOpcional"]
@@ -23,6 +34,13 @@ class SocioForm(forms.ModelForm):
             "SaludBasica": forms.Textarea(attrs={'rows': 3}),
             "NotaOpcional": forms.Textarea(attrs={'rows': 2}),
         }
+    
+    def clean_Email(self):
+        """Validar que el email sea obligatorio"""
+        email = self.cleaned_data.get('Email')
+        if not email:
+            raise forms.ValidationError("El correo electrónico es obligatorio para que el socio pueda iniciar sesión.")
+        return email
 
 
 class UsuarioForm(forms.ModelForm):
