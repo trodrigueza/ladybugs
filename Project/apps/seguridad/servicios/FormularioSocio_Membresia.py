@@ -1,0 +1,75 @@
+from django import forms
+from apps.socios.models import Socio
+from apps.pagos.models import SocioMembresia
+from apps.seguridad.models import Usuario
+
+
+class SocioForm(forms.ModelForm):
+    class Meta:
+        model = Socio
+        fields = ["Identificacion", "NombreCompleto", "Email", "Telefono", "FechaNacimiento", "Altura", "SaludBasica", "NotaOpcional"]
+        labels = {
+            "Identificacion": "Identificación/Cédula",
+            "NombreCompleto": "Nombre Completo",
+            "Email": "Correo Electrónico",
+            "Telefono": "Teléfono",
+            "FechaNacimiento": "Fecha de Nacimiento",
+            "Altura": "Altura (metros)",
+            "SaludBasica": "Información de Salud",
+            "NotaOpcional": "Nota Adicional"
+        }
+        widgets = {
+            "FechaNacimiento": forms.DateInput(attrs={'type': 'date'}),
+            "SaludBasica": forms.Textarea(attrs={'rows': 3}),
+            "NotaOpcional": forms.Textarea(attrs={'rows': 2}),
+        }
+
+
+class UsuarioForm(forms.ModelForm):
+    """Formulario para crear y editar Usuarios (Administrativos, Entrenadores, etc.)"""
+    password = forms.CharField(
+        label="Contraseña",
+        widget=forms.PasswordInput,
+        required=False,
+        help_text="Dejar en blanco para mantener la contraseña actual (o usar contraseña temporal en creación)"
+    )
+    
+    class Meta:
+        model = Usuario
+        fields = ["NombreUsuario", "Email", "RolID"]
+        labels = {
+            "NombreUsuario": "Nombre de Usuario",
+            "Email": "Correo Electrónico",
+            "RolID": "Rol"
+        }
+    
+    def save(self, commit=True):
+        usuario = super().save(commit=False)
+        # Si se proporciona contraseña, hashearla
+        if self.cleaned_data.get('password'):
+            from django.contrib.auth.hashers import make_password
+            usuario.PasswordHash = make_password(self.cleaned_data['password'])
+        # Si es creación (no existe id) y no hay contraseña, usar una por defecto
+        elif not usuario.id:
+            from django.contrib.auth.hashers import make_password
+            usuario.PasswordHash = make_password('DefaultPassword123!')
+        
+        if commit:
+            usuario.save()
+        return usuario
+
+
+class SocioMembresiaForm(forms.ModelForm):
+    class Meta:
+        model = SocioMembresia
+        fields = ["PlanID", "FechaInicio", "FechaFin", "Estado"]
+        labels = {
+            "PlanID": "Plan de Membresía",
+            "FechaInicio": "Fecha de Inicio",
+            "FechaFin": "Fecha de Fin",
+            "Estado": "Estado"
+        }
+        widgets = {
+            "FechaInicio": forms.DateInput(attrs={'type': 'date'}),
+            "FechaFin": forms.DateInput(attrs={'type': 'date'}),
+        }

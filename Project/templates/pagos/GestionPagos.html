@@ -1,253 +1,421 @@
 <!DOCTYPE html>
-
-<html class="light" lang="es"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>GluteOS - Gestión de Pagos</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
-<style>
+{% load static %}
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>GluteOS - Gestión de Pagos</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+    <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
     </style>
-<script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "primary": "#0f49bd",
-              "background-light": "#f6f6f8",
-              "background-dark": "#101622",
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0f49bd",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
             },
-            fontFamily: {
-              "display": ["Manrope", "sans-serif"]
-            },
-            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
-          },
-        },
-      }
+        }
     </script>
 </head>
 <body class="font-display bg-background-light dark:bg-background-dark">
 <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
-<div class="flex min-h-screen">
-<!-- SideNavBar -->
-<aside class="flex flex-col w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 shrink-0">
-<div class="flex flex-col grow justify-between p-4">
-<div class="flex flex-col gap-4">
-<div class="flex items-center gap-3 px-3">
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="GluteOS logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBGi3Oa2bbBBXO85qSFn3FbPE1asgkAi0NkPUAkGXUpgpc4F8NaC5EJ-NuYC0fOW26oHBiAqYhTxkaEyfmsDXkTVwP-ebRG1oY-Ojnqu-JtF4MdRsrHOCgb9ouzazUJfZ2a_rF28G82gxXLt63MldZC9mcg329YubTZL3BZ6hOd3q--Ke2F1LLizVCiyAwY1hYvNPZgeLsPxBhS_pifNyicY8gP_b8Rl-_PYZSc1ReQxTwvb7GwYN3PQwZYc554yg003KchBt9kcQ8");'></div>
-<div class="flex flex-col">
-<h1 class="text-gray-900 dark:text-white text-base font-medium leading-normal">GluteOS</h1>
-<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">Admin Panel</p>
+    <div class="flex min-h-screen">
+        <!-- SideNavBar -->
+        <aside class="flex flex-col w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 shrink-0">
+            <div class="flex flex-col grow justify-between p-4">
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-center gap-3 px-3">
+                        <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="GluteOS logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBGi3Oa2bbBBXO85qSFn3FbPE1asgkAi0NkPUAkGXUpgpc4F8NaC5EJ-NuYC0fOW26oHBiAqYhTxkaEyfmsDXkTVwP-ebRG1oY-Ojnqu-JtF4MdRsrHOCgb9ouzazUJfZ2a_rF28G82gxXLt63MldZC9mcg329YubTZL3BZ6hOd3q--Ke2F1LLizVCiyAwY1hYvNPZgeLsPxBhS_pifNyicY8gP_b8Rl-_PYZSc1ReQxTwvb7GwYN3PQwZYc554yg003KchBt9kcQ8");'></div>
+                        <div class="flex flex-col">
+                            <h1 class="text-gray-900 dark:text-white text-base font-medium leading-normal">GluteOS</h1>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">Admin Panel</p>
+                        </div>
+                    </div>
+                    <nav class="flex flex-col gap-2 mt-4">
+                        <a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="{% url 'panel_admin' %}">
+                            <span class="material-symbols-outlined">dashboard</span>
+                            <p class="text-sm font-medium leading-normal">Panel de Inicio</p>
+                        </a>
+                        <a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="{% url 'gestionar_usuarios' %}">
+                            <span class="material-symbols-outlined">group</span>
+                            <p class="text-sm font-medium leading-normal">Gestión de Usuarios</p>
+                        </a>
+                        <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 dark:bg-primary/20 text-primary dark:text-white" href="{% url 'gestion_pagos' %}">
+                            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">credit_card</span>
+                            <p class="text-sm font-medium leading-normal">Gestor de Pagos</p>
+                        </a>
+                        <a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+                            <span class="material-symbols-outlined">assessment</span>
+                            <p class="text-sm font-medium leading-normal">Reportes</p>
+                        </a>
+                        <a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+                            <span class="material-symbols-outlined">fitness_center</span>
+                            <p class="text-sm font-medium leading-normal">Planes y Rutinas</p>
+                        </a>
+                    </nav>
+                </div>
+                <div class="flex flex-col gap-1">
+                    <a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+                        <span class="material-symbols-outlined">settings</span>
+                        <p class="text-sm font-medium leading-normal">Configuración</p>
+                    </a>
+                    <a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="{% url 'logout' %}">
+                        <span class="material-symbols-outlined">logout</span>
+                        <p class="text-sm font-medium leading-normal">Salir</p>
+                    </a>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="flex-1 p-6 lg:p-10">
+            <div class="max-w-7xl mx-auto">
+                <!-- PageHeading -->
+                <header class="flex flex-col sm:flex-row flex-wrap justify-between items-start sm:items-center gap-4 mb-8">
+                    <div>
+                        <p class="text-gray-900 dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">Gestión de Pagos</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm mt-2">Administra las membresías y pagos de los socios</p>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="abrirModalPago()" class="flex min-w-[84px] items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
+                            <span class="material-symbols-outlined text-base">add_circle</span>
+                            <span class="truncate">Registrar Pago</span>
+                        </button>
+                    </div>
+                </header>
+
+                <!-- Cards de Estadísticas -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Ingresos del Mes</p>
+                                <p class="text-gray-900 dark:text-white text-2xl font-bold mt-2">${{ estadisticas.ingresos_mes|floatformat:0 }}</p>
+                            </div>
+                            <div class="bg-green-100 dark:bg-green-900 p-3 rounded-lg">
+                                <span class="material-symbols-outlined text-green-600 dark:text-green-300">payments</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Membresías Activas</p>
+                                <p class="text-gray-900 dark:text-white text-2xl font-bold mt-2">{{ estadisticas.activas }}</p>
+                            </div>
+                            <div class="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg">
+                                <span class="material-symbols-outlined text-blue-600 dark:text-blue-300">check_circle</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Membresías Morosas</p>
+                                <p class="text-gray-900 dark:text-white text-2xl font-bold mt-2">{{ estadisticas.morosas }}</p>
+                            </div>
+                            <div class="bg-yellow-100 dark:bg-yellow-900 p-3 rounded-lg">
+                                <span class="material-symbols-outlined text-yellow-600 dark:text-yellow-300">warning</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Vencen Pronto (7 días)</p>
+                                <p class="text-gray-900 dark:text-white text-2xl font-bold mt-2">{{ estadisticas.vencen_pronto }}</p>
+                            </div>
+                            <div class="bg-orange-100 dark:bg-orange-900 p-3 rounded-lg">
+                                <span class="material-symbols-outlined text-orange-600 dark:text-orange-300">schedule</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtros -->
+                <div class="bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-gray-900 dark:text-white text-lg font-bold">Filtrar Membresías</h3>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">{{ membresias|length }} resultado(s)</span>
+                    </div>
+                    
+                    <form method="GET" action="{% url 'gestion_pagos' %}" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div class="flex flex-col">
+                            <label class="text-gray-900 dark:text-white text-sm font-medium pb-2">Buscar Socio</label>
+                            <div class="relative">
+                                <input type="text" name="busqueda" value="{{ busqueda }}" placeholder="Nombre o identificación" class="form-input rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white h-11 pl-10 pr-4 text-sm w-full">
+                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xl">search</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col">
+                            <label class="text-gray-900 dark:text-white text-sm font-medium pb-2">Estado</label>
+                            <select name="estado" class="form-select rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white h-11 px-4 text-sm">
+                                <option value="todos" {% if estado_filter == 'todos' %}selected{% endif %}>Todos los estados</option>
+                                <option value="Activa" {% if estado_filter == 'Activa' %}selected{% endif %}>✅ Activas</option>
+                                <option value="Morosa" {% if estado_filter == 'Morosa' %}selected{% endif %}>⚠️ Morosas</option>
+                                <option value="Expirada" {% if estado_filter == 'Expirada' %}selected{% endif %}>❌ Expiradas</option>
+                            </select>
+                        </div>
+                        
+                        <div class="flex flex-col">
+                            <label class="text-gray-900 dark:text-white text-sm font-medium pb-2">Plan de Membresía</label>
+                            <select name="plan" class="form-select rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white h-11 px-4 text-sm">
+                                <option value="todos" {% if plan_filter == 'todos' %}selected{% endif %}>Todos los planes</option>
+                                {% for plan in planes %}
+                                <option value="{{ plan.id }}" {% if plan_filter == plan.id|stringformat:"s" %}selected{% endif %}>{{ plan.Nombre }} - ${{ plan.Precio|floatformat:0 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="flex flex-col justify-end gap-2">
+                            <button type="submit" class="flex items-center justify-center gap-2 rounded-lg bg-primary text-white h-11 px-4 text-sm font-bold hover:bg-primary/90 transition-colors">
+                                <span class="material-symbols-outlined text-base">filter_alt</span>
+                                Aplicar Filtros
+                            </button>
+                        </div>
+                        
+                        <div class="flex flex-col justify-end gap-2">
+                            <a href="{% url 'gestion_pagos' %}" class="flex items-center justify-center gap-2 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 h-11 px-4 text-sm font-bold hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                                <span class="material-symbols-outlined text-base">refresh</span>
+                                Limpiar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Tabla de Membresías -->
+                <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs uppercase bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+                                <tr>
+                                    <th class="px-6 py-4">Socio</th>
+                                    <th class="px-6 py-4">Plan</th>
+                                    <th class="px-6 py-4">Estado</th>
+                                    <th class="px-6 py-4">Fecha Inicio</th>
+                                    <th class="px-6 py-4">Fecha Fin</th>
+                                    <th class="px-6 py-4">Días Restantes</th>
+                                    <th class="px-6 py-4">Último Pago</th>
+                                    <th class="px-6 py-4 text-right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for membresia in membresias %}
+                                <tr class="border-b dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                                    <td class="px-6 py-4">
+                                        <div>
+                                            <p class="font-medium text-gray-900 dark:text-white">{{ membresia.SocioID.NombreCompleto }}</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ membresia.SocioID.Identificacion }}</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-gray-900 dark:text-white">{{ membresia.PlanID.Nombre }}</td>
+                                    <td class="px-6 py-4">
+                                        {% if membresia.Estado == 'Activa' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300">
+                                            Activa
+                                        </span>
+                                        {% elif membresia.Estado == 'Morosa' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-300">
+                                            Morosa
+                                        </span>
+                                        {% else %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-300">
+                                            Expirada
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-6 py-4 text-gray-700 dark:text-gray-300">{{ membresia.FechaInicio|date:"d/m/Y" }}</td>
+                                    <td class="px-6 py-4 text-gray-700 dark:text-gray-300">{{ membresia.FechaFin|date:"d/m/Y" }}</td>
+                                    <td class="px-6 py-4">
+                                        {% with dias=membresia.remaining_days %}
+                                        {% if dias >= 0 %}
+                                        <span class="text-gray-900 dark:text-white">{{ dias }} días</span>
+                                        {% else %}
+                                        <span class="text-red-600 dark:text-red-400">Vencida</span>
+                                        {% endif %}
+                                        {% endwith %}
+                                    </td>
+                                    <td class="px-6 py-4 text-gray-700 dark:text-gray-300">
+                                        {% if membresia.pagos.all %}
+                                        <div>
+                                            <p class="font-medium">${{ membresia.pagos.first.Monto|floatformat:0 }}</p>
+                                            <p class="text-xs text-gray-500">{{ membresia.pagos.first.FechaPago|date:"d/m/Y" }}</p>
+                                        </div>
+                                        {% else %}
+                                        <span class="text-gray-400">Sin pagos</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button data-socio-id="{{ membresia.SocioID.id }}" class="btn-registrar-pago text-primary hover:text-primary/80">
+                                            <span class="material-symbols-outlined text-xl">payment</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="8" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                                        No se encontraron membresías
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 </div>
+
+<!-- Modal de Registro de Pago -->
+<div id="modalPago" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Registrar Pago</h2>
+                <button onclick="cerrarModalPago()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            
+            <form id="formPago" onsubmit="submitPago(event)">
+                {% csrf_token %}
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">Socio</label>
+                        <select id="socio_id" name="socio_id" required class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white h-11 px-4 text-sm">
+                            <option value="">Seleccionar socio...</option>
+                            {% for socio in socios %}
+                            <option value="{{ socio.id }}">{{ socio.NombreCompleto }} - {{ socio.Identificacion }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">Plan de Membresía</label>
+                        <select id="plan_id" name="plan_id" required onchange="actualizarMonto()" class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white h-11 px-4 text-sm">
+                            <option value="">Seleccionar plan...</option>
+                            {% for plan in planes %}
+                            <option value="{{ plan.id }}" data-precio="{{ plan.Precio }}" data-duracion="{{ plan.DuracionDias }}">
+                                {{ plan.Nombre }} - ${{ plan.Precio|floatformat:0 }} ({{ plan.DuracionDias }} días)
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">Monto Recibido (COP)</label>
+                        <input type="number" id="monto" name="monto" required min="0" step="1000" class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white h-11 px-4 text-sm">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">Tipo de Pago</label>
+                        <select id="tipo_pago" name="tipo_pago" required class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white h-11 px-4 text-sm">
+                            <option value="">Seleccionar...</option>
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Tarjeta">Tarjeta</option>
+                            <option value="Transferencia">Transferencia</option>
+                            <option value="Nequi">Nequi</option>
+                            <option value="Daviplata">Daviplata</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">Comprobante ID (Opcional)</label>
+                        <input type="text" id="comprobante_id" name="comprobante_id" class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white h-11 px-4 text-sm">
+                    </div>
+                </div>
+                
+                <div class="mt-6 flex gap-3">
+                    <button type="button" onclick="cerrarModalPago()" class="flex-1 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 h-11 px-4 text-sm font-bold hover:bg-gray-100 dark:hover:bg-gray-800">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="flex-1 rounded-lg bg-primary text-white h-11 px-4 text-sm font-bold hover:bg-primary/90">
+                        Registrar Pago
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
-<nav class="flex flex-col gap-2 mt-4">
-<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
-<span class="material-symbols-outlined">dashboard</span>
-<p class="text-sm font-medium leading-normal">Dashboard</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
-<span class="material-symbols-outlined">group</span>
-<p class="text-sm font-medium leading-normal">Usuarios</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 dark:bg-primary/20 text-primary dark:text-white" href="#">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">credit_card</span>
-<p class="text-sm font-medium leading-normal">Pagos</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
-<span class="material-symbols-outlined">fitness_center</span>
-<p class="text-sm font-medium leading-normal">Rutinas</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
-<span class="material-symbols-outlined">restaurant</span>
-<p class="text-sm font-medium leading-normal">Nutrición</p>
-</a>
-</nav>
-</div>
-<div class="flex flex-col gap-1">
-<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
-<span class="material-symbols-outlined">settings</span>
-<p class="text-sm font-medium leading-normal">Configuración</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
-<span class="material-symbols-outlined">logout</span>
-<p class="text-sm font-medium leading-normal">Salir</p>
-</a>
-</div>
-</div>
-</aside>
-<!-- Main Content -->
-<main class="flex-1 p-6 lg:p-10">
-<div class="max-w-7xl mx-auto">
-<!-- PageHeading & ButtonGroup -->
-<header class="flex flex-col sm:flex-row flex-wrap justify-between items-start sm:items-center gap-4 mb-8">
-<div>
-<p class="text-gray-900 dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">Gestión de Pagos y Suscripciones</p>
-</div>
-<div class="flex flex-wrap gap-3">
-<button class="flex min-w-[84px] items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
-<span class="material-symbols-outlined text-base">add_circle</span>
-<span class="truncate">Añadir Nuevo Pago</span>
-</button>
-<button class="flex min-w-[84px] items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
-<span class="material-symbols-outlined text-base">layers</span>
-<span class="truncate">Gestionar Planes</span>
-</button>
-</div>
-</header>
-<!-- Filter Section -->
-<div class="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 mb-8">
-<h3 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-2 pb-4">Filtrar Pagos</h3>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 px-2">
-<!-- Search by user -->
-<div class="flex flex-col">
-<p class="text-gray-900 dark:text-white text-sm font-medium leading-normal pb-2">Buscar por usuario</p>
-<div class="relative flex w-full flex-1 items-center">
-<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 h-11 placeholder:text-gray-500 dark:placeholder:text-gray-400 pl-10 pr-4 text-sm font-normal leading-normal" placeholder="Nombre o ID de usuario" value=""/>
-<span class="material-symbols-outlined absolute left-3 text-gray-500 dark:text-gray-400 pointer-events-none">search</span>
-</div>
-</div>
-<!-- Date Range -->
-<div class="flex flex-col">
-<p class="text-gray-900 dark:text-white text-sm font-medium leading-normal pb-2">Rango de fechas</p>
-<div class="grid grid-cols-2 gap-2">
-<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 h-11 placeholder:text-gray-500 dark:placeholder:text-gray-400 p-3 text-sm font-normal leading-normal" type="date"/>
-<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 h-11 placeholder:text-gray-500 dark:placeholder:text-gray-400 p-3 text-sm font-normal leading-normal" type="date"/>
-</div>
-</div>
-<!-- Status -->
-<div class="flex flex-col">
-<p class="text-gray-900 dark:text-white text-sm font-medium leading-normal pb-2">Estado</p>
-<div class="relative">
-<select class="form-select appearance-none w-full rounded-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 h-11 placeholder:text-gray-500 dark:placeholder:text-gray-400 p-3 text-sm font-normal leading-normal">
-<option>Todos</option>
-<option>Pagado</option>
-<option>Pendiente</option>
-<option>Fallido</option>
-</select>
-<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 pointer-events-none">expand_more</span>
-</div>
-</div>
-<!-- Apply Button -->
-<div class="flex flex-col justify-end">
-<button class="flex min-w-[84px] items-center justify-center overflow-hidden rounded-lg h-11 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
-<span class="truncate">Aplicar Filtros</span>
-</button>
-</div>
-</div>
-</div>
-<!-- Data Table Section -->
-<div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden">
-<div class="overflow-x-auto">
-<table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-<thead class="text-xs text-gray-700 dark:text-gray-300 uppercase bg-gray-50 dark:bg-gray-800">
-<tr>
-<th class="px-6 py-3" scope="col">ID Transacción</th>
-<th class="px-6 py-3" scope="col">Nombre de Usuario</th>
-<th class="px-6 py-3" scope="col">Fecha de Pago</th>
-<th class="px-6 py-3" scope="col">Monto</th>
-<th class="px-6 py-3" scope="col">Plan</th>
-<th class="px-6 py-3" scope="col">Estado</th>
-<th class="px-6 py-3 text-right" scope="col">Acciones</th>
-</tr>
-</thead>
-<tbody>
-<tr class="bg-white dark:bg-gray-900 border-b dark:border-gray-800">
-<td class="px-6 py-4 font-mono text-gray-600 dark:text-gray-400">TXN789B12</td>
-<th class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap" scope="row">Carlos Sánchez</th>
-<td class="px-6 py-4">15 May, 2024</td>
-<td class="px-6 py-4">$49.99</td>
-<td class="px-6 py-4">Premium Anual</td>
-<td class="px-6 py-4">
-<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300">Pagado</span>
-</td>
-<td class="px-6 py-4 text-right">
-<button class="text-primary dark:text-blue-400 hover:underline"><span class="material-symbols-outlined text-xl">visibility</span></button>
-</td>
-</tr>
-<tr class="bg-white dark:bg-gray-900 border-b dark:border-gray-800">
-<td class="px-6 py-4 font-mono text-gray-600 dark:text-gray-400">TXN456C34</td>
-<th class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap" scope="row">Laura Gómez</th>
-<td class="px-6 py-4">12 May, 2024</td>
-<td class="px-6 py-4">$9.99</td>
-<td class="px-6 py-4">Básico Mensual</td>
-<td class="px-6 py-4">
-<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-300">Pendiente</span>
-</td>
-<td class="px-6 py-4 text-right">
-<button class="text-primary dark:text-blue-400 hover:underline"><span class="material-symbols-outlined text-xl">visibility</span></button>
-</td>
-</tr>
-<tr class="bg-white dark:bg-gray-900 border-b dark:border-gray-800">
-<td class="px-6 py-4 font-mono text-gray-600 dark:text-gray-400">TXN123D56</td>
-<th class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap" scope="row">Miguel Hernández</th>
-<td class="px-6 py-4">10 May, 2024</td>
-<td class="px-6 py-4">$19.99</td>
-<td class="px-6 py-4">Pro Mensual</td>
-<td class="px-6 py-4">
-<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-300">Fallido</span>
-</td>
-<td class="px-6 py-4 text-right">
-<button class="text-primary dark:text-blue-400 hover:underline"><span class="material-symbols-outlined text-xl">visibility</span></button>
-</td>
-</tr>
-<tr class="bg-white dark:bg-gray-900 border-b dark:border-gray-800">
-<td class="px-6 py-4 font-mono text-gray-600 dark:text-gray-400">TXN987E78</td>
-<th class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap" scope="row">Ana Martínez</th>
-<td class="px-6 py-4">05 May, 2024</td>
-<td class="px-6 py-4">$49.99</td>
-<td class="px-6 py-4">Premium Anual</td>
-<td class="px-6 py-4">
-<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300">Pagado</span>
-</td>
-<td class="px-6 py-4 text-right">
-<button class="text-primary dark:text-blue-400 hover:underline"><span class="material-symbols-outlined text-xl">visibility</span></button>
-</td>
-</tr>
-<tr class="bg-white dark:bg-gray-900">
-<td class="px-6 py-4 font-mono text-gray-600 dark:text-gray-400">TXN654F90</td>
-<th class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap" scope="row">Roberto Díaz</th>
-<td class="px-6 py-4">01 May, 2024</td>
-<td class="px-6 py-4">$9.99</td>
-<td class="px-6 py-4">Básico Mensual</td>
-<td class="px-6 py-4">
-<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300">Pagado</span>
-</td>
-<td class="px-6 py-4 text-right">
-<button class="text-primary dark:text-blue-400 hover:underline"><span class="material-symbols-outlined text-xl">visibility</span></button>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<!-- Pagination -->
-<nav aria-label="Table navigation" class="flex items-center justify-between p-4 border-t border-gray-200 dark:border-gray-800">
-<span class="text-sm font-normal text-gray-500 dark:text-gray-400">Mostrando <span class="font-semibold text-gray-900 dark:text-white">1-5</span> de <span class="font-semibold text-gray-900 dark:text-white">100</span></span>
-<ul class="inline-flex items-center -space-x-px">
-<li>
-<a class="px-3 h-8 ml-0 leading-tight text-gray-500 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-white flex items-center justify-center" href="#">Anterior</a>
-</li>
-<li>
-<a class="px-3 h-8 leading-tight text-gray-500 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-white flex items-center justify-center" href="#">1</a>
-</li>
-<li>
-<a aria-current="page" class="px-3 h-8 leading-tight text-primary bg-primary/10 border border-primary hover:bg-primary/20 hover:text-primary-dark flex items-center justify-center" href="#">2</a>
-</li>
-<li>
-<a class="px-3 h-8 leading-tight text-gray-500 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-white flex items-center justify-center" href="#">3</a>
-</li>
-<li>
-<a class="px-3 h-8 leading-tight text-gray-500 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-white flex items-center justify-center" href="#">Siguiente</a>
-</li>
-</ul>
-</nav>
-</div>
-</div>
-</main>
-</div>
-</div>
-</body></html>
+
+<script>
+    // Event delegation para botones de registrar pago
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.btn-registrar-pago').forEach(button => {
+            button.addEventListener('click', function() {
+                const socioId = this.getAttribute('data-socio-id');
+                abrirModalPago(socioId);
+            });
+        });
+    });
+    
+    function abrirModalPago(socioId = null) {
+        document.getElementById('modalPago').classList.remove('hidden');
+        if (socioId) {
+            document.getElementById('socio_id').value = socioId;
+        }
+    }
+    
+    function cerrarModalPago() {
+        document.getElementById('modalPago').classList.add('hidden');
+        document.getElementById('formPago').reset();
+    }
+    
+    function actualizarMonto() {
+        const select = document.getElementById('plan_id');
+        const option = select.options[select.selectedIndex];
+        const precio = option.getAttribute('data-precio');
+        if (precio) {
+            document.getElementById('monto').value = precio;
+        }
+    }
+    
+    async function submitPago(event) {
+        event.preventDefault();
+        
+        const formData = new FormData(event.target);
+        
+        try {
+            const response = await fetch('{% url "registrar_pago" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                alert('Pago registrado exitosamente');
+                window.location.reload();
+            } else {
+                alert('Error: ' + data.error);
+            }
+        } catch (error) {
+            alert('Error al procesar el pago: ' + error.message);
+        }
+    }
+</script>
+</body>
+</html>

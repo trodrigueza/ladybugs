@@ -1,19 +1,25 @@
 <!DOCTYPE html>
-
-<html class="light" lang="es"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>GluteOS - User Management</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
-<script>
-  tailwind.config = {
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Gestión de Usuarios - GluteOS</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
         darkMode: "class",
         theme: {
           extend: {
             colors: {
-              "primary": "#0f49bd",
+              primary: "#0f49bd",
               "background-light": "#f6f6f8",
               "background-dark": "#101622",
               "card-light": "#ffffff",
@@ -26,184 +32,385 @@
               "border-dark": "#334155",
             },
             fontFamily: {
-              "display": ["Manrope", "sans-serif"]
+              display: ["Manrope", "sans-serif"],
             },
-            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
           },
         },
-      }
+      };
     </script>
-<style>
-        body {
-            font-family: 'Manrope', sans-serif;
-        }
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
     </style>
-</head>
-<body class="bg-background-light dark:bg-background-dark font-display">
-<div class="flex h-screen w-full">
-<!-- SideNavBar -->
-<aside class="flex w-64 flex-col border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/50">
-<div class="flex h-full flex-col justify-between p-4">
-<div class="flex flex-col gap-8">
-<div class="flex items-center gap-3 px-3">
-<div class="size-8 text-primary">
-<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_6_543)"><path d="M42.1739 20.1739L27.8261 5.82609C29.1366 7.13663 28.3989 10.1876 26.2002 13.7654C24.8538 15.9564 22.9595 18.3449 20.6522 20.6522C18.3449 22.9595 15.9564 24.8538 13.7654 26.2002C10.1876 28.3989 7.13663 29.1366 5.82609 27.8261L20.1739 42.1739C21.4845 43.4845 24.5355 42.7467 28.1133 40.548C30.3042 39.2016 32.6927 37.3073 35 35C37.3073 32.6927 39.2016 30.3042 40.548 28.1133C42.7467 24.5355 43.4845 21.4845 42.1739 20.1739Z" fill="currentColor"></path><path clip-rule="evenodd" d="M7.24189 26.4066C7.31369 26.4411 7.64204 26.5637 8.52504 26.3738C9.59462 26.1438 11.0343 25.5311 12.7183 24.4963C14.7583 23.2426 17.0256 21.4503 19.238 19.238C21.4503 17.0256 23.2426 14.7583 24.4963 12.7183C25.5311 11.0343 26.1438 9.59463 26.3738 8.52504C26.5637 7.64204 26.4411 7.31369 26.4066 7.24189C26.345 7.21246 26.143 7.14535 25.6664 7.1918C24.9745 7.25925 23.9954 7.5498 22.7699 8.14278C20.3369 9.32007 17.3369 11.4915 14.4142 14.4142C11.4915 17.3369 9.32007 20.3369 8.14278 22.7699C7.5498 23.9954 7.25925 24.9745 7.1918 25.6664C7.14534 26.143 7.21246 26.345 7.24189 26.4066ZM29.9001 10.7285C29.4519 12.0322 28.7617 13.4172 27.9042 14.8126C26.465 17.1544 24.4686 19.6641 22.0664 22.0664C19.6641 24.4686 17.1544 26.465 14.8126 27.9042C13.4172 28.7617 12.0322 29.4519 10.7285 29.9001L21.5754 40.747C21.6001 40.7606 21.8995 40.931 22.8729 40.7217C23.9424 40.4916 25.3821 39.879 27.0661 38.8441C29.1062 37.5904 31.3734 35.7982 33.5858 33.5858C35.7982 31.3734 37.5904 29.1062 38.8441 27.0661C39.879 25.3821 40.4916 23.9425 40.7216 22.8729C40.931 21.8995 40.7606 21.6001 40.747 21.5754L29.9001 10.7285ZM29.2403 4.41187L43.5881 18.7597C44.9757 20.1473 44.9743 22.1235 44.6322 23.7139C44.2714 25.3919 43.4158 27.2666 42.252 29.1604C40.8128 31.5022 38.8165 34.012 36.4142 36.4142C34.012 38.8165 31.5022 40.8128 29.1604 42.252C27.2666 43.4158 25.3919 44.2714 23.7139 44.6322C22.1235 44.9743 20.1473 44.9757 18.7597 43.5881L4.41187 29.2403C3.29027 28.1187 3.08209 26.5973 3.21067 25.2783C3.34099 23.9415 3.8369 22.4852 4.54214 21.0277C5.96129 18.0948 8.43335 14.7382 11.5858 11.5858C14.7382 8.43335 18.0948 5.9613 21.0277 4.54214C22.4852 3.8369 23.9415 3.34099 25.2783 3.21067C26.5973 3.08209 28.1187 3.29028 29.2403 4.41187Z" fill="currentColor" fill-rule="evenodd"></path></g><defs><clippath id="clip0_6_543"><rect fill="white" height="48" width="48"></rect></clippath></defs></svg>
-</div>
-<h1 class="text-text-light dark:text-text-dark text-xl font-bold">GluteOS</h1>
-</div>
-<div class="flex flex-col gap-2">
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10" href="#">
-<span class="material-symbols-outlined text-text-light dark:text-text-dark">dashboard</span>
-<p class="text-text-light dark:text-text-dark text-sm font-medium">Dashboard</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20" href="#">
-<span class="material-symbols-outlined text-primary">group</span>
-<p class="text-primary text-sm font-bold">Gestión de Usuarios</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10" href="#">
-<span class="material-symbols-outlined text-text-light dark:text-text-dark">credit_card</span>
-<p class="text-text-light dark:text-text-dark text-sm font-medium">Gestor de Pagos</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10" href="#">
-<span class="material-symbols-outlined text-text-light dark:text-text-dark">bar_chart</span>
-<p class="text-text-light dark:text-text-dark text-sm font-medium">Reportes</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10" href="#">
-<span class="material-symbols-outlined text-text-light dark:text-text-dark">fitness_center</span>
-<p class="text-text-light dark:text-text-dark text-sm font-medium">Planes y Rutinas</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10" href="#">
-<span class="material-symbols-outlined text-text-light dark:text-text-dark">settings</span>
-<p class="text-text-light dark:text-text-dark text-sm font-medium">Configuración</p>
-</a>
-</div>
-</div>
-<div class="flex flex-col gap-1 border-t border-gray-200 dark:border-gray-800 pt-4">
-<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-primary/10" href="#">
-<span class="material-symbols-outlined">account_circle</span>
-<p class="text-sm font-medium leading-normal">Profile</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-primary/10" href="#">
-<span class="material-symbols-outlined">logout</span>
-<p class="text-sm font-medium leading-normal">Logout</p>
-</a>
-</div>
-</div>
-</aside>
-<!-- Main Content -->
-<main class="flex-1 overflow-y-auto bg-gray-50 dark:bg-background-dark">
-<div class="p-8">
-<!-- PageHeading -->
-<header class="flex flex-wrap items-center justify-between gap-4 mb-6">
-<div class="flex flex-col gap-1">
-<h1 class="text-gray-900 dark:text-white text-3xl font-bold leading-tight">User Management</h1>
-<p class="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal">Add, edit, view and manage user information.</p>
-</div>
-<button class="flex min-w-[84px] items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
-<span class="material-symbols-outlined">add</span>
-<span class="truncate">Add New User</span>
-</button>
-</header>
-<!-- Search and Filters -->
-<div class="mb-4 space-y-4">
-<!-- SearchBar -->
-<div class="w-full">
-<label class="flex flex-col h-12 w-full">
-<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
-<div class="text-gray-500 dark:text-gray-400 flex bg-white dark:bg-gray-800 items-center justify-center pl-4 rounded-l-lg border border-gray-300 dark:border-gray-700 border-r-0">
-<span class="material-symbols-outlined">search</span>
-</div>
-<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 h-full placeholder:text-gray-400 px-4 pl-2 text-base font-normal leading-normal" placeholder="Search by name, email, or ID..." value=""/>
-</div>
-</label>
-</div>
-<!-- Chips / Filters -->
-<div class="flex gap-3 overflow-x-auto pb-2">
-<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 px-4">
-<p class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal">Subscription: All</p>
-<span class="material-symbols-outlined text-gray-500 dark:text-gray-400">expand_more</span>
-</button>
-<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 px-4">
-<p class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal">Assigned Trainer: All</p>
-<span class="material-symbols-outlined text-gray-500 dark:text-gray-400">expand_more</span>
-</button>
-</div>
-</div>
-<!-- Table -->
-<div class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/50">
-<table class="w-full">
-<thead class="bg-primary">
-<tr>
-<th class="w-12 px-4 py-3 text-left">
-<input class="h-4 w-4 rounded border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-primary focus:ring-primary" type="checkbox"/>
-</th>
-<th class="px-4 py-3 text-left text-sm font-semibold text-white">User Name</th>
-<th class="px-4 py-3 text-left text-sm font-semibold text-white">Email</th>
-<th class="px-4 py-3 text-left text-sm font-semibold text-white">Subscription Status</th>
-<th class="px-4 py-3 text-left text-sm font-semibold text-white">Join Date</th>
-<th class="px-4 py-3 text-left text-sm font-semibold text-white">Actions</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-gray-200 dark:divide-gray-800">
-{% for socio in socios %}
-<tr>
-    <!-- Checkbox -->
-    <td class="w-12 px-4 py-3">
-        <input type="checkbox"/>
-    </td>
+  </head>
+  <body class="font-display bg-background-light dark:bg-background-dark">
+    <div class="relative flex h-auto min-h-screen w-full flex-col">
+      <div class="flex h-full grow flex-row">
+        <!-- SideNavBar -->
+        <aside class="flex h-screen min-h-[700px] w-64 flex-col justify-between border-r border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-4 sticky top-0">
+          <div class="flex flex-col gap-8">
+            <div class="flex items-center gap-3 px-3">
+              <div class="size-8 text-primary">
+                <svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_6_543)"><path d="M42.1739 20.1739L27.8261 5.82609C29.1366 7.13663 28.3989 10.1876 26.2002 13.7654C24.8538 15.9564 22.9595 18.3449 20.6522 20.6522C18.3449 22.9595 15.9564 24.8538 13.7654 26.2002C10.1876 28.3989 7.13663 29.1366 5.82609 27.8261L20.1739 42.1739C21.4845 43.4845 24.5355 42.7467 28.1133 40.548C30.3042 39.2016 32.6927 37.3073 35 35C37.3073 32.6927 39.2016 30.3042 40.548 28.1133C42.7467 24.5355 43.4845 21.4845 42.1739 20.1739Z" fill="currentColor"></path><path clip-rule="evenodd" d="M7.24189 26.4066C7.31369 26.4411 7.64204 26.5637 8.52504 26.3738C9.59462 26.1438 11.0343 25.5311 12.7183 24.4963C14.7583 23.2426 17.0256 21.4503 19.238 19.238C21.4503 17.0256 23.2426 14.7583 24.4963 12.7183C25.5311 11.0343 26.1438 9.59463 26.3738 8.52504C26.5637 7.64204 26.4411 7.31369 26.4066 7.24189C26.345 7.21246 26.143 7.14535 25.6664 7.1918C24.9745 7.25925 23.9954 7.5498 22.7699 8.14278C20.3369 9.32007 17.3369 11.4915 14.4142 14.4142C11.4915 17.3369 9.32007 20.3369 8.14278 22.7699C7.5498 23.9954 7.25925 24.9745 7.1918 25.6664C7.14534 26.143 7.21246 26.345 7.24189 26.4066ZM29.9001 10.7285C29.4519 12.0322 28.7617 13.4172 27.9042 14.8126C26.465 17.1544 24.4686 19.6641 22.0664 22.0664C19.6641 24.4686 17.1544 26.465 14.8126 27.9042C13.4172 28.7617 12.0322 29.4519 10.7285 29.9001L21.5754 40.747C21.6001 40.7606 21.8995 40.931 22.8729 40.7217C23.9424 40.4916 25.3821 39.879 27.0661 38.8441C29.1062 37.5904 31.3734 35.7982 33.5858 33.5858C35.7982 31.3734 37.5904 29.1062 38.8441 27.0661C39.879 25.3821 40.4916 23.9425 40.7216 22.8729C40.931 21.8995 40.7606 21.6001 40.747 21.5754L29.9001 10.7285ZM29.2403 4.41187L43.5881 18.7597C44.9757 20.1473 44.9743 22.1235 44.6322 23.7139C44.2714 25.3919 43.4158 27.2666 42.252 29.1604C40.8128 31.5022 38.8165 34.012 36.4142 36.4142C34.012 38.8165 31.5022 40.8128 29.1604 42.252C27.2666 43.4158 25.3919 44.2714 23.7139 44.6322C22.1235 44.9743 20.1473 44.9757 18.7597 43.5881L4.41187 29.2403C3.29027 28.1187 3.08209 26.5973 3.21067 25.2783C3.34099 23.9415 3.8369 22.4852 4.54214 21.0277C5.96129 18.0948 8.43335 14.7382 11.5858 11.5858C14.7382 8.43335 18.0948 5.9613 21.0277 4.54214C22.4852 3.8369 23.9415 3.34099 25.2783 3.21067C26.5973 3.08209 28.1187 3.29028 29.2403 4.41187Z" fill="currentColor" fill-rule="evenodd"></path></g><defs><clippath id="clip0_6_543"><rect fill="white" height="48" width="48"></rect></clippath></defs></svg>
+              </div>
+              <h1 class="text-text-light dark:text-text-dark text-xl font-bold">GluteOS</h1>
+            </div>
+            <div class="flex flex-col gap-2">
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10" href="{% url 'panel_admin' %}">
+                <span class="material-symbols-outlined text-text-light dark:text-text-dark">dashboard</span>
+                <p class="text-text-light dark:text-text-dark text-sm font-medium">Dashboard</p>
+              </a>
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20" href="#">
+                <span class="material-symbols-outlined text-primary">group</span>
+                <p class="text-primary text-sm font-bold">Gestión de Usuarios</p>
+              </a>
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10" href="{% url 'gestion_pagos' %}">
+                <span class="material-symbols-outlined text-text-light dark:text-text-dark">credit_card</span>
+                <p class="text-text-light dark:text-text-dark text-sm font-medium">Gestor de Pagos</p>
+              </a>
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10" href="#">
+                <span class="material-symbols-outlined text-text-light dark:text-text-dark">bar_chart</span>
+                <p class="text-text-light dark:text-text-dark text-sm font-medium">Reportes</p>
+              </a>
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10" href="#">
+                <span class="material-symbols-outlined text-text-light dark:text-text-dark">fitness_center</span>
+                <p class="text-text-light dark:text-text-dark text-sm font-medium">Planes y Rutinas</p>
+              </a>
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10" href="#">
+                <span class="material-symbols-outlined text-text-light dark:text-text-dark">settings</span>
+                <p class="text-text-light dark:text-text-dark text-sm font-medium">Configuración</p>
+              </a>
+            </div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <p class="text-text-light dark:text-text-dark font-semibold text-sm">Admin</p>
+            <p class="text-text-secondary-light dark:text-text-secondary-dark text-xs">admin@gluteos.com</p>
+            <a href="{% url 'logout' %}"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10 cursor-pointer">
+              <span class="material-symbols-outlined">logout</span>
+              <p class="text-sm font-medium">Cerrar Sesión</p>
+            </a>
+          </div>
+        </aside>
 
-    <!-- User Name -->
-    <td class="px-4 py-3 text-sm text-gray-800 dark:text-gray-200">
-        {{ socio.NombreCompleto }}
-    </td>
+        <!-- Main Content -->
+        <main class="flex-1 p-6 sm:p-8 lg:p-10">
+          <div class="max-w-7xl mx-auto">
+            <!-- Header -->
+            <div class="mb-8">
+              <div class="flex items-center justify-between gap-4 mb-2">
+                <h1 class="text-4xl font-black text-gray-900 dark:text-white">
+                  Gestión de Usuarios
+                </h1>
+                <a href="{% url 'agregar_usuario' %}"
+                  class="inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-lg hover:bg-blue-700 font-semibold transition-colors">
+                  <span class="material-symbols-outlined text-xl">add</span>
+                  Agregar Usuario
+                </a>
+              </div>
+              <p class="text-gray-500 dark:text-gray-400">
+                Administra Socios y Usuarios (Administrativos, Entrenadores)
+              </p>
+            </div>
 
-    <!-- Email -->
-    <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
-        {{ socio.Email|default:"-" }}
-    </td>
+            <!-- Filter Section -->
+            <div class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- Filtro por Tipo de Usuario -->
+              <div>
+                <label class="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">
+                  Tipo de Usuario
+                </label>
+                <select
+                  id="filterTipo"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="todos" {% if not tipo_selected or tipo_selected == 'todos' %}selected{% endif %}>Todos</option>
+                  <option value="Socio" {% if tipo_selected == 'Socio' %}selected{% endif %}>Socios</option>
+                  <option value="Administrativo" {% if tipo_selected == 'Administrativo' %}selected{% endif %}>Administrativos</option>
+                  <option value="Entrenador" {% if tipo_selected == 'Entrenador' %}selected{% endif %}>Entrenadores</option>
+                </select>
+              </div>
 
-    <!-- Subscription Status -->
-    <td class="px-4 py-3">
-        {% if socio.membresias.first %}
-            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium
-                {% if socio.membresias.first.Estado == 'Activa' %}
-                    bg-green-100 text-green-600
-                {% elif socio.membresias.first.Estado == 'Morosa' %}
-                    bg-yellow-100 text-yellow-600
-                {% else %}
-                    bg-red-100 text-red-600
-                {% endif %}
-            ">
-                {{ socio.membresias.first.Estado }}
-            </span>
-        {% else %}
-            <span class="bg-gray-100 text-gray-500 px-2.5 py-0.5 rounded-full text-xs">Sin membresía</span>
-        {% endif %}
-    </td>
+              <!-- Filtro específico para Socios (Plan de Membresía) -->
+              <div id="filtroSocio">
+                <label class="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">
+                  Plan de Membresía
+                </label>
+                <select
+                  id="filterPlan"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="todos">Todos los planes</option>
+                  {% for plan in planes %}
+                    <option value="{{ plan.id }}" {% if plan_id_selected|stringformat:"s" == plan.id|stringformat:"s" %}selected{% endif %}>
+                      {{ plan.Nombre }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
 
-    <!-- Join Date -->
-    <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
-        {% if socio.membresias.first %}
-            {{ socio.membresias.first.FechaInicio }}
-        {% else %}
-            -
-        {% endif %}
-    </td>
+              <!-- Botón para aplicar y limpiar filtros -->
+              <div class="flex items-end gap-2">
+                <button
+                  onclick="aplicarFiltros()"
+                  class="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700 font-medium transition-colors"
+                >
+                  Aplicar
+                </button>
+                <button
+                  onclick="limpiarFiltros()"
+                  class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 font-medium transition-colors"
+                >
+                  Limpiar
+                </button>
+              </div>
+            </div>
 
-    <!-- Actions -->
-    <td class="px-4 py-3">
-        <div class="flex items-center gap-4">
-            <button class="text-primary hover:underline text-sm font-medium">Edit</button>
-            <button class="text-status-red hover:underline text-sm font-medium">Delete</button>
+            <!-- Table -->
+            <div class="overflow-x-auto bg-white dark:bg-gray-900 rounded-lg shadow-sm">
+              <table class="w-full">
+                <thead class="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300">Nombre</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300">Email</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300">Estado/Rol</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300">Fecha de Registro</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                  {% for entidad in entidades %}
+                  <tr class="hover:bg-gray-50 dark:hover:bg-gray-800" data-socio-id="{{ entidad.id }}">
+                    <td class="px-4 py-3 text-sm">
+                      <div class="flex items-center gap-2">
+                        <span class="text-gray-900 dark:text-gray-100">{{ entidad.nombre }}</span>
+                        <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium {% if entidad.tipo == 'Socio' %}bg-blue-100 text-blue-600{% else %}bg-purple-100 text-purple-600{% endif %}">
+                          {{ entidad.tipo }}
+                        </span>
+                      </div>
+                    </td>
+                    <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
+                      {{ entidad.email|default:"-" }}
+                    </td>
+                    <td class="px-4 py-3">
+                      {% if entidad.tipo == 'Socio' and entidad.membresias_ordered and entidad.membresias_ordered.0 %}
+                        {% with memb=entidad.membresias_ordered.0 %}
+                          {% with dias_restantes=memb.remaining_days %}
+                            {% if dias_restantes < 0 %}
+                              <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-red-100 text-red-600">Expirada</span>
+                            {% elif dias_restantes <= 3 %}
+                              <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-yellow-100 text-yellow-600">Morosa ({{ dias_restantes }} días)</span>
+                            {% else %}
+                              <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-green-100 text-green-600">Activa</span>
+                            {% endif %}
+                          {% endwith %}
+                        {% endwith %}
+                      {% elif entidad.tipo == 'Socio' %}
+                        <span class="bg-gray-100 text-gray-500 px-2.5 py-0.5 rounded-full text-xs">Sin membresía</span>
+                      {% else %}
+                        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-purple-100 text-purple-600">{{ entidad.rol }}</span>
+                      {% endif %}
+                    </td>
+                    <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
+                      {{ entidad.fecha_registro|date:"d/m/Y"|default:"-" }}
+                    </td>
+                    <td class="px-4 py-3">
+                      <div class="flex items-center gap-4">
+                        {% if entidad.tipo == 'Socio' %}
+                          <a href="{% url 'editar_socio' entidad.id %}"
+                            class="text-primary hover:underline text-sm font-medium">
+                            Edit
+                          </a>
+                        {% else %}
+                          <a href="{% url 'editar_usuario' entidad.id %}"
+                            class="text-primary hover:underline text-sm font-medium">
+                            Edit
+                          </a>
+                        {% endif %}
+                        <button
+                          type="button"
+                          class="delete-btn text-red-600 hover:underline text-sm font-medium cursor-pointer"
+                          data-socio-id="{{ entidad.id }}"
+                          data-nombre="{{ entidad.nombre }}"
+                          data-email="{{ entidad.email }}"
+                          data-tipo="{{ entidad.tipo }}"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Modal de Confirmación para Eliminar -->
+    <div
+      id="modalEliminar"
+      class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+      <div class="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6 max-w-md mx-4">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          Confirmar eliminación
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400 mb-4">
+          ¿Estás seguro de que deseas eliminar a <strong id="modalNombre"></strong>?
+        </p>
+        <p class="text-sm text-gray-500 dark:text-gray-500 mb-4">
+          Email: <strong id="modalEmail"></strong>
+        </p>
+        <p class="text-sm text-red-600 font-medium mb-6">
+          Esta acción no se puede deshacer.
+        </p>
+        <div class="flex gap-3 justify-end">
+          <button
+            id="btnCancelarModal"
+            type="button"
+            class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-900 rounded-lg font-medium transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            id="btnConfirmarEliminar"
+            type="button"
+            class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors"
+          >
+            Eliminar
+          </button>
         </div>
-    </td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
-<!-- Pagination -->
-</div>
-</div>
-</main>
-</div>
-</body></html>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+      let socioIdToDelete = null;
+      let tipoEntidadToDelete = null;
+
+      function abrirModalEliminar(socioId, nombre, email) {
+        socioIdToDelete = socioId;
+        document.getElementById('modalNombre').textContent = nombre;
+        document.getElementById('modalEmail').textContent = email;
+        document.getElementById('modalEliminar').classList.remove('hidden');
+      }
+
+      function cerrarModalEliminar() {
+        document.getElementById('modalEliminar').classList.add('hidden');
+        socioIdToDelete = null;
+        tipoEntidadToDelete = null;
+      }
+
+      function confirmarEliminar() {
+        if (!socioIdToDelete || !tipoEntidadToDelete) return;
+
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value ||
+                          document.querySelector('input[name="csrfmiddlewaretoken"]')?.value ||
+                          getCookie('csrftoken');
+
+        fetch(`/Administrativo/gestionar-usuarios/eliminar/${tipoEntidadToDelete}/${socioIdToDelete}/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+          },
+          body: JSON.stringify({}),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              const row = document.querySelector(`tr[data-socio-id="${socioIdToDelete}"]`);
+              if (row) {
+                row.remove();
+              }
+              cerrarModalEliminar();
+              alert(data.message);
+            } else {
+              alert(`Error: ${data.error}`);
+            }
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            alert('Error al eliminar la entidad');
+          });
+      }
+
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === name + '=') {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+
+      function mostrarFiltroSegunTipo() {
+        const tipo = document.getElementById('filterTipo').value;
+        const filtroSocio = document.getElementById('filtroSocio');
+
+        if (tipo === 'Socio') {
+          filtroSocio.style.display = 'block';
+        } else {
+          filtroSocio.style.display = 'none';
+        }
+      }
+
+      function aplicarFiltros() {
+        const tipo = document.getElementById('filterTipo').value;
+        const plan = document.getElementById('filterPlan').value;
+        
+        const url = new URL(window.location.href);
+        url.searchParams.set('tipo', tipo);
+        url.searchParams.set('plan_id', plan);
+        
+        window.location.href = url.toString();
+      }
+
+      function limpiarFiltros() {
+        window.location.href = window.location.pathname;
+      }
+
+      function filtrarPorPlan() {
+        aplicarFiltros();
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('btnCancelarModal').addEventListener('click', cerrarModalEliminar);
+        document.getElementById('btnConfirmarEliminar').addEventListener('click', confirmarEliminar);
+
+        // Agregar evento al selector de tipo para mostrar/ocultar filtros
+        document.getElementById('filterTipo').addEventListener('change', mostrarFiltroSegunTipo);
+        
+        // Inicializar visibilidad de filtros
+        mostrarFiltroSegunTipo();
+
+        document.addEventListener('click', (e) => {
+          if (e.target.classList.contains('delete-btn')) {
+            const socioId = e.target.getAttribute('data-socio-id');
+            const nombre = e.target.getAttribute('data-nombre');
+            const email = e.target.getAttribute('data-email');
+            const tipo = e.target.getAttribute('data-tipo') || 'Socio';
+            tipoEntidadToDelete = tipo;
+            abrirModalEliminar(socioId, nombre, email);
+          }
+        });
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          cerrarModalEliminar();
+        }
+      });
+    </script>
+  </body>
+</html>

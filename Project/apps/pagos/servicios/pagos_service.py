@@ -1,8 +1,8 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 from decimal import Decimal
 
 from django.db import transaction
-from django.db.models import Sum
+from django.db.models import Sum, Prefetch, Count, Q
 from django.utils import timezone
 
 from apps.pagos.models import PlanMembresia, SocioMembresia, Pago, AlertaPago
@@ -12,6 +12,128 @@ from apps.socios.models import Socio
 class ValidationError(ValueError):
     """Error de validación usado en los servicios de pagos."""
     pass
+
+
+def registrar_pago_membresia(socio_id, plan_id, monto, tipo_pago, comprobante_id=None):
+    """
+    Registra un pago de membresía para un socio.
+    
+    Lógica:
+    - Si el socio NO tiene membresía activa → fecha_inicio = HOY
+    - Si tiene membresía ACTIVA → fecha_inicio = fecha_fin_actual (extender)
+    - Si tiene membresía MOROSA/EXPIRADA → fecha_inicio = HOY (renovar desde hoy)
+    
+    Returns:
+        tuple: (SocioMembresia, Pago) - La membresía actualizada y el pago registrado
+    """
+    with transaction.atomic():
+        # 1. Obtener socio y plan
+        socio = Socio.objects.get(id=socio_id)
+        plan = PlanMembresia.objects.get(id=plan_id)
+        
+        # 2. Buscar membresía existente del socio (la más reciente)
+        membresia_existente = SocioMembresia.objects.filter(
+            SocioID=socio
+        ).order_by('-FechaFin').first()
+        
+        # 3. Determinar fechas de inicio y fin
+        hoy = timezone.localdate()
+        
+        if membresia_existente and membresia_existente.Estado == SocioMembresia.ESTADO_ACTIVA:
+            # Si está ACTIVA, extender desde la fecha_fin actual
+            fecha_inicio = membresia_existente.FechaFin
+        else:
+            # Si NO tiene membresía, está MOROSA o EXPIRADA → iniciar desde HOY
+            fecha_inicio = hoy
+        
+        fecha_fin = fecha_inicio + timedelta(days=plan.DuracionDias)
+        
+        # 4. Crear o actualizar SocioMembresia
+        if membresia_existente and membresia_existente.Estado == SocioMembresia.ESTADO_ACTIVA:
+            # Actualizar la membresía existente activa
+            membresia_existente.PlanID = plan
+            membresia_existente.FechaFin = fecha_fin
+            membresia_existente.Estado = SocioMembresia.ESTADO_ACTIVA
+            membresia_existente.save()
+            membresia = membresia_existente
+        else:
+            # Crear nueva membresía
+            membresia = SocioMembresia.objects.create(
+                SocioID=socio,
+                PlanID=plan,
+                FechaInicio=fecha_inicio,
+                FechaFin=fecha_fin,
+                Estado=SocioMembresia.ESTADO_ACTIVA
+            )
+        
+        # 5. Calcular monto pendiente
+        monto_decimal = Decimal(str(monto))
+        monto_pendiente = plan.Precio - monto_decimal
+        if monto_pendiente < 0:
+            monto_pendiente = Decimal('0.00')
+        
+        # 6. Crear registro de Pago
+        pago = Pago.objects.create(
+            SocioMembresiaID=membresia,
+            Monto=monto_decimal,
+            TipoPago=tipo_pago,
+            FechaPago=timezone.now(),
+            ComprobanteID=comprobante_id,
+            MontoPendiente=monto_pendiente
+        )
+        
+        return membresia, pago
+
+
+def obtener_membresias_con_socios():
+    """
+    Obtiene todas las membresías con sus socios y planes.
+    
+    Returns:
+        QuerySet: Membresías ordenadas por fecha de fin (más recientes primero)
+    """
+    membresias = SocioMembresia.objects.select_related(
+        'SocioID', 'PlanID'
+    ).prefetch_related(
+        Prefetch('pagos', queryset=Pago.objects.order_by('-FechaPago'))
+    ).order_by('-FechaFin')
+    
+    return membresias
+
+
+def obtener_estadisticas_pagos():
+    """
+    Calcula estadísticas para los cards de la página.
+    
+    Returns:
+        dict: Diccionario con las estadísticas
+    """
+    hoy = timezone.localdate()
+    primer_dia_mes = timezone.make_aware(datetime(hoy.year, hoy.month, 1))
+    
+    # Ingresos del mes actual
+    ingresos_mes = Pago.objects.filter(
+        FechaPago__gte=primer_dia_mes
+    ).aggregate(total=Sum('Monto'))['total'] or Decimal('0.00')
+    
+    # Contar membresías por estado
+    activas = SocioMembresia.objects.filter(Estado=SocioMembresia.ESTADO_ACTIVA).count()
+    morosas = SocioMembresia.objects.filter(Estado=SocioMembresia.ESTADO_MOROSA).count()
+    
+    # Membresías que vencen en los próximos 7 días
+    proximos_7_dias = hoy + timedelta(days=7)
+    vencen_pronto = SocioMembresia.objects.filter(
+        Estado=SocioMembresia.ESTADO_ACTIVA,
+        FechaFin__gte=hoy,
+        FechaFin__lte=proximos_7_dias
+    ).count()
+    
+    return {
+        'ingresos_mes': ingresos_mes,
+        'activas': activas,
+        'morosas': morosas,
+        'vencen_pronto': vencen_pronto
+    }
 
 
 def crear_membresia_para_socio(socio_id, plan_id, fecha_inicio=None):
@@ -57,14 +179,14 @@ def crear_membresia_para_socio(socio_id, plan_id, fecha_inicio=None):
     return membresia
 
 
-def registrar_pago_membresia(
+def registrar_pago_a_membresia_existente(
     socio_membresia_id,
     monto,
     tipo_pago=None,
     comprobante_id=None,
 ):
     """
-    Registra un pago para una membresía y actualiza el estado de la misma.
+    Registra un pago para una membresía EXISTENTE y actualiza el estado de la misma.
 
     Regla:
     - monto > 0

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Crear Socio - GluteOS</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#0f49bd",
+              "background-light": "#f6f6f8",
+              "background-dark": "#101622",
+            },
+            fontFamily: {
+              display: ["Manrope", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="font-display bg-background-light dark:bg-background-dark">
+    <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+      <main class="flex-1 flex items-center justify-center p-6 sm:p-8 lg:p-10">
+        <div class="w-full max-w-2xl mx-auto">
+          <!-- Encabezado -->
+          <div class="flex flex-col items-center justify-center gap-4 mb-8">
+            <h1 class="text-gray-900 dark:text-white text-4xl font-black leading-tight text-center">
+              Crear Nuevo Socio
+            </h1>
+            <p class="text-gray-500 dark:text-gray-400 text-base font-normal text-center">
+              Complete el formulario para agregar un nuevo socio al gimnasio.
+            </p>
+          </div>
+
+          <!-- Formulario -->
+          <div class="bg-white dark:bg-[#1C2434] rounded-xl shadow-sm p-6 sm:p-8">
+            <form method="post">
+              {% csrf_token %}
+
+              <div class="grid grid-cols-1 gap-6">
+                <!-- Identificación -->
+                <label class="flex flex-col">
+                  <span class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">
+                    {{ form.Identificacion.label }}
+                  </span>
+                  <input
+                    type="text"
+                    name="Identificacion"
+                    value="{{ form.Identificacion.value|default:'' }}"
+                    class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="Ej: 12345678"
+                    required
+                  />
+                  {% if form.Identificacion.errors %}
+                    <span class="text-red-600 text-sm mt-1">{{ form.Identificacion.errors.0 }}</span>
+                  {% endif %}
+                </label>
+
+                <!-- Nombre Completo -->
+                <label class="flex flex-col">
+                  <span class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">
+                    {{ form.NombreCompleto.label }}
+                  </span>
+                  <input
+                    type="text"
+                    name="NombreCompleto"
+                    value="{{ form.NombreCompleto.value|default:'' }}"
+                    class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="Ej: Juan Pérez García"
+                    required
+                  />
+                  {% if form.NombreCompleto.errors %}
+                    <span class="text-red-600 text-sm mt-1">{{ form.NombreCompleto.errors.0 }}</span>
+                  {% endif %}
+                </label>
+
+                <!-- Email -->
+                <label class="flex flex-col">
+                  <span class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">
+                    {{ form.Email.label }}
+                  </span>
+                  <input
+                    type="email"
+                    name="Email"
+                    value="{{ form.Email.value|default:'' }}"
+                    class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="Ej: juan@example.com"
+                  />
+                  {% if form.Email.errors %}
+                    <span class="text-red-600 text-sm mt-1">{{ form.Email.errors.0 }}</span>
+                  {% endif %}
+                </label>
+
+                <!-- Teléfono -->
+                <label class="flex flex-col">
+                  <span class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">
+                    {{ form.Telefono.label }}
+                  </span>
+                  <input
+                    type="tel"
+                    name="Telefono"
+                    value="{{ form.Telefono.value|default:'' }}"
+                    class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="Ej: +34 123 456 789"
+                  />
+                  {% if form.Telefono.errors %}
+                    <span class="text-red-600 text-sm mt-1">{{ form.Telefono.errors.0 }}</span>
+                  {% endif %}
+                </label>
+
+                <!-- Fecha de Nacimiento -->
+                <label class="flex flex-col">
+                  <span class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">
+                    {{ form.FechaNacimiento.label }}
+                  </span>
+                  <input
+                    type="date"
+                    name="FechaNacimiento"
+                    value="{{ form.FechaNacimiento.value|default:'' }}"
+                    class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                  {% if form.FechaNacimiento.errors %}
+                    <span class="text-red-600 text-sm mt-1">{{ form.FechaNacimiento.errors.0 }}</span>
+                  {% endif %}
+                </label>
+
+                <!-- Altura -->
+                <label class="flex flex-col">
+                  <span class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">
+                    {{ form.Altura.label }}
+                  </span>
+                  <input
+                    type="number"
+                    name="Altura"
+                    value="{{ form.Altura.value|default:'' }}"
+                    step="0.01"
+                    class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="Ej: 1.75"
+                  />
+                  {% if form.Altura.errors %}
+                    <span class="text-red-600 text-sm mt-1">{{ form.Altura.errors.0 }}</span>
+                  {% endif %}
+                </label>
+
+                <!-- Información de Salud -->
+                <label class="flex flex-col">
+                  <span class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">
+                    {{ form.SaludBasica.label }}
+                  </span>
+                  <textarea
+                    name="SaludBasica"
+                    rows="3"
+                    class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="Ej: Alergias, lesiones previas, condiciones médicas..."
+                  >{{ form.SaludBasica.value|default:'' }}</textarea>
+                  {% if form.SaludBasica.errors %}
+                    <span class="text-red-600 text-sm mt-1">{{ form.SaludBasica.errors.0 }}</span>
+                  {% endif %}
+                </label>
+
+                <!-- Nota Adicional -->
+                <label class="flex flex-col">
+                  <span class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">
+                    {{ form.NotaOpcional.label }}
+                  </span>
+                  <textarea
+                    name="NotaOpcional"
+                    rows="2"
+                    class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="Notas adicionales (opcional)"
+                  >{{ form.NotaOpcional.value|default:'' }}</textarea>
+                  {% if form.NotaOpcional.errors %}
+                    <span class="text-red-600 text-sm mt-1">{{ form.NotaOpcional.errors.0 }}</span>
+                  {% endif %}
+                </label>
+              </div>
+
+              <!-- Botones -->
+              <div class="flex justify-end items-center gap-4 mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <a
+                  href="{% url 'gestionar_usuarios' %}"
+                  class="px-6 py-2.5 rounded-lg text-sm font-semibold bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-600 dark:text-gray-100 dark:hover:bg-gray-500 transition-colors duration-200"
+                >
+                  Cancelar
+                </a>
+                <button
+                  type="submit"
+                  class="px-8 py-2.5 rounded-lg text-sm font-bold text-white bg-primary hover:bg-blue-800 active:bg-blue-900 shadow-md hover:shadow-lg transition-all duration-200"
+                >
+                  Siguiente: Membresía
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
