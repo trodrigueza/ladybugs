@@ -13,6 +13,9 @@ from apps.control_acceso.models import (
 )
 
 from apps.socios.models import Socio
+from apps.seguridad.servicios.FormularioSocio_Membresia import SocioForm
+from apps.seguridad.models import Usuario
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from apps.control_acceso.servicios.rutinas_service import (
     crear_rutina_semanal,
@@ -85,6 +88,57 @@ def planificador_rutina_view(request):
 
 
 
+@login_requerido
+def entrenador_editar_socio_view(request, socio_id):
+    """Permite al entrenador editar datos básicos del socio (nombre, email, telefono, altura, saludbasica).
+
+    Nota: esta vista está pensada para uso del Entrenador; no requiere rol 'administrativo'.
+    """
+    # Permitir también a administrativos si es necesario
+    usuario_rol = request.session.get("usuario_rol", "").lower()
+    if usuario_rol not in ("entrenador", "administrativo"):
+        from django.contrib import messages
+        messages.error(request, "No tienes permisos para acceder a esta página.")
+        return redirect("login")
+
+    socio = get_object_or_404(Socio, id=socio_id)
+
+    if request.method == "POST":
+        form = SocioForm(request.POST, instance=socio)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Socio {socio.NombreCompleto} actualizado correctamente.")
+            return redirect("clientes_list")
+    else:
+        form = SocioForm(instance=socio)
+
+    return render(request, "Administrador/editarSocio.html", {"form": form, "socio": socio, "is_entrenador_view": True})
+
+
+@login_requerido
+def entrenador_ver_rutina_view(request, socio_id):
+    """Muestra la rutina principal de un socio desde la perspectiva del entrenador.
+
+    Si el socio tiene al menos una rutina, redirige al detalle de la primera rutina.
+    Si no tiene rutina, muestra un mensaje y vuelve a la lista de clientes.
+    """
+    usuario_rol = request.session.get("usuario_rol", "").lower()
+    if usuario_rol not in ("entrenador", "administrativo"):
+        from django.contrib import messages
+        messages.error(request, "No tienes permisos para acceder a esta página.")
+        return redirect("login")
+
+    socio = get_object_or_404(Socio, id=socio_id)
+
+    rutina = RutinaSemanal.objects.filter(SocioID=socio).first()
+    if rutina:
+        return redirect("rutina_detalle", rutina_id=rutina.id)
+    else:
+        messages.info(request, "Este socio no tiene una rutina asignada.")
+        return redirect("clientes_list")
+
+
+
 
 
 
@@ -149,27 +203,39 @@ def crear_rutina_entrenador_view(request):
 
         # Persistir ejercicios temporales que el entrenador pudo haber arrastrado
         # antes de crear la rutina (cliente envía JSON en el input oculto).
+        added = 0
+        failed = []
         if ejercicios_temp_json:
             try:
                 ejercicios_temp = json.loads(ejercicios_temp_json)
             except Exception:
                 ejercicios_temp = []
 
-            for item in ejercicios_temp:
+            for idx, item in enumerate(ejercicios_temp, start=1):
+                ejercicio_id = item.get("ejercicio_id") or item.get("id")
+                dia_raw = item.get("dia") if item.get("dia") is not None else item.get("DiaSemana")
                 try:
                     asignar_ejercicio_a_rutina(
                         rutina_id=rutina.id,
-                        ejercicio_id=item.get("ejercicio_id"),
-                        dia_semana=int(item.get("dia")),
+                        ejercicio_id=ejercicio_id,
+                        dia_semana=int(dia_raw),
                         series=int(item.get("series")) if item.get("series") is not None else None,
                         repeticiones=int(item.get("reps") or item.get("repeticiones")) if (item.get("reps") or item.get("repeticiones")) else None,
                         tempo=item.get("tempo") or item.get("Tempo") or "",
-                        peso_objetivo=float(item.get("peso")) if item.get("peso") is not None else None,
+                        peso_objetivo=float(item.get("peso")) if item.get("peso") is not None and item.get("peso") != "" else None,
                     )
+                    added += 1
                 except ValidationError as ve:
-                    messages.warning(request, f"No se pudo agregar ejercicio: {ve}")
-                except Exception:
-                    messages.warning(request, "Algunos ejercicios temporales no pudieron guardarse.")
+                    failed.append(f"item #{idx}: {ve}")
+                except Exception as e:
+                    failed.append(f"item #{idx}: {str(e)}")
+
+        # Informar al entrenador cuántos ejercicios temporales se agregaron (si los hubo)
+        if added > 0:
+            messages.success(request, f"Se agregaron {added} ejercicio(s) a la rutina.")
+        if failed:
+            for f in failed:
+                messages.warning(request, f"No se pudo agregar ejercicio temporal: {f}")
 
         # Mensaje de confirmación incluyendo el nombre del socio (siempre mostrar)
         try:
@@ -231,15 +297,12 @@ def editar_rutina_entrenador_view(request, rutina_id):
 @login_requerido
 def rutinas_list_view(request):
     """Lista todas las rutinas (con su socio si está asignada)."""
-    # Limpiar rutinas vacías (sin ejercicios asociados en ningún día)
-    # Esto evita que el entrenador vea rutinas sin contenido. Se realiza al momento
-    # de listar para mantener la operación local y predecible.
-    posibles_vacias = RutinaSemanal.objects.all()
-    for r in posibles_vacias:
-        # `dias_ejercicios` es la relación reverse desde DiaRutinaEjercicio hacia RutinaSemanal
-        if not r.dias_ejercicios.exists():
-            # eliminar rutina vacía
-            r.delete()
+    # Nota: NO borramos rutinas vacías automáticamente al listar.
+    # Antes borrábamos rutinas sin ejercicios en este punto, pero eso causaba que
+    # rutinas recién creadas (por ejemplo, si el guardado de ejercicios falló) se
+    # eliminaran silenciosamente y el entrenador pensara que la rutina "no existe".
+    # Mantener la eliminación automática es peligroso; la limpieza debe hacerse
+    # explícitamente (por ejemplo, un cron job o acción administrativa).
 
     # Re-consultar rutinas limpias para renderizar
     rutinas = RutinaSemanal.objects.select_related('SocioID').prefetch_related('dias_ejercicios__EjercicioID').all()

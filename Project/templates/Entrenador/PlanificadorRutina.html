@@ -132,7 +132,7 @@
             <input type="hidden" name="dias_entrenamiento" id="input-dias" value="{{ rutina.DiasEntrenamiento }}">
             <div class="flex gap-2">
               <a href="{% url 'rutinas_list' %}" class="flex-1 text-center bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-md">Volver a lista</a>
-              <button id="btn-save-rutina" class="flex-1 text-center bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-md">Guardar cambios</button>
+              <!-- Guardar cambios eliminado: las modificaciones ahora se guardan por asignación individual o mediante el flujo de 'Guardar Rutina' al crear. -->
             </div>
           {% else %}
             <h2 class="text-lg font-semibold">Crear Rutina</h2>

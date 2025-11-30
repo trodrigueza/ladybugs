@@ -326,6 +326,45 @@ def panel_de_control_view(request):
 
 
 @login_requerido
+def clientes_list_view(request):
+    """Lista de clientes para entrenadores/administrativos con tarjeta resumen.
+
+    Muestra peso (última medición), IMC (si está), restricciones médicas (SaludBasica),
+    y datos de contacto.
+    """
+    # Traer todos los socios y su última medición
+    socios = Socio.objects.all().order_by('NombreCompleto')
+    resultados = []
+    for s in socios:
+        ultima = Medicion.objects.filter(SocioID=s).order_by('-Fecha').first()
+        peso = None
+        imc = None
+        fecha_med = None
+        if ultima and ultima.PesoCorporal is not None:
+            peso = float(ultima.PesoCorporal)
+            fecha_med = ultima.Fecha
+            try:
+                if s.Altura:
+                    altura = float(s.Altura)
+                    if altura > 0:
+                        imc = round(peso / (altura * altura), 1)
+            except Exception:
+                imc = None
+
+        resultados.append({
+            'socio': s,
+            'peso': peso,
+            'imc': imc,
+            'fecha_medicion': fecha_med,
+            'restricciones': s.SaludBasica,
+            'telefono': s.Telefono,
+            'email': s.Email,
+        })
+
+    return render(request, 'Entrenador/ClientesList.html', {'resultados': resultados})
+
+
+@login_requerido
 def mi_rutina_view(request):
     from apps.control_acceso.models import (
         EjercicioSesionCompletado,

@@ -54,22 +54,14 @@ urlpatterns = [
     ),
     path("socio/mi-perfil/", socios_views.mi_perfil_view, name="mi_perfil"),
     # ADMINISTRATIVO (panel/gestion de usuarios y pagos)
-    path("administrativo/panel/", socios_views.panel_admin_view, name="panel_admin"),
-    path(
-        "administrativo/gestionar-usuarios/",
-        seguridad_views.gestionar_usuarios_view,
-        name="gestionar_usuarios",
-    ),
-    path(
-        "administrativo/gestion-pagos/",
-        pagos_views.gestion_pagos_view,
-        name="gestion_pagos",
-    ),
-    path(
-        "administrativo/gestion-pagos/registrar/",
-        pagos_views.registrar_pago_view,
-        name="registrar_pago",
-    ),
+    path('administrativo/panel/', socios_views.panel_admin_view, name='panel_admin'),
+    path('administrativo/gestionar-usuarios/', seguridad_views.gestionar_usuarios_view, name='gestionar_usuarios'),
+    path('administrativo/gestion-pagos/', pagos_views.gestion_pagos_view, name='gestion_pagos'),
+    path('administrativo/gestion-pagos/registrar/', pagos_views.registrar_pago_view, name='registrar_pago'),
+    # Rutas de clientes: mantener acceso administrativo y exponer ruta para entrenador
+    path('administrativo/clientes/', socios_views.clientes_list_view, name='admin_clientes'),
+    path('entrenador/clientes/', socios_views.clientes_list_view, name='clientes_list'),
+
     # ADMIN: user management routes (seleccionar/crear/editar/eliminar)
     path(
         "administrativo/agregar-usuario/",
@@ -122,14 +114,13 @@ urlpatterns = [
         name="crear_rutina_entrenador",
     ),
     # LISTA Y DETALLE DE RUTINAS
-    path(
-        "entrenador/rutinas/", views_entrenador.rutinas_list_view, name="rutinas_list"
-    ),
-    path(
-        "entrenador/rutina/<int:rutina_id>/",
-        views_entrenador.rutina_detalle_view,
-        name="rutina_detalle",
-    ),
+    path('entrenador/rutinas/', views_entrenador.rutinas_list_view, name='rutinas_list'),
+    path('entrenador/rutina/<int:rutina_id>/', views_entrenador.rutina_detalle_view, name='rutina_detalle'),
+
+    # Entrenador: rutas por socio (editar/ver rutina)
+    path('entrenador/socio/<int:socio_id>/editar/', views_entrenador.entrenador_editar_socio_view, name='entrenador_editar_socio'),
+    path('entrenador/socio/<int:socio_id>/rutina/', views_entrenador.entrenador_ver_rutina_view, name='entrenador_ver_rutina'),
+
     # EDITAR RUTINA
     path(
         "entrenador/rutina/<int:rutina_id>/editar/",

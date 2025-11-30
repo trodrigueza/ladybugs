@@ -58,11 +58,20 @@
         </div>
         <div class="flex h-full flex-col justify-between">
           <div class="flex flex-col gap-2 pt-4">
+            {# Panel link: route depends on logged user role stored in session #}
+            {% if request.session.usuario_rol == 'entrenador' %}
+            <a class="flex items-center gap-3 rounded-lg bg-gluteos-blue-dark px-3 py-2" href="{% url 'entrenador_panel' %}">
+            {% elif request.session.usuario_rol == 'administrativo' %}
+            <a class="flex items-center gap-3 rounded-lg bg-gluteos-blue-dark px-3 py-2" href="{% url 'panel_admin' %}">
+            {% elif request.session.usuario_rol == 'socio' %}
+            <a class="flex items-center gap-3 rounded-lg bg-gluteos-blue-dark px-3 py-2" href="{% url 'socio_panel' %}">
+            {% else %}
             <a class="flex items-center gap-3 rounded-lg bg-gluteos-blue-dark px-3 py-2" href="#">
+            {% endif %}
               <span class="material-symbols-outlined">dashboard</span>
               <p class="text-sm font-medium leading-normal">Panel</p>
             </a>
-            <a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="#">
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="{% url 'clientes_list' %}">
               <span class="material-symbols-outlined">group</span>
               <p class="text-sm font-medium leading-normal">Clientes</p>
             </a>
@@ -70,10 +79,12 @@
               <span class="material-symbols-outlined">fitness_center</span>
               <p class="text-sm font-medium leading-normal">Rutinas</p>
             </a>
+            {% if request.session.usuario_rol|default:"" != 'entrenador' %}
             <a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="#">
               <span class="material-symbols-outlined">restaurant_menu</span>
               <p class="text-sm font-medium leading-normal">Nutrición</p>
             </a>
+            {% endif %}
             <a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="#">
               <span class="material-symbols-outlined">mail</span>
               <p class="text-sm font-medium leading-normal">Mensajes</p>
@@ -87,10 +98,12 @@
                 <p class="text-sm font-normal leading-normal text-slate-300">Entrenador</p>
               </div>
             </div>
+            {% if request.session.usuario_rol|default:"" != 'entrenador' %}
             <a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="#">
               <span class="material-symbols-outlined">settings</span>
               <p class="text-sm font-medium leading-normal">Configuración</p>
             </a>
+            {% endif %}
             <a onclick="openLogoutModal()" class="flex items-center gap-3 px-3 py-2 text-white-700 dark:text-blue-dark-300 rounded-lg hover:bg-blue-dark-100 dark:hover:bg-blue-dark-800 cursor-pointer">
               <span class="material-symbols-outlined">logout</span>
               <p class="text-sm font-medium leading-normal">Cerrar sesión</p>
