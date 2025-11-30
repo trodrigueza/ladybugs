@@ -15,9 +15,6 @@ urlpatterns = [
     path('login/', seguridad_views.login_view, name='login'),
     path('logout/', seguridad_views.logout_view, name='logout'),
 
-    # REGISTRO
-    path('register/', socios_views.register_view, name='register'),
-
     # HOME apunta al login
     path('', seguridad_views.login_view, name='home'),
 
