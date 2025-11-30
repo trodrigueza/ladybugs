@@ -48,10 +48,13 @@ def crear_rutina_semanal(socio_id, nombre, dias_entrenamiento, es_plantilla=Fals
     Raises:
         ValidationError: Si el socio no existe o los datos son inválidos
     """
-    try:
-        socio = Socio.objects.get(id=socio_id)
-    except Socio.DoesNotExist:
-        raise ValidationError("El socio especificado no existe.")
+    # Si es plantilla (es_plantilla=True) permitimos socio_id=None y no intentamos buscar socio
+    socio = None
+    if not es_plantilla:
+        try:
+            socio = Socio.objects.get(id=socio_id)
+        except Socio.DoesNotExist:
+            raise ValidationError("El socio especificado no existe.")
 
     if not nombre or not nombre.strip():
         raise ValidationError("El nombre de la rutina es obligatorio.")

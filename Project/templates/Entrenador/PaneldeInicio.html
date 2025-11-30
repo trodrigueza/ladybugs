@@ -71,30 +71,33 @@
 <div class="flex h-full flex-col justify-between">
 <div class="flex flex-col gap-2 pt-4">
             {# Panel link specific for this trainer panel template - points to entrenador_panel #}
-            <a class="flex items-center gap-3 rounded-lg bg-gluteos-blue-dark px-3 py-2" href="{% url 'entrenador_panel' %}">
+            {% with current=request.resolver_match.url_name|default:"" %}
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2 {% if current == 'entrenador_panel' %}bg-gluteos-blue-dark{% else %}hover:bg-gluteos-blue-dark/50{% endif %}" href="{% url 'entrenador_panel' %}">
               <span class="material-symbols-outlined">dashboard</span>
               <p class="text-sm font-medium leading-normal">Panel</p>
             </a>
-            <a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="{% url 'clientes_list' %}">
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2 {% if current == 'clientes_list' %}bg-gluteos-blue-dark{% else %}hover:bg-gluteos-blue-dark/50{% endif %}" href="{% url 'clientes_list' %}">
 <span class="material-symbols-outlined">group</span>
 <p class="text-sm font-medium leading-normal">Clientes</p>
 </a>
-<a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="{% url 'rutinas_list' %}">
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 {% if current == 'rutinas_list' or current == 'rutina_detalle' %}bg-gluteos-blue-dark{% else %}hover:bg-gluteos-blue-dark/50{% endif %}" href="{% url 'rutinas_list' %}">
 <span class="material-symbols-outlined">fitness_center</span>
 <p class="text-sm font-medium leading-normal">Rutinas</p>
 </a>
-            <!-- Nutrición link hidden for entrenador -->
-<a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="#">
-<span class="material-symbols-outlined">mail</span>
-<p class="text-sm font-medium leading-normal">Mensajes</p>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2 {% if current == 'rutinas_banco' %}bg-gluteos-blue-dark{% else %}hover:bg-gluteos-blue-dark/50{% endif %}" href="{% url 'rutinas_banco' %}">
+<span class="material-symbols-outlined">inventory_2</span>
+<p class="text-sm font-medium leading-normal">Banco de rutinas</p>
 </a>
+            {% endwith %}
+            <!-- Nutrición link hidden for entrenador -->
+            {# Mensajes removed as per request #}
 </div>
 <div class="flex flex-col gap-1">
 <div class="mb-4 flex gap-3 px-3 py-2">
 <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Coach Antonia's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDfQWrkjVOCmpIklKgYAtayyKEKku6uP2jWrASZq-FPRFzrqHTD92I1o40Vn22sp3QX4zCVhlpf-dIREfbJb9Qnn0vbu4rBIYLqtIHNoYNAoU4LXCy0HR7-dUcPCtD6ztBC4MN0cGBrwa3mNIT9TnwjZIpC1oi9TjQz9mPQeUI7tByNhIDSS04EhhJZLvH_QuP26qy8mRLay7o7OHF-BmEyFkdn612y35_li2FDOBvcfCrXt9ySKWhCerWJ6leMpnbG6oZRjgWvFO4");'></div>
 <div class="flex flex-col">
-<h1 class="text-base font-medium leading-normal">Antonia</h1>
-<p class="text-sm font-normal leading-normal text-slate-300">Entrenador</p>
+<h1 class="text-base font-medium leading-normal">{{ entrenador_nombre|default:request.session.usuario_email }}</h1>
+<p class="text-sm font-normal leading-normal text-slate-300">{{ request.session.usuario_rol|title|default:'Entrenador' }}</p>
 </div>
 </div>
             <!-- Configuración link hidden for entrenador -->
@@ -138,8 +141,8 @@
 <!-- PageHeading -->
 <div class="flex flex-wrap justify-between gap-3 mb-6">
 <div class="flex min-w-72 flex-col gap-2">
-<p class="text-text-light-primary dark:text-text-dark-primary text-3xl font-black leading-tight tracking-[-0.033em]">¡Bienvenida, Antonia!</p>
-<p class="text-text-light-secondary dark:text-text-dark-secondary text-base font-normal leading-normal">Resumen de tus clientes y actividades.</p>
+                <p class="text-text-light-primary dark:text-text-dark-primary text-3xl font-black leading-tight tracking-[-0.033em]">¡Hola, {{ entrenador_nombre }}!</p>
+                <p class="text-text-light-secondary dark:text-text-dark-secondary text-base font-normal leading-normal">Resumen de tus clientes y actividades.</p>
 </div>
         <div class="flex items-center gap-3">
 
@@ -170,100 +173,151 @@
 <p class="text-text-light-primary dark:text-text-dark-primary tracking-light text-4xl font-bold leading-tight">{{ socios_sin_rutina }}</p>
 <p class="text-critical text-base font-medium leading-normal flex items-center gap-1"><span class="material-symbols-outlined text-base">priority_high</span>Atención necesaria</p>
 </div>
+
+            
 </div>
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 <div class="lg:col-span-2">
 <!-- SectionHeader -->
-<h2 class="text-text-light-primary dark:text-text-dark-primary text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">Clientes a vigilar</h2>
-<!-- Clients to Watch List -->
+<h2 class="text-text-light-primary dark:text-text-dark-primary text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">Mejores procesos</h2>
+<!-- Clientes con la racha más larga (top 5) -->
 <div class="flex flex-col gap-4">
-<div class="flex items-center justify-between p-4 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
-<div class="flex items-center gap-4">
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12" data-alt="Client Michael Scott's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBwwfQjxq5N0a65_OHkkfrgdzg8qR5lfCAcf5JsIndOMm-qyT1_UFuZT0pIU3j87vdzl6GIqITEZmY6ln6V3RhbKU1qDlWv3RzGR_t_tiZ16yW3kaVRqcoWeWGIo-L01VG9pcyqx54jczPUx6jdfJOCO-EuMy4dUamoTIyU0LbM4xOlDlzZCFI1EiyyvlhYGFpidXDsa5nW-XFXs0ZdK64TjIyuAp0-4TNq9oc4E3zgz2kPin4p0EX3VSAMNSafWpUrHrmxJ6jCOGg");'></div>
-<div>
-<p class="text-text-light-primary dark:text-text-dark-primary font-semibold">Michael Scott</p>
-<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm">Check-in atrasado por 2 días</p>
+  {% if top_rachas %}
+    {% for item in top_rachas %}
+      <div class="w-44 h-44 flex flex-col justify-between p-4 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+        <div class="flex justify-between items-start">
+          <div class="flex items-center gap-3">
+            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12" data-alt="{{ item.socio.NombreCompleto }}'s profile picture" style='background-image: url("https://via.placeholder.com/80x80?text={{ item.socio.NombreCompleto|urlencode }}");'></div>
+            <div>
+              <p class="text-text-light-primary dark:text-text-dark-primary font-semibold">{{ item.socio.NombreCompleto }}</p>
+              <p class="text-text-light-secondary dark:text-text-dark-secondary text-sm">Racha: <strong>{{ item.streak }}</strong></p>
+            </div>
+          </div>
+          <div class="text-warning text-2xl" title="Racha caliente">
+            <span class="material-symbols-outlined">local_fire_department</span>
+          </div>
+        </div>
+        <div class="flex justify-between items-end">
+          <p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">Última: {{ item.last_date }}</p>
+          <div class="flex items-center gap-2">
+            <a href="{% url 'entrenador_ver_rutina' item.socio.id %}" class="px-2 py-1 text-xs bg-gluteos-blue text-white rounded">Ver</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="text-text-light-secondary">No hay rachas activas registradas.</p>
+  {% endif %}
 </div>
 </div>
-<div class="flex items-center gap-2">
-<span class="inline-flex items-center rounded-md bg-critical/10 px-2 py-1 text-xs font-medium text-critical ring-1 ring-inset ring-critical/20">Atrasado</span>
-<button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 text-text-light-secondary dark:text-text-dark-secondary">
-<span class="material-symbols-outlined text-xl">more_vert</span>
-</button>
+<!-- Socios pendientes de asignación de rutina (sin foto, escalable) -->
+<div class="mt-6">
+  <h3 class="text-text-light-primary dark:text-text-dark-primary font-semibold mb-3">Socios pendientes de asignación</h3>
+  <div class="mb-3">
+    <input id="filter-socios" type="search" placeholder="Buscar por nombre, email o teléfono" class="w-full rounded-md border border-border-light dark:border-border-dark px-3 py-2 text-sm bg-background-light dark:bg-background-dark focus:outline-none" oninput="filterPendingSocios()" />
+  </div>
+  {% if socios_sin_rutina_list %}
+    <!-- contenedor con altura fija y scroll para escalar bien cuando hay muchos socios -->
+    <div id="pending-socios-container" class="max-h-64 overflow-y-auto space-y-2 p-1">
+      {% for item in socios_sin_rutina_list %}
+        <div class="pending-socio flex items-center justify-between gap-4 p-3 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark transition" data-name="{{ item.socio.NombreCompleto|lower }}" data-contact="{% if item.socio.Telefono %}{{ item.socio.Telefono }}{% endif %} {% if item.socio.Email %}{{ item.socio.Email }}{% endif %}">
+          <div class="flex flex-col">
+            <p class="text-text-light-primary dark:text-text-dark-primary font-medium">{{ item.socio.NombreCompleto }}</p>
+            <p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">{% if item.socio.Telefono %}{{ item.socio.Telefono }}{% elif item.socio.Email %}{{ item.socio.Email }}{% else %}—{% endif %}</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="text-xs text-text-light-secondary dark:text-text-dark-secondary mr-2">Última: <span class="font-medium text-sm">{% if item.ultima_medicion %}{{ item.ultima_medicion.Fecha|date:"d M Y" }}{% else %}—{% endif %}</span></div>
+            <a href="{% url 'crear_rutina_entrenador' %}?socio_id={{ item.socio.id }}" class="inline-flex items-center gap-2 px-3 py-2 bg-gluteos-blue hover:bg-gluteos-blue-dark text-white rounded-md text-sm font-semibold">Asignar rutina</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="p-4 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark">
+      <p class="text-text-light-secondary">No hay socios pendientes de asignación.</p>
+    </div>
+  {% endif %}
 </div>
-</div>
-<div class="flex items-center justify-between p-4 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
-<div class="flex items-center gap-4">
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12" data-alt="Client Jane Doe's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBtphg1gXj0TkH6y_tu2UQ0c63LlfIKNw4U6_NFFxB5AlV2byMYEtxgE4A-CEHzCYil4EQ3U6SWZ8LrE6L9DHkNYUxjTVPv2homlBq5MJEEejdPfGHENJ-z_VKkD7eXl2grFvD-KERKiRu_S5BH9KZLN6hm03hnWWm-V_ZI_eDc1-0ksFso1IcZ5ip_aPbRcHfcTd-Ni9Hg4ozyc_UWsFzSAbd1Ui7_jNr1mW05bUDbOrHQ3mHPAB954he7ztmu278cyAOr3Mxq6cM");'></div>
-<div>
-<p class="text-text-light-primary dark:text-text-dark-primary font-semibold">Jane Doe</p>
-<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm">Plan nutricional expira mañana</p>
-</div>
-</div>
-<div class="flex items-center gap-2">
-<span class="inline-flex items-center rounded-md bg-warning/10 px-2 py-1 text-xs font-medium text-warning ring-1 ring-inset ring-warning/20">Próximo a expirar</span>
-<button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 text-text-light-secondary dark:text-text-dark-secondary">
-<span class="material-symbols-outlined text-xl">more_vert</span>
-</button>
-</div>
-</div>
-<div class="flex items-center justify-between p-4 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
-<div class="flex items-center gap-4">
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12" data-alt="Client John Smith's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAGDf5skG3w59ep0o2heOWWcyaZyl5Hsgbk9tGjBb39S-Xi-Rmq70MfFnT6v1AgsV-mrQbHqls88IsTG33lAD6AxOCeSVdU9mwf9Ko5b9N-qa4rmoutHvENVCdhE0M2j3zM89gMxjtlJ_KSDepyktjDP8wGebJziwFFlSwLvDgG-GyNkjwcaicNzlYTO2oH-o_v_5zpnGsJICAA4GLbF4w14AhkF-VZN-JZuoI6myHoe4RF6p3lCyCVrbQKo3IdVCIl7x3uCwdqsgA");'></div>
-<div>
-<p class="text-text-light-primary dark:text-text-dark-primary font-semibold">John Smith</p>
-<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm">Reportó bajón de motivación</p>
-</div>
-</div>
-<div class="flex items-center gap-2">
-<span class="inline-flex items-center rounded-md bg-sky-500/10 px-2 py-1 text-xs font-medium text-sky-500 ring-1 ring-inset ring-sky-500/20">Retroalimentación</span>
-<button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 text-text-light-secondary dark:text-text-dark-secondary">
-<span class="material-symbols-outlined text-xl">more_vert</span>
-</button>
-</div>
-</div>
-</div>
-</div>
+
+<script>
+function filterPendingSocios() {
+  const q = document.getElementById('filter-socios').value.trim().toLowerCase();
+  const list = document.querySelectorAll('#pending-socios-container .pending-socio');
+  if (!list) return;
+  let visible = 0;
+  list.forEach(el => {
+    const name = (el.getAttribute('data-name') || '').toLowerCase();
+    const contact = (el.getAttribute('data-contact') || '').toLowerCase();
+    const matches = q === '' || name.includes(q) || contact.includes(q);
+    el.style.display = matches ? '' : 'none';
+    if (matches) visible += 1;
+  });
+  // si no hay resultados, mostrar un mensaje sencillo
+  let emptyMsg = document.getElementById('pending-empty-msg');
+  if (!emptyMsg) {
+    emptyMsg = document.createElement('div');
+    emptyMsg.id = 'pending-empty-msg';
+    emptyMsg.className = 'text-text-light-secondary p-2';
+    emptyMsg.innerText = 'No se encontraron socios.';
+    document.getElementById('pending-socios-container').insertAdjacentElement('afterend', emptyMsg);
+  }
+  emptyMsg.style.display = visible === 0 ? '' : 'none';
+}
+</script>
 <div class="lg:col-span-1">
 <h2 class="text-text-light-primary dark:text-text-dark-primary text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">Actividad reciente</h2>
 <div class="flex flex-col gap-5">
-<div class="flex gap-4">
-<div class="flex items-center justify-center size-10 rounded-full bg-success/10 text-success">
-<span class="material-symbols-outlined">check_circle</span>
-</div>
-<div>
-<p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"><strong>Pamela Beesly</strong> completó 'Leg Day Annihilator'.</p>
-<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">hace 15 minutos</p>
-</div>
-</div>
-<div class="flex gap-4">
-<div class="flex items-center justify-center size-10 rounded-full bg-primary/10 text-primary">
-<span class="material-symbols-outlined">trending_up</span>
-</div>
-<div>
-<p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"><strong>Dwight Schrute</strong> registró un nuevo PR en Press de banca.</p>
-<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">hace 1 hora</p>
-</div>
-</div>
-<div class="flex gap-4">
-<div class="flex items-center justify-center size-10 rounded-full bg-yellow-500/10 text-yellow-500">
-<span class="material-symbols-outlined">chat</span>
-</div>
-<div>
-<p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium">Nuevo mensaje de <strong>Michael Scott</strong>.</p>
-<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">hace 3 horas</p>
-</div>
-</div>
-<div class="flex gap-4">
-<div class="flex items-center justify-center size-10 rounded-full bg-success/10 text-success">
-<span class="material-symbols-outlined">check_circle</span>
-</div>
-<div>
-<p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"><strong>Jim Halpert</strong> completó 'Full Body Workout'.</p>
-<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">Ayer</p>
-</div>
-</div>
-</div>
+  {% if recent_completions %}
+    {% for c in recent_completions %}
+      <div class="flex gap-4">
+        <div class="flex items-center justify-center size-10 rounded-full bg-success/10 text-success">
+          <span class="material-symbols-outlined">check_circle</span>
+        </div>
+        <div>
+          <p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"><strong>{{ c.nombre }}</strong> completó '{{ c.rutina }}'.</p>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">hace {{ c.fecha|timesince }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="flex gap-4">
+      <div class="flex items-center justify-center size-10 rounded-full bg-success/10 text-success">
+        <span class="material-symbols-outlined">check_circle</span>
+      </div>
+      <div>
+        <p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"><strong>Pamela Beesly</strong> completó 'Leg Day Annihilator'.</p>
+        <p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">hace 15 minutos</p>
+      </div>
+    </div>
+    <div class="flex gap-4">
+      <div class="flex items-center justify-center size-10 rounded-full bg-primary/10 text-primary">
+        <span class="material-symbols-outlined">trending_up</span>
+      </div>
+      <div>
+        <p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"><strong>Dwight Schrute</strong> registró un nuevo PR en Press de banca.</p>
+        <p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">hace 1 hora</p>
+      </div>
+    </div>
+    <div class="flex gap-4">
+      <div class="flex items-center justify-center size-10 rounded-full bg-yellow-500/10 text-yellow-500">
+        <span class="material-symbols-outlined">chat</span>
+      </div>
+      <div>
+        <p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium">Nuevo mensaje de <strong>Michael Scott</strong>.</p>
+        <p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">hace 3 horas</p>
+      </div>
+    </div>
+    <div class="flex gap-4">
+      <div class="flex items-center justify-center size-10 rounded-full bg-success/10 text-success">
+        <span class="material-symbols-outlined">check_circle</span>
+      </div>
+      <div>
+        <p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"><strong>Jim Halpert</strong> completó 'Full Body Workout'.</p>
+        <p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">Ayer</p>
+      </div>
+    </div>
+  {% endif %}
+  </div>
 </div>
 </div>
 </div>

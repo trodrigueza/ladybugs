@@ -70,7 +70,8 @@ class Asistencia(models.Model):
 
 # === TABLA RutinaSemanal ===
 class RutinaSemanal(models.Model):
-    SocioID = models.ForeignKey("socios.Socio", on_delete=models.CASCADE, related_name="rutinas")
+    # Allow null SocioID so routines can be stored as plantillas (bank templates)
+    SocioID = models.ForeignKey("socios.Socio", on_delete=models.CASCADE, related_name="rutinas", null=True, blank=True)
     Nombre = models.CharField(max_length=100, null=True, blank=True)
     DiasEntrenamiento = models.CharField(max_length=7, help_text="Ej: LMXJVSD (Lunes..Domingo) o similar")
     EsPlantilla = models.BooleanField(default=False)

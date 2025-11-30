@@ -13,6 +13,7 @@ from apps.control_acceso.models import (
 )
 
 from apps.socios.models import Socio
+from apps.control_acceso.models import SesionEntrenamiento
 from apps.seguridad.servicios.FormularioSocio_Membresia import SocioForm
 from apps.seguridad.models import Usuario
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -157,13 +158,106 @@ def entrenador_panel(request):
     total_clientes = Socio.objects.count()
     rutinas_asignadas = RutinaSemanal.objects.count()
     socios_sin_rutina = Socio.objects.filter(rutinas__isnull=True).count()
-
+    # Lista de socios sin rutina (limitada) con su última medición para mostrar en el panel
+    from apps.socios.models import Medicion
+    socios_wo_qs = Socio.objects.filter(rutinas__isnull=True).order_by('NombreCompleto')[:8]
+    socios_sin_rutina_list = []
+    for s in socios_wo_qs:
+        ultima = Medicion.objects.filter(SocioID=s).order_by('-Fecha').first()
+        socios_sin_rutina_list.append({
+            "socio": s,
+            "ultima_medicion": ultima,
+        })
+    # (sin KPI temporal en este panel) — mantenemos solo conteos básicos
     context = {
         "total_clientes": total_clientes,
         "rutinas_asignadas": rutinas_asignadas,
         "socios_sin_rutina": socios_sin_rutina,
+        "socios_sin_rutina_list": socios_sin_rutina_list,
     }
+    # --- Calcular rachas actuales (top N) basadas en SesionEntrenamiento por día ---
+    import datetime
+    from django.utils import timezone as dj_timezone
 
+    hoy = dj_timezone.localdate()
+    # obtener ids de socios que tienen sesiones
+    socio_ids_with_sessions = (
+        SesionEntrenamiento.objects.values_list("SocioMembresiaID__SocioID", flat=True).distinct()
+    )
+    socios_with_sessions = Socio.objects.filter(id__in=socio_ids_with_sessions)
+
+    def compute_current_streak(socio):
+        # obtener fechas (date) de sesiones para el socio
+        fechas = list(
+            SesionEntrenamiento.objects.filter(SocioMembresiaID__SocioID=socio)
+            .values_list("FechaInicio", flat=True)
+        )
+        fechas_converted = set([f.date() for f in fechas if f is not None])
+        if not fechas_converted:
+            return 0, None
+
+        streak = 0
+        dia = hoy
+        while dia in fechas_converted:
+            streak += 1
+            dia = dia - datetime.timedelta(days=1)
+
+        ultima = max(fechas_converted)
+        return streak, ultima
+
+    streaks = []
+    for s in socios_with_sessions:
+        st, last = compute_current_streak(s)
+        if st > 0:
+            streaks.append({"socio": s, "streak": st, "last_date": last})
+
+    # ordenar y cortar top 5
+    top_n = 5
+    top_rachas = sorted(streaks, key=lambda x: (x["streak"], x["last_date"]), reverse=True)[:top_n]
+    context["top_rachas"] = top_rachas
+    # Agregar nombre del entrenador al contexto si está disponible en sesión
+    entrenador_nombre = None
+    usuario_id = request.session.get("usuario_id")
+    if usuario_id:
+        try:
+            usuario = Usuario.objects.get(id=usuario_id)
+            entrenador_nombre = getattr(usuario, 'NombreUsuario', None) or getattr(usuario, 'Email', None)
+        except Usuario.DoesNotExist:
+            entrenador_nombre = None
+
+    context['entrenador_nombre'] = entrenador_nombre or 'Entrenador'
+    # Notificaciones: sesiones completadas recientemente (última hora)
+    try:
+        from django.utils import timezone as dj_timezone
+        ahora = dj_timezone.now()
+        window = ahora - dj_timezone.timedelta(minutes=60)
+        recientes_qs = (
+            SesionEntrenamiento.objects.filter(FechaFin__isnull=False, FechaFin__gte=window)
+            .order_by("-FechaFin")[:8]
+        )
+        recent_completions = []
+        for s in recientes_qs:
+            socio_nombre = None
+            try:
+                socio_nombre = s.SocioMembresiaID.SocioID.NombreCompleto
+            except Exception:
+                socio_nombre = str(s.SocioMembresiaID_id)
+
+            rutina_nombre = None
+            try:
+                rutina_nombre = s.RutinaID.Nombre if s.RutinaID else ("Sesión libre" if s.EsEntrenamientoLibre else "Rutina")
+            except Exception:
+                rutina_nombre = "Rutina"
+
+            recent_completions.append({
+                "nombre": socio_nombre,
+                "rutina": rutina_nombre,
+                "fecha": s.FechaFin,
+            })
+
+        context["recent_completions"] = recent_completions
+    except Exception:
+        context["recent_completions"] = []
     return render(request, "Entrenador/PaneldeInicio.html", context)
 
 
@@ -184,13 +278,15 @@ def crear_rutina_entrenador_view(request):
         dias = request.POST.get("dias_entrenamiento")
         socio_id = request.POST.get("socio_id")
         ejercicios_temp_json = request.POST.get("ejercicios_temp")
+        # si el entrenador pulsó en guardar en banco, marcamos la rutina como plantilla
+        guardar_en_banco = True if request.POST.get("guardar_en_banco") else False
 
         try:
             rutina = crear_rutina_semanal(
-                socio_id=socio_id,
+                socio_id=(None if guardar_en_banco else socio_id),
                 nombre=nombre,
                 dias_entrenamiento=dias,
-                es_plantilla=False
+                es_plantilla=bool(guardar_en_banco)
             )
         except ValidationError as e:
             messages.error(request, str(e))
@@ -201,7 +297,7 @@ def crear_rutina_entrenador_view(request):
                 "dias_abbr": ["LU", "MA", "MI", "JU", "VI", "SA", "DO"],
             })
 
-        # Persistir ejercicios temporales que el entrenador pudo haber arrastrado
+    # Persistir ejercicios temporales que el entrenador pudo haber arrastrado
         # antes de crear la rutina (cliente envía JSON en el input oculto).
         added = 0
         failed = []
@@ -230,7 +326,7 @@ def crear_rutina_entrenador_view(request):
                 except Exception as e:
                     failed.append(f"item #{idx}: {str(e)}")
 
-        # Informar al entrenador cuántos ejercicios temporales se agregaron (si los hubo)
+    # Informar al entrenador cuántos ejercicios temporales se agregaron (si los hubo)
         if added > 0:
             messages.success(request, f"Se agregaron {added} ejercicio(s) a la rutina.")
         if failed:
@@ -242,6 +338,10 @@ def crear_rutina_entrenador_view(request):
             socio_nombre = rutina.SocioID.NombreCompleto if hasattr(rutina.SocioID, 'NombreCompleto') else str(rutina.SocioID)
         except Exception:
             socio_nombre = str(rutina.SocioID_id)
+        # Si guardamos como plantilla, redirigimos al banco de rutinas para que el entrenador la vea
+        if guardar_en_banco:
+            messages.success(request, f"Plantilla '{rutina.Nombre}' guardada en el banco de rutinas.")
+            return redirect('rutinas_banco')
 
         messages.success(request, f"Rutina '{rutina.Nombre}' creada correctamente para {socio_nombre}.")
 
@@ -309,6 +409,19 @@ def rutinas_list_view(request):
 
     return render(request, 'Entrenador/RutinasList.html', {
         'rutinas': rutinas,
+    })
+
+
+@login_requerido
+def rutinas_banco_view(request):
+    """Lista las rutinas plantillas (banco de rutinas) que un entrenador puede asignar a socios."""
+    # Plantillas marcadas como EsPlantilla=True
+    plantillas = RutinaSemanal.objects.filter(EsPlantilla=True).prefetch_related('SocioID')
+    socios = Socio.objects.all().order_by('NombreCompleto')
+
+    return render(request, 'Entrenador/RutinasBanco.html', {
+        'plantillas': plantillas,
+        'socios': socios,
     })
 
 

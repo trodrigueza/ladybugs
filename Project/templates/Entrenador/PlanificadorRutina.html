@@ -142,13 +142,17 @@
             </div>
             <div>
               <label class="block text-sm font-medium">Seleccionar cliente</label>
-              <select name="socio_id" class="w-full mt-1 p-2 border rounded-md" required>
+              <select name="socio_id" class="w-full mt-1 p-2 border rounded-md">
                 <option value="">-- Seleccionar cliente --</option>
                 {% for socio in socios %}<option value="{{ socio.id }}">{{ socio.NombreCompleto }} ({{ socio.Email }})</option>{% endfor %}
               </select>
+              <p class="text-xs text-gray-500 mt-1">Si quieres guardar esta rutina en el banco como plantilla, puedes usar "Guardar en banco" sin seleccionar cliente.</p>
             </div>
             <input type="hidden" name="dias_entrenamiento" id="input-dias" value="LMXJVSD">
-            <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-md font-semibold">Guardar Rutina</button>
+            <div class="flex gap-2">
+              <button type="submit" name="guardar_rutina" class="flex-1 bg-indigo-600 text-white py-2 rounded-md font-semibold" onclick="if(!document.querySelector('[name=socio_id]').value){ alert('Selecciona un cliente para guardar la rutina'); return false; }">Guardar Rutina</button>
+              <button type="submit" name="guardar_en_banco" value="1" class="flex-1 bg-gluteos-blue text-white py-2 rounded-md font-semibold">Guardar en banco</button>
+            </div>
           {% endif %}
         </form>
       </aside>
@@ -249,9 +253,20 @@ document.addEventListener("DOMContentLoaded", function () {
         const res = await fetch(`/entrenador/rutina/${RUTINA_ID}/eliminar/`, { method:'POST', headers:{ 'X-CSRFToken': getCSRF(), 'Content-Type':'application/x-www-form-urlencoded' }, body: `id=${id}` }); const result = await res.json(); if (result.ok) btn.closest('.ej-asignado').remove();
     });
 
-    // form submit: attach temporals
-    const formCrear = document.querySelector('aside form');
-    if (formCrear) formCrear.addEventListener('submit', function () { if (inputTemp) inputTemp.value = JSON.stringify(ejerciciosTemporales || []); });
+  // form submit: attach temporals
+  // NOTE: there are multiple <form> elements on the page (left modal and the create-rutina form).
+  // Selecting the form that contains the hidden input ensures we serialize temporals into
+  // the correct form before submit.
+  const formCrear = (function(){
+    const hidden = document.querySelector('form input#input-ejercicios-temp');
+    if (hidden) return hidden.closest('form');
+    // fallback to first aside form (legacy)
+    return document.querySelector('aside form');
+  })();
+
+  if (formCrear) formCrear.addEventListener('submit', function () {
+    if (inputTemp) inputTemp.value = JSON.stringify(ejerciciosTemporales || []);
+  });
 
     // small search for library
     const search = document.getElementById('planner-search');

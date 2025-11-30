@@ -351,6 +351,13 @@ def clientes_list_view(request):
             except Exception:
                 imc = None
 
+        # Indicar si el socio ya tiene alguna rutina (esto se usa para el botón "Ver rutina"
+        # y evitar navegaciones innecesarias si no existe rutina).
+        try:
+            has_rutina = RutinaSemanal.objects.filter(SocioID=s).exists()
+        except Exception:
+            has_rutina = False
+
         resultados.append({
             'socio': s,
             'peso': peso,
@@ -359,6 +366,7 @@ def clientes_list_view(request):
             'restricciones': s.SaludBasica,
             'telefono': s.Telefono,
             'email': s.Email,
+            'has_rutina': has_rutina,
         })
 
     return render(request, 'Entrenador/ClientesList.html', {'resultados': resultados})

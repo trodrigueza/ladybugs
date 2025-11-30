@@ -115,6 +115,7 @@ urlpatterns = [
     ),
     # LISTA Y DETALLE DE RUTINAS
     path('entrenador/rutinas/', views_entrenador.rutinas_list_view, name='rutinas_list'),
+    path('entrenador/rutinas/banco/', views_entrenador.rutinas_banco_view, name='rutinas_banco'),
     path('entrenador/rutina/<int:rutina_id>/', views_entrenador.rutina_detalle_view, name='rutina_detalle'),
 
     # Entrenador: rutas por socio (editar/ver rutina)

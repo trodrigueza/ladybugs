@@ -50,7 +50,11 @@
         <div class="p-4 border-t bg-gray-50 flex items-center justify-between">
           <div class="text-sm text-gray-600">ID: {{ s.id }}</div>
           <div class="flex items-center gap-2">
-            <a href="{% url 'entrenador_ver_rutina' s.id %}" class="px-3 py-1 text-sm bg-gluteos-blue text-white rounded hover:opacity-95">Ver rutina</a>
+            {% if item.has_rutina %}
+              <a href="{% url 'entrenador_ver_rutina' s.id %}" class="px-3 py-1 text-sm bg-gluteos-blue text-white rounded hover:opacity-95">Ver rutina</a>
+            {% else %}
+              <button type="button" class="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded btn-no-rutina" data-nombre="{{ s.NombreCompleto }}">Ver rutina</button>
+            {% endif %}
           </div>
         </div>
       </div>
@@ -61,4 +65,27 @@
   </div>
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  function showInfoMessage(text){
+    const container = document.getElementById('django-messages') || (function(){ const c = document.createElement('div'); c.id='django-messages'; document.body.insertBefore(c, document.body.firstChild); return c; })();
+    const el = document.createElement('div');
+    el.className = 'p-3 rounded shadow-sm border mb-2 bg-yellow-50 text-yellow-800 border-yellow-200';
+    el.innerHTML = `<div class="flex items-center justify-between"><div class="flex items-center gap-3"><span class="material-symbols-outlined">priority_high</span><div class="text-sm">${text}</div></div><button class="text-sm text-gray-500 hover:text-gray-700">Cerrar</button></div>`;
+    const btn = el.querySelector('button'); btn.addEventListener('click', ()=> el.remove());
+    container.prepend(el);
+  }
+
+  document.querySelectorAll('.btn-no-rutina').forEach(btn => {
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      const nombre = btn.dataset.nombre || 'Socio';
+      showInfoMessage(nombre + ' sin rutina');
+    });
+  });
+});
+</script>
 {% endblock %}
