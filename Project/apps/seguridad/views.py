@@ -15,6 +15,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from apps.seguridad.decoradores import login_requerido, admin_requerido
 
+
 def login_view(request):
     if request.method == "POST":
         email = request.POST.get("email", "").strip()
@@ -38,9 +39,11 @@ def login_view(request):
         rol_real = usuario.RolID.NombreRol.lower()
 
         if rol_seleccionado.lower() != rol_real:
-            messages.error(request, "No tienes permisos para iniciar sesión como ese rol.")
+            messages.error(
+                request, "No tienes permisos para iniciar sesión como ese rol."
+            )
             return render(request, "seguridad/login.html", {"email": email})
-        
+
         request.session["usuario_id"] = usuario.id
         request.session["usuario_email"] = usuario.Email
         request.session["usuario_rol"] = rol_real
@@ -51,9 +54,9 @@ def login_view(request):
             return redirect("socio_panel")
 
         elif rol_real == "entrenador":
-            return redirect("entrenador_panel")  
+            return redirect("entrenador_panel")
         elif rol_real == "administrativo":
-            return redirect("panel_admin")  
+            return redirect("panel_admin")
 
         return redirect("socio_panel")
 
