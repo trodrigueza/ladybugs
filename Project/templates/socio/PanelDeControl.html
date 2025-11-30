@@ -1,400 +1,543 @@
-<!DOCTYPE html>
+<!doctype html>
 <html class="light" lang="es">
-
-<head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>GluteOS - Panel de Socio</title>
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap"
-    rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-  <script id="tailwind-config">
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "primary": "#0f49bd",
-            "background-light": "#f6f6f8",
-            "background-dark": "#101622",
-            "card-light": "#ffffff",
-            "card-dark": "#1a2230",
-            "text-light-primary": "#101622",
-            "text-dark-primary": "#f6f6f8",
-            "text-light-secondary": "#616f89",
-            "text-dark-secondary": "#9ca3af",
-            "border-light": "#e5e7eb",
-            "border-dark": "#374151"
-          },
-          fontFamily: {
-            "display": ["Manrope", "sans-serif"]
-          },
-          borderRadius: {
-            "DEFAULT": "0.25rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>GluteOS - Panel de Socio</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#0f49bd",
+              "background-light": "#f6f6f8",
+              "background-dark": "#101622",
+              "card-light": "#ffffff",
+              "card-dark": "#1a2230",
+              "text-light-primary": "#101622",
+              "text-dark-primary": "#f6f6f8",
+              "text-light-secondary": "#616f89",
+              "text-dark-secondary": "#9ca3af",
+              "border-light": "#e5e7eb",
+              "border-dark": "#374151",
+            },
+            fontFamily: {
+              display: ["Manrope", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
           },
         },
-      },
-    }
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
 
-<body class="font-display bg-background-light dark:bg-background-dark">
-  <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
-    <div class="flex min-h-screen">
-      <aside
-        class="w-64 flex-shrink-0 bg-card-light dark:bg-card-dark border-r border-border-light dark:border-border-dark flex flex-col">
-        <div
-          class="flex items-center gap-3 p-6 text-primary h-[65px] border-b border-border-light dark:border-border-dark">
-          <span class="material-symbols-outlined text-3xl">exercise</span>
-          <h2 class="text-xl font-bold leading-tight">GluteOS</h2>
-        </div>
-        <div class="flex h-full flex-col justify-between p-4">
-          <div class="flex flex-col gap-2">
-            <div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary">
-              <span class="material-symbols-outlined">home</span>
-              <p class="text-sm font-semibold leading-normal">Inicio</p>
-            </div>
-            <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
-              href="{% url 'mi_rutina' %}">
-              <span class="material-symbols-outlined">fitness_center</span>
-              <p class="text-sm font-medium leading-normal">Mi Rutina</p>
-            </a>
-            <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
-              href="{% url 'mi_nutricion' %}">
-              <span class="material-symbols-outlined">restaurant_menu</span>
-              <p class="text-sm font-medium leading-normal">Mi Nutrición</p>
-            </a>
-            <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
-              href="#">
-              <span class="material-symbols-outlined">monitoring</span>
-              <p class="text-sm font-medium leading-normal">Progreso</p>
-            </a>
-            <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
-              href="#">
-              <span class="material-symbols-outlined">chat</span>
-              <p class="text-sm font-medium leading-normal">Mensajes</p>
-            </a>
-            <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
-              href="#">
-              <span class="material-symbols-outlined">account_circle</span>
-              <p class="text-sm font-medium leading-normal">Mi Perfil</p>
-            </a>
+  <body class="font-display bg-background-light dark:bg-background-dark">
+    <div
+      class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden"
+    >
+      <div class="flex min-h-screen">
+        <aside
+          class="w-64 flex-shrink-0 bg-card-light dark:bg-card-dark border-r border-border-light dark:border-border-dark flex flex-col"
+        >
+          <div
+            class="flex items-center gap-3 p-6 text-primary h-[65px] border-b border-border-light dark:border-border-dark"
+          >
+            <span class="material-symbols-outlined text-3xl">exercise</span>
+            <h2 class="text-xl font-bold leading-tight">GluteOS</h2>
           </div>
-          <div class="flex flex-col">
-            <div class="border-t border-border-light dark:border-border-dark my-2"></div>
-            <div class="flex gap-3 items-center p-2">
-              <div class="flex items-center justify-center rounded-full size-10 bg-primary/10 text-primary">
+          <div class="flex h-full flex-col justify-between p-4">
+            <div class="flex flex-col gap-2">
+              <div
+                class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary"
+              >
+                <span class="material-symbols-outlined">home</span>
+                <p class="text-sm font-semibold leading-normal">Inicio</p>
+              </div>
+              <a
+                class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
+                href="{% url 'mi_rutina' %}"
+              >
+                <span class="material-symbols-outlined">fitness_center</span>
+                <p class="text-sm font-medium leading-normal">Mi Rutina</p>
+              </a>
+              <a
+                class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
+                href="{% url 'mi_nutricion' %}"
+              >
+                <span class="material-symbols-outlined">restaurant_menu</span>
+                <p class="text-sm font-medium leading-normal">Mi Nutrición</p>
+              </a>
+              <a
+                class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
+                href="#"
+              >
+                <span class="material-symbols-outlined">account_circle</span>
+                <p class="text-sm font-medium leading-normal">Mi Perfil</p>
+              </a>
+            </div>
+            <div class="flex flex-col">
+              <div
+                class="border-t border-border-light dark:border-border-dark my-2"
+              ></div>
+              <div class="flex gap-3 items-center p-2">
+                <div
+                  class="flex items-center justify-center rounded-full size-10 bg-primary/10 text-primary"
+                >
+                  <span class="material-symbols-outlined text-2xl">person</span>
+                </div>
+                <div class="flex flex-col">
+                  <h1
+                    class="text-text-light-primary dark:text-text-dark-primary text-sm font-semibold leading-normal"
+                  >
+                    {{ socio.NombreCompleto }}
+                  </h1>
+                  <p
+                    class="text-text-light-secondary dark:text-text-dark-secondary text-xs font-normal leading-normal"
+                  >
+                    Socio Activo
+                  </p>
+                </div>
+              </div>
+              <a
+                class="flex items-center gap-3 px-3 py-2 mt-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-red-500/10 hover:text-red-500 transition-colors duration-200"
+                href="{% url 'logout' %}"
+              >
+                <span class="material-symbols-outlined">logout</span>
+                <p class="text-sm font-medium leading-normal">Cerrar Sesión</p>
+              </a>
+            </div>
+          </div>
+        </aside>
+        <main class="flex-1 flex flex-col">
+          <header
+            class="flex h-[65px] items-center justify-between whitespace-nowrap border-b border-solid border-border-light dark:border-border-dark px-8 bg-card-light dark:bg-card-dark sticky top-0 z-10"
+          >
+            <div class="flex items-center gap-8">
+              <h1
+                class="text-text-light-primary dark:text-text-dark-primary text-xl font-bold"
+              >
+                Panel de Inicio
+              </h1>
+            </div>
+            <div class="flex flex-1 justify-end gap-4 items-center">
+              <button
+                class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-background-light dark:bg-background-dark text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
+              >
+                <span class="material-symbols-outlined text-xl"
+                  >notifications</span
+                >
+              </button>
+              <div
+                class="flex items-center justify-center rounded-full size-10 bg-primary/10 text-primary"
+              >
                 <span class="material-symbols-outlined text-2xl">person</span>
               </div>
-              <div class="flex flex-col">
-                <h1 class="text-text-light-primary dark:text-text-dark-primary text-sm font-semibold leading-normal">
-                  {{ socio.NombreCompleto }}</h1>
-                <p class="text-text-light-secondary dark:text-text-dark-secondary text-xs font-normal leading-normal">
-                  Socio Activo</p>
+            </div>
+          </header>
+          <div class="p-8">
+            {% if messages %}
+            <div class="mb-6 flex flex-col gap-3">
+              {% for message in messages %} {% if message.tags == "success" %}
+              <div
+                class="rounded-lg border border-green-200 bg-green-50 text-green-800 px-4 py-3 text-sm font-medium"
+              >
+                {{ message }}
+              </div>
+              {% elif message.tags == "warning" %}
+              <div
+                class="rounded-lg border border-yellow-200 bg-yellow-50 text-yellow-800 px-4 py-3 text-sm font-medium"
+              >
+                {{ message }}
+              </div>
+              {% elif message.tags == "error" %}
+              <div
+                class="rounded-lg border border-red-200 bg-red-50 text-red-800 px-4 py-3 text-sm font-medium"
+              >
+                {{ message }}
+              </div>
+              {% else %}
+              <div
+                class="rounded-lg border border-blue-200 bg-blue-50 text-blue-800 px-4 py-3 text-sm font-medium"
+              >
+                {{ message }}
+              </div>
+              {% endif %} {% endfor %}
+            </div>
+            {% endif %}
+            <div class="flex flex-wrap justify-between gap-3 mb-6">
+              <div class="flex min-w-72 flex-col gap-2">
+                <h2
+                  class="text-text-light-primary dark:text-text-dark-primary text-xl font-bold leading-tight"
+                >
+                  Bienvenido, {{ socio.NombreCompleto }}
+                </h2>
+                <p
+                  class="text-text-light-secondary dark:text-text-dark-secondary text-base font-normal leading-normal"
+                >
+                  Lista para romper tus límites hoy.
+                </p>
               </div>
             </div>
-            <a class="flex items-center gap-3 px-3 py-2 mt-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-red-500/10 hover:text-red-500 transition-colors duration-200"
-              href="{% url 'logout' %}">
-              <span class="material-symbols-outlined">logout</span>
-              <p class="text-sm font-medium leading-normal">Cerrar Sesión</p>
-            </a>
-          </div>
-        </div>
-      </aside>
-      <main class="flex-1 flex flex-col">
-        <header
-          class="flex h-[65px] items-center justify-between whitespace-nowrap border-b border-solid border-border-light dark:border-border-dark px-8 bg-card-light dark:bg-card-dark sticky top-0 z-10">
-          <div class="flex items-center gap-8">
-            <h1 class="text-text-light-primary dark:text-text-dark-primary text-xl font-bold">Panel de Inicio</h1>
-          </div>
-          <div class="flex flex-1 justify-end gap-4 items-center">
-            <button
-              class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-background-light dark:bg-background-dark text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200">
-              <span class="material-symbols-outlined text-xl">notifications</span>
-            </button>
-            <div class="flex items-center justify-center rounded-full size-10 bg-primary/10 text-primary">
-              <span class="material-symbols-outlined text-2xl">person</span>
-            </div>
-          </div>
-        </header>
-        <div class="p-8">
-          <div class="flex flex-wrap justify-between gap-3 mb-6">
-            <div class="flex min-w-72 flex-col gap-2">
-              <h2 class="text-text-light-primary dark:text-text-dark-primary text-xl font-bold leading-tight">
-                Bienvenido, {{ socio.NombreCompleto }}
-              </h2>
-              <p class="text-text-light-secondary dark:text-text-dark-secondary text-base font-normal leading-normal">
-                Lista para romper tus límites hoy.</p>
-            </div>
-          </div>
-          {% if racha_en_peligro %}
-          <div
-            class="mb-4 p-4 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg flex items-center gap-3">
-            <span class="text-2xl">⚠️</span>
-            <div>
-              <p class="font-semibold text-orange-800 dark:text-orange-200">¡Atención!</p>
-              <p class="text-sm text-orange-700 dark:text-orange-300">{{ mensaje_racha }}</p>
-            </div>
-          </div>
-          {% endif %}
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {% if racha_en_peligro %}
             <div
-              class="flex flex-col gap-2 rounded-xl p-6 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
-              <div class="flex items-center gap-2 text-text-light-secondary dark:text-text-dark-secondary">
-                <span class="material-symbols-outlined text-lg">local_fire_department</span>
-                <p class="text-base font-medium leading-normal">Racha de Días</p>
-              </div>
-              <p
-                class="text-text-light-primary dark:text-text-dark-primary tracking-tight text-3xl font-bold leading-tight">
-                {{ racha_dias }} Días</p>
-              <p class="text-green-600 dark:text-green-500 text-sm font-medium leading-normal">{{ mensaje_racha }}</p>
-            </div>
-            <div
-              class="flex flex-col gap-2 rounded-xl p-6 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
-              <div class="flex items-center gap-2 text-text-light-secondary dark:text-text-dark-secondary">
-                <span class="material-symbols-outlined text-lg">workspace_premium</span>
-                <p class="text-base font-medium leading-normal">Logros Obtenidos</p>
-              </div>
-              <p
-                class="text-text-light-primary dark:text-text-dark-primary tracking-tight text-3xl font-bold leading-tight">
-                {{ logros_count }}</p>
-              {{ logros_count }}</p>
-              <span
-                class="inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-                Próximamente
-              </span>
-            </div>
-            <div
-              class="flex flex-col gap-2 rounded-xl p-6 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
-              <div class="flex items-center gap-2 text-text-light-secondary dark:text-text-dark-secondary">
-                <span class="material-symbols-outlined text-lg">weight</span>
-                <p class="text-base font-medium leading-normal">Último peso registrado</p>
-              </div>
-              <p
-                class="text-text-light-primary dark:text-text-dark-primary tracking-tight text-3xl font-bold leading-tight">
-                {{ peso_actual }} kg</p>
-              <p class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-medium leading-normal">
-                {{ fecha_peso|date:"d M Y" }}
-              </p>
-            </div>
-            <div
-              class="flex flex-col gap-2 rounded-xl p-6 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
-              <div class="flex items-center gap-2 text-text-light-secondary dark:text-text-dark-secondary">
-                <span class="material-symbols-outlined text-lg">health_and_safety</span>
-                <p class="text-base font-medium leading-normal">IMC Actual</p>
-              </div>
-              <p
-                class="text-text-light-primary dark:text-text-dark-primary tracking-tight text-3xl font-bold leading-tight">
-                {{ imc_actual }}</p>
-              <p
-                class="text-{{ estado_imc|yesno:'green,yellow,red' }}-600 dark:text-{{ estado_imc|yesno:'green,yellow,red' }}-500 text-sm font-medium leading-normal">
-                {{ estado_imc }}
-              </p>
-            </div>
-          </div>
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div
-              class="lg:col-span-2 flex flex-col gap-4 p-6 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
-              <div class="flex flex-col">
-                <p class="text-text-light-primary dark:text-text-dark-primary text-lg font-semibold leading-normal">
-                  Progreso de Peso e IMC (Últimos 30 días)</p>
-                <p class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-normal leading-normal">
-                  {{ mensaje_peso }}</p>
-              </div>
-              <div class="relative h-64">
-                <canvas id="progressChart"></canvas>
+              class="mb-4 p-4 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg flex items-center gap-3"
+            >
+              <span class="text-2xl">⚠️</span>
+              <div>
+                <p class="font-semibold text-orange-800 dark:text-orange-200">
+                  ¡Atención!
+                </p>
+                <p class="text-sm text-orange-700 dark:text-orange-300">
+                  {{ mensaje_racha }}
+                </p>
               </div>
             </div>
+            {% endif %}
             <div
-              class="flex flex-col gap-4 p-6 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
-              <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-primary">notifications_active</span>
-                <h3 class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary">Notificaciones
-                </h3>
-              </div>
-              <div class="flex flex-col gap-4">
-                {% for notif in notificaciones %}
-                <div class="flex items-start gap-3 p-3 rounded-lg bg-blue-500/10">
-                  <span class="material-symbols-outlined text-blue-500 text-xl mt-0.5">notifications</span>
-                  <div>
-                    <p class="font-semibold text-sm text-blue-800 dark:text-blue-300">{{ notif.TipoAlerta }}</p>
-                    <p class="text-xs text-blue-600 dark:text-blue-400">{{ notif.FechaGeneracion|date:"d M Y" }}</p>
-                  </div>
+              class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
+            >
+              <div
+                class="flex flex-col gap-2 rounded-xl p-6 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark"
+              >
+                <div
+                  class="flex items-center gap-2 text-text-light-secondary dark:text-text-dark-secondary"
+                >
+                  <span class="material-symbols-outlined text-lg"
+                    >local_fire_department</span
+                  >
+                  <p class="text-base font-medium leading-normal">
+                    Racha de Días
+                  </p>
                 </div>
-                {% empty %}
-                <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">No tienes notificaciones
-                  nuevas.</p>
-                {% endfor %}
+                <p
+                  class="text-text-light-primary dark:text-text-dark-primary tracking-tight text-3xl font-bold leading-tight"
+                >
+                  {{ racha_dias }} Días
+                </p>
+                <p
+                  class="text-green-600 dark:text-green-500 text-sm font-medium leading-normal"
+                >
+                  {{ mensaje_racha }}
+                </p>
+              </div>
+              <div
+                class="flex flex-col gap-2 rounded-xl p-6 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark"
+              >
+                <div
+                  class="flex items-center gap-2 text-text-light-secondary dark:text-text-dark-secondary"
+                >
+                  <span class="material-symbols-outlined text-lg">weight</span>
+                  <p class="text-base font-medium leading-normal">
+                    Último peso registrado
+                  </p>
+                </div>
+                <p
+                  class="text-text-light-primary dark:text-text-dark-primary tracking-tight text-3xl font-bold leading-tight"
+                >
+                  {{ peso_actual }} kg
+                </p>
+                <p
+                  class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-medium leading-normal"
+                >
+                  {{ fecha_peso|date:"d M Y" }}
+                </p>
+              </div>
+              <div
+                class="flex flex-col gap-2 rounded-xl p-6 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark"
+              >
+                <div
+                  class="flex items-center gap-2 text-text-light-secondary dark:text-text-dark-secondary"
+                >
+                  <span class="material-symbols-outlined text-lg"
+                    >health_and_safety</span
+                  >
+                  <p class="text-base font-medium leading-normal">IMC Actual</p>
+                </div>
+                <p
+                  class="text-text-light-primary dark:text-text-dark-primary tracking-tight text-3xl font-bold leading-tight"
+                >
+                  {{ imc_actual }}
+                </p>
+                <p
+                  class="text-{{ estado_imc|yesno:'green,yellow,red' }}-600 dark:text-{{ estado_imc|yesno:'green,yellow,red' }}-500 text-sm font-medium leading-normal"
+                >
+                  {{ estado_imc }}
+                </p>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div
+                class="lg:col-span-2 flex flex-col gap-4 p-6 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark"
+              >
+                <div class="flex flex-col">
+                  <p
+                    class="text-text-light-primary dark:text-text-dark-primary text-lg font-semibold leading-normal"
+                  >
+                    Progreso de Peso e IMC (Últimos 30 días)
+                  </p>
+                  <p
+                    class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-normal leading-normal"
+                  >
+                    {{ mensaje_peso }}
+                  </p>
+                </div>
+                <div class="relative h-64">
+                  <canvas id="progressChart"></canvas>
+                </div>
+              </div>
+              <div
+                class="flex flex-col gap-4 p-6 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark"
+              >
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-primary"
+                    >notifications_active</span
+                  >
+                  <h3
+                    class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary"
+                  >
+                    Notificaciones
+                  </h3>
+                </div>
+                <div class="flex flex-col gap-4">
+                  {% for notif in notificaciones %}
+                  <div
+                    class="flex items-start gap-3 p-3 rounded-lg bg-blue-500/10"
+                  >
+                    <span
+                      class="material-symbols-outlined text-blue-500 text-xl mt-0.5"
+                      >notifications</span
+                    >
+                    <div>
+                      <p
+                        class="font-semibold text-sm text-blue-800 dark:text-blue-300"
+                      >
+                        {{ notif.TipoAlerta }}
+                      </p>
+                      <p class="text-xs text-blue-600 dark:text-blue-400">
+                        {{ notif.FechaGeneracion|date:"d M Y" }}
+                      </p>
+                    </div>
+                  </div>
+                  {% empty %}
+                  <p
+                    class="text-sm text-text-light-secondary dark:text-text-dark-secondary"
+                  >
+                    No tienes notificaciones nuevas.
+                  </p>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+              <div
+                class="flex flex-col gap-4 p-6 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark"
+              >
+                <h3
+                  class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary"
+                >
+                  Tu Rutina de Hoy: Tren Superior
+                </h3>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left text-sm">
+                    <thead
+                      class="text-xs text-text-light-secondary dark:text-text-dark-secondary uppercase bg-background-light dark:bg-background-dark"
+                    >
+                      <tr>
+                        <th class="px-4 py-3" scope="col">Ejercicio</th>
+                        <th class="px-4 py-3" scope="col">Series</th>
+                        <th class="px-4 py-3" scope="col">Repeticiones</th>
+                      </tr>
+                    </thead>
+                    <tbody
+                      class="text-text-light-primary dark:text-text-dark-primary"
+                    >
+                      {% for dia_ejercicio in rutina_hoy %}
+                      <tr
+                        class="border-b border-border-light dark:border-border-dark"
+                      >
+                        <td class="px-4 py-3 font-medium">
+                          {{ dia_ejercicio.EjercicioID.Nombre }}
+                        </td>
+                        <td class="px-4 py-3">{{ dia_ejercicio.Series }}</td>
+                        <td
+                          class="px-4 py-3 text-text-light-secondary dark:text-text-dark-secondary"
+                        >
+                          {{ dia_ejercicio.Repeticiones }}
+                        </td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td
+                          colspan="3"
+                          class="px-4 py-3 text-center text-text-light-secondary"
+                        >
+                          No hay ejercicios programados para hoy.
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div
+                class="flex flex-col gap-4 p-6 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark"
+              >
+                <h3
+                  class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary"
+                >
+                  Tu Plan de Nutrición: Déficit Calórico
+                </h3>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left text-sm">
+                    <thead
+                      class="text-xs text-text-light-secondary dark:text-text-dark-secondary uppercase bg-background-light dark:bg-background-dark"
+                    >
+                      <tr>
+                        <th class="px-4 py-3" scope="col">Comida</th>
+                        <th class="px-4 py-3" scope="col">Platillo Sugerido</th>
+                        <th class="px-4 py-3" scope="col">Calorías</th>
+                      </tr>
+                    </thead>
+                    <tbody
+                      class="text-text-light-primary dark:text-text-dark-primary"
+                    >
+                      {% for dia_comida in plan_nutricional_hoy %} {% for comida_alimento in dia_comida.alimentos.all %}
+                      <tr
+                        class="border-b border-border-light dark:border-border-dark"
+                      >
+                        <td class="px-4 py-3 font-medium">
+                          {{ dia_comida.TipoComida }}
+                        </td>
+                        <td class="px-4 py-3">
+                          {{ comida_alimento.AlimentoID.Nombre }}
+                        </td>
+                        <td class="px-4 py-3">
+                          <span
+                            class="inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+                          >
+                            {{ comida_alimento.AlimentoID.Kcal }} kcal
+                          </span>
+                        </td>
+                      </tr>
+                      {% endfor %} {% empty %}
+                      <tr>
+                        <td
+                          colspan="3"
+                          class="px-4 py-3 text-center text-text-light-secondary"
+                        >
+                          No hay plan nutricional para hoy.
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-            <div
-              class="flex flex-col gap-4 p-6 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
-              <h3 class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary">Tu Rutina de Hoy:
-                Tren Superior</h3>
-              <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm">
-                  <thead
-                    class="text-xs text-text-light-secondary dark:text-text-dark-secondary uppercase bg-background-light dark:bg-background-dark">
-                    <tr>
-                      <th class="px-4 py-3" scope="col">Ejercicio</th>
-                      <th class="px-4 py-3" scope="col">Series</th>
-                      <th class="px-4 py-3" scope="col">Repeticiones</th>
-                    </tr>
-                  </thead>
-                  <tbody class="text-text-light-primary dark:text-text-dark-primary">
-                    {% for dia_ejercicio in rutina_hoy %}
-                    <tr class="border-b border-border-light dark:border-border-dark">
-                      <td class="px-4 py-3 font-medium">{{ dia_ejercicio.EjercicioID.Nombre }}</td>
-                      <td class="px-4 py-3">{{ dia_ejercicio.Series }}</td>
-                      <td class="px-4 py-3 text-text-light-secondary dark:text-text-dark-secondary">
-                        {{ dia_ejercicio.Repeticiones }}</td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                      <td colspan="3" class="px-4 py-3 text-center text-text-light-secondary">No hay ejercicios
-                        programados para hoy.</td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div
-              class="flex flex-col gap-4 p-6 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
-              <h3 class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary">Tu Plan de
-                Nutrición: Déficit Calórico</h3>
-              <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm">
-                  <thead
-                    class="text-xs text-text-light-secondary dark:text-text-dark-secondary uppercase bg-background-light dark:bg-background-dark">
-                    <tr>
-                      <th class="px-4 py-3" scope="col">Comida</th>
-                      <th class="px-4 py-3" scope="col">Platillo Sugerido</th>
-                      <th class="px-4 py-3" scope="col">Calorías</th>
-                    </tr>
-                  </thead>
-                  <tbody class="text-text-light-primary dark:text-text-dark-primary">
-                    {% for dia_comida in plan_nutricional_hoy %}
-                    {% for comida_alimento in dia_comida.alimentos.all %}
-                    <tr class="border-b border-border-light dark:border-border-dark">
-                      <td class="px-4 py-3 font-medium">{{ dia_comida.TipoComida }}</td>
-                      <td class="px-4 py-3">{{ comida_alimento.AlimentoID.Nombre }}</td>
-                      <td class="px-4 py-3">
-                        <span
-                          class="inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-                          {{ comida_alimento.AlimentoID.Kcal }} kcal
-                        </span>
-                      </td>
-                    </tr>
-                    {% endfor %}
-                    {% empty %}
-                    <tr>
-                      <td colspan="3" class="px-4 py-3 text-center text-text-light-secondary">No hay plan nutricional
-                        para hoy.</td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
-  </div>
 
-  <script>
-    // Parse chart data from Django
-    const chartData = JSON.parse('{{ chart_data_json|safe }}');
+    <script>
+      // Parse chart data from Django
+      const chartData = JSON.parse("{{ chart_data_json|escapejs }}");
 
-    // Initialize Chart.js
-    const ctx = document.getElementById('progressChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: chartData.labels,
-        datasets: [
-          {
-            label: 'Peso (kg)',
-            data: chartData.peso,
-            borderColor: '#0f49bd',
-            backgroundColor: 'rgba(15, 73, 189, 0.1)',
-            tension: 0.4,
-            fill: true,
-            yAxisID: 'y'
-          },
-          {
-            label: 'IMC',
-            data: chartData.imc,
-            borderColor: '#10b981',
-            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-            tension: 0.4,
-            fill: true,
-            yAxisID: 'y1'
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: {
-          mode: 'index',
-          intersect: false,
-        },
-        plugins: {
-          legend: {
-            display: true,
-            position: 'top',
-          },
-          tooltip: {
-            callbacks: {
-              label: function (context) {
-                let label = context.dataset.label || '';
-                if (label) {
-                  label += ': ';
-                }
-                if (context.parsed.y !== null) {
-                  label += context.parsed.y.toFixed(1);
-                }
-                return label;
-              }
-            }
-          }
-        },
-        scales: {
-          y: {
-            type: 'linear',
-            display: true,
-            position: 'left',
-            title: {
-              display: true,
-              text: 'Peso (kg)'
-            }
-          },
-          y1: {
-            type: 'linear',
-            display: true,
-            position: 'right',
-            title: {
-              display: true,
-              text: 'IMC'
+      // Initialize Chart.js
+      const ctx = document.getElementById("progressChart").getContext("2d");
+      new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: chartData.labels,
+          datasets: [
+            {
+              label: "Peso (kg)",
+              data: chartData.peso,
+              borderColor: "#0f49bd",
+              backgroundColor: "rgba(15, 73, 189, 0.1)",
+              tension: 0.4,
+              fill: true,
+              yAxisID: "y",
             },
-            grid: {
-              drawOnChartArea: false,
+            {
+              label: "IMC",
+              data: chartData.imc,
+              borderColor: "#10b981",
+              backgroundColor: "rgba(16, 185, 129, 0.1)",
+              tension: 0.4,
+              fill: true,
+              yAxisID: "y1",
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: "index",
+            intersect: false,
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: "top",
+            },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  let label = context.dataset.label || "";
+                  if (label) {
+                    label += ": ";
+                  }
+                  if (context.parsed.y !== null) {
+                    label += context.parsed.y.toFixed(1);
+                  }
+                  return label;
+                },
+              },
             },
           },
-        }
-      }
-    });
-  </script>
-
-</body>
-
+          scales: {
+            y: {
+              type: "linear",
+              display: true,
+              position: "left",
+              title: {
+                display: true,
+                text: "Peso (kg)",
+              },
+            },
+            y1: {
+              type: "linear",
+              display: true,
+              position: "right",
+              title: {
+                display: true,
+                text: "IMC",
+              },
+              grid: {
+                drawOnChartArea: false,
+              },
+            },
+          },
+        },
+      });
+    </script>
+  </body>
 </html>

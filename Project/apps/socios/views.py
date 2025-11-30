@@ -1,30 +1,4 @@
 import json
-from datetime import datetime
-
-from django.contrib import messages
-from django.db import IntegrityError
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
-from django.utils import timezone
-
-from apps.control_acceso.models import (
-    CompletionTracking,
-    DiaRutinaEjercicio,
-    Ejercicio,
-    EjercicioSesionCompletado,
-    RutinaSemanal,
-    SesionEntrenamiento,
-)
-from apps.pagos.models import AlertaPago, Pago, PlanMembresia, SocioMembresia
-from apps.seguridad.decoradores import login_requerido
-from apps.seguridad.servicios.registro_usuario import crear_usuario_para_socio
-from apps.socios.servicios.rutinas import obtener_o_crear_rutina_base
-
-from .models import Medicion, RegistroComidaDiaria, Socio
-from .servicios.registro_db import ValidationError, create_socio_from_dict
-
-
-
 
 # FUNCIÓN DE REGISTRO PÚBLICO DESHABILITADA
 # Los socios ahora se crean desde el panel de administración
@@ -85,24 +59,35 @@ from .servicios.registro_db import ValidationError, create_socio_from_dict
 #             return render(request, "socio/register.html", request.POST)
 #
 #     return render(request, "socio/register.html")
-
-
 # Interfaz Inicio (beta)
-
 from datetime import datetime
 
+from django.contrib import messages
+from django.db import IntegrityError
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from apps.control_acceso.models import (
     Asistencia,
+    CompletionTracking,
     DiaComida,
     DiaRutinaEjercicio,
+    Ejercicio,
+    EjercicioSesionCompletado,
     PlanNutricional,
     RutinaSemanal,
+    SesionEntrenamiento,
 )
-from apps.pagos.models import AlertaPago, SocioMembresia
+from apps.pagos.models import AlertaPago, Pago, PlanMembresia, SocioMembresia
+from apps.seguridad.decoradores import login_requerido
 from apps.seguridad.models import Usuario
+from apps.seguridad.servicios.registro_usuario import crear_usuario_para_socio
 from apps.socios.models import Medicion, Socio
+from apps.socios.servicios.rutinas import obtener_o_crear_rutina_base
+
+from .models import Medicion, RegistroComidaDiaria, Socio
+from .servicios.registro_db import ValidationError, create_socio_from_dict
 
 # ... (keep existing imports and register_view)
 
@@ -231,9 +216,6 @@ def panel_de_control_view(request):
             else:
                 estado_imc = "Obesidad"
 
-    # 4. Logros (Placeholder)
-    logros_count = 5
-
     # --- Gráfica de Peso e IMC (Últimos 30 días) ---
     historial_peso = Medicion.objects.filter(SocioID=socio).order_by("Fecha")[:30]
 
@@ -332,7 +314,6 @@ def panel_de_control_view(request):
         "estado_imc": estado_imc,
         "mensaje_peso": mensaje_peso,
         "mensaje_racha": mensaje_racha,
-        "logros_count": logros_count,
         "rutina_hoy": rutina_hoy,
         "plan_nutricional_hoy": plan_nutricional_hoy,
         "notificaciones": notificaciones,
@@ -523,33 +504,16 @@ def mi_rutina_view(request):
 
 #  ----------------- ENTRENADOR ---------------------
 
+
 @login_requerido
 def planel_inicio_entrenador_view(request):
     return render(request, "Entrenador/PaneldeInicio.html")
+
 
 @login_requerido
 def crear_rutina_entrenador_view(request):
     # Modificaciones en logica
     return render(request, "Entrenador/PlanificadorRutina.html")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 @login_requerido

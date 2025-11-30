@@ -29,13 +29,13 @@ def create_test_data():
     print("Creating test data...")
 
     # 1. Create Socio
-    email = "test_socio@example.com"
+    email = "test_socio1@example.com"
     socio, created = Socio.objects.get_or_create(
-        Identificacion="123456789",
+        Identificacion="123456781",
         defaults={
             "NombreCompleto": "Test Socio",
             "Email": email,
-            "Telefono": "555-0100",
+            "Telefono": "555-01001",
             "FechaNacimiento": date(1995, 5, 15),
             "ConsentimientoDatos": True,
             "Altura": 1.75,

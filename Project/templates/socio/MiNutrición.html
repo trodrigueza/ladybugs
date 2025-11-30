@@ -87,20 +87,6 @@
                 class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
                 href="#"
               >
-                <span class="material-symbols-outlined">monitoring</span>
-                <p class="text-sm font-medium leading-normal">Progreso</p>
-              </a>
-              <a
-                class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
-                href="#"
-              >
-                <span class="material-symbols-outlined">chat</span>
-                <p class="text-sm font-medium leading-normal">Mensajes</p>
-              </a>
-              <a
-                class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200"
-                href="#"
-              >
                 <span class="material-symbols-outlined">account_circle</span>
                 <p class="text-sm font-medium leading-normal">Mi Perfil</p>
               </a>
@@ -165,6 +151,35 @@
             </div>
           </header>
           <div class="p-8">
+            {% if messages %}
+            <div class="mb-6 flex flex-col gap-3">
+              {% for message in messages %} {% if message.tags == "success" %}
+              <div
+                class="rounded-lg border border-green-200 bg-green-50 text-green-800 px-4 py-3 text-sm font-medium"
+              >
+                {{ message }}
+              </div>
+              {% elif message.tags == "warning" %}
+              <div
+                class="rounded-lg border border-yellow-200 bg-yellow-50 text-yellow-800 px-4 py-3 text-sm font-medium"
+              >
+                {{ message }}
+              </div>
+              {% elif message.tags == "error" %}
+              <div
+                class="rounded-lg border border-red-200 bg-red-50 text-red-800 px-4 py-3 text-sm font-medium"
+              >
+                {{ message }}
+              </div>
+              {% else %}
+              <div
+                class="rounded-lg border border-blue-200 bg-blue-50 text-blue-800 px-4 py-3 text-sm font-medium"
+              >
+                {{ message }}
+              </div>
+              {% endif %} {% endfor %}
+            </div>
+            {% endif %}
             <div class="flex flex-wrap justify-between items-center gap-4 mb-8">
               <div class="flex flex-col gap-1">
                 <p

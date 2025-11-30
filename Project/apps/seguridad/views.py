@@ -433,3 +433,13 @@ def eliminar_socio_view(request, socio_id):
     (Vista legada - ahora usa eliminar_entidad_view)
     """
     return eliminar_entidad_view(request, "socio", socio_id)
+
+
+def eliminar_socio_view(request, socio_id):
+    """
+    Elimina un socio y todas sus membresías asociadas.
+    Requiere método POST y devuelve JSON.
+    (Vista legada - ahora usa eliminar_entidad_view)
+    """
+    return eliminar_entidad_view(request, 'socio', socio_id)
+
