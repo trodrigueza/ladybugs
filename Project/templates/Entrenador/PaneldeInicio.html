@@ -1,46 +1,59 @@
-<!DOCTYPE html>
+<!doctype html>
 
-<html class="light" lang="es"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>GluteOS - Panel del entrenador</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
-<style>
+<html class="light" lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>GluteOS - Panel del entrenador</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      rel="stylesheet"
+    />
+    <style>
       .material-symbols-outlined {
         font-variation-settings:
-        'FILL' 0,
-        'wght' 400,
-        'GRAD' 0,
-        'opsz' 24
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
       }
     </style>
 
-<style>
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to   { opacity: 1; transform: scale(1); }
-}
-.animate-fadeIn {
-  animation: fadeIn 0.2s ease-out;
-}
-</style>
+    <style>
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      .animate-fadeIn {
+        animation: fadeIn 0.2s ease-out;
+      }
+    </style>
 
-<script id="tailwind-config">
+    <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
         theme: {
           extend: {
             colors: {
-              "primary": "#0f49bd",
+              primary: "#0f49bd",
               "background-light": "#f6f6f8",
               "background-dark": "#101622",
               "gluteos-blue": "#1A237E",
               "gluteos-blue-dark": "#161d68",
-              "success": "#07883b",
-              "warning": "#f59e0b",
-              "critical": "#e73908",
+              success: "#07883b",
+              warning: "#f59e0b",
+              critical: "#e73908",
               "card-light": "#ffffff",
               "card-dark": "#1c2436",
               "text-light-primary": "#111318",
@@ -51,320 +64,574 @@
               "border-dark": "#334155",
             },
             fontFamily: {
-              "display": ["Manrope", "sans-serif"]
+              display: ["Manrope", "sans-serif"],
             },
-            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
           },
         },
-      }
+      };
     </script>
-</head>
-<body class="font-display bg-background-light dark:bg-background-dark">
-<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
-<div class="flex min-h-screen">
-<!-- SideNavBar -->
-<aside class="flex w-64 flex-col bg-gluteos-blue p-4 text-white">
-<div class="flex items-center gap-3 px-3 py-4 text-white">
-<span class="material-symbols-outlined text-3xl">fitness_center</span>
-<h2 class="text-xl font-bold leading-tight tracking-[-0.015em]">GluteOS</h2>
-</div>
-<div class="flex h-full flex-col justify-between">
-<div class="flex flex-col gap-2 pt-4">
-            {# Panel link specific for this trainer panel template - points to entrenador_panel #}
-            {% with current=request.resolver_match.url_name|default:"" %}
-            <a class="flex items-center gap-3 rounded-lg px-3 py-2 {% if current == 'entrenador_panel' %}bg-gluteos-blue-dark{% else %}hover:bg-gluteos-blue-dark/50{% endif %}" href="{% url 'entrenador_panel' %}">
-              <span class="material-symbols-outlined">dashboard</span>
-              <p class="text-sm font-medium leading-normal">Panel</p>
-            </a>
-            <a class="flex items-center gap-3 rounded-lg px-3 py-2 {% if current == 'clientes_list' %}bg-gluteos-blue-dark{% else %}hover:bg-gluteos-blue-dark/50{% endif %}" href="{% url 'clientes_list' %}">
-<span class="material-symbols-outlined">group</span>
-<p class="text-sm font-medium leading-normal">Clientes</p>
-</a>
-<a class="flex items-center gap-3 rounded-lg px-3 py-2 {% if current == 'rutinas_list' or current == 'rutina_detalle' %}bg-gluteos-blue-dark{% else %}hover:bg-gluteos-blue-dark/50{% endif %}" href="{% url 'rutinas_list' %}">
-<span class="material-symbols-outlined">fitness_center</span>
-<p class="text-sm font-medium leading-normal">Rutinas</p>
-</a>
-            <a class="flex items-center gap-3 rounded-lg px-3 py-2 {% if current == 'rutinas_banco' %}bg-gluteos-blue-dark{% else %}hover:bg-gluteos-blue-dark/50{% endif %}" href="{% url 'rutinas_banco' %}">
-<span class="material-symbols-outlined">inventory_2</span>
-<p class="text-sm font-medium leading-normal">Banco de rutinas</p>
-</a>
-            {% endwith %}
-            <!-- Nutrición link hidden for entrenador -->
-            {# Mensajes removed as per request #}
-</div>
-<div class="flex flex-col gap-1">
-<div class="mb-4 flex gap-3 px-3 py-2">
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Coach Antonia's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDfQWrkjVOCmpIklKgYAtayyKEKku6uP2jWrASZq-FPRFzrqHTD92I1o40Vn22sp3QX4zCVhlpf-dIREfbJb9Qnn0vbu4rBIYLqtIHNoYNAoU4LXCy0HR7-dUcPCtD6ztBC4MN0cGBrwa3mNIT9TnwjZIpC1oi9TjQz9mPQeUI7tByNhIDSS04EhhJZLvH_QuP26qy8mRLay7o7OHF-BmEyFkdn612y35_li2FDOBvcfCrXt9ySKWhCerWJ6leMpnbG6oZRjgWvFO4");'></div>
-<div class="flex flex-col">
-<h1 class="text-base font-medium leading-normal">{{ entrenador_nombre|default:request.session.usuario_email }}</h1>
-<p class="text-sm font-normal leading-normal text-slate-300">{{ request.session.usuario_rol|title|default:'Entrenador' }}</p>
-</div>
-</div>
-            <!-- Configuración link hidden for entrenador -->
+  </head>
+  <body class="font-display bg-background-light dark:bg-background-dark">
+    <div
+      class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden"
+    >
+      <div class="flex min-h-screen">
+        <!-- SideNavBar -->
+        <aside class="flex w-64 flex-col bg-gluteos-blue p-4 text-white">
+          <div class="flex items-center gap-3 px-3 py-4 text-white">
+            <span class="material-symbols-outlined text-3xl">exercise</span>
+            <h2 class="text-xl font-bold leading-tight tracking-[-0.015em]">
+              GluteOS
+            </h2>
+          </div>
+          <div class="flex h-full flex-col justify-between">
+            <div class="flex flex-col gap-2 pt-4">
+              {# Panel link specific for this trainer panel template - points to entrenador_panel #} {% with current=request.resolver_match.url_name|default:"" %}
+              <a
+                class="flex items-center gap-3 rounded-lg px-3 py-2 {% if current == 'entrenador_panel' %}bg-gluteos-blue-dark{% else %}hover:bg-gluteos-blue-dark/50{% endif %}"
+                href="{% url 'entrenador_panel' %}"
+              >
+                <span class="material-symbols-outlined">dashboard</span>
+                <p class="text-sm font-medium leading-normal">Panel</p>
+              </a>
+              <a
+                class="flex items-center gap-3 rounded-lg px-3 py-2 {% if current == 'clientes_list' %}bg-gluteos-blue-dark{% else %}hover:bg-gluteos-blue-dark/50{% endif %}"
+                href="{% url 'clientes_list' %}"
+              >
+                <span class="material-symbols-outlined">group</span>
+                <p class="text-sm font-medium leading-normal">Clientes</p>
+              </a>
+              <a
+                class="flex items-center gap-3 rounded-lg px-3 py-2 {% if current == 'rutinas_list' or current == 'rutina_detalle' %}bg-gluteos-blue-dark{% else %}hover:bg-gluteos-blue-dark/50{% endif %}"
+                href="{% url 'rutinas_list' %}"
+              >
+                <span class="material-symbols-outlined">fitness_center</span>
+                <p class="text-sm font-medium leading-normal">Rutinas</p>
+              </a>
+              <a
+                class="flex items-center gap-3 rounded-lg px-3 py-2 {% if current == 'rutinas_banco' %}bg-gluteos-blue-dark{% else %}hover:bg-gluteos-blue-dark/50{% endif %}"
+                href="{% url 'rutinas_banco' %}"
+              >
+                <span class="material-symbols-outlined">inventory_2</span>
+                <p class="text-sm font-medium leading-normal">
+                  Banco de rutinas
+                </p>
+              </a>
+              {% endwith %}
+              <!-- Nutrición link hidden for entrenador -->
+              {# Mensajes removed as per request #}
+            </div>
+            <div class="flex flex-col gap-1">
+              <div class="mb-4 flex gap-3 px-3 py-2">
+                <div
+                  class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+                  data-alt="Coach Antonia's profile picture"
+                  style="
+                    background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuDfQWrkjVOCmpIklKgYAtayyKEKku6uP2jWrASZq-FPRFzrqHTD92I1o40Vn22sp3QX4zCVhlpf-dIREfbJb9Qnn0vbu4rBIYLqtIHNoYNAoU4LXCy0HR7-dUcPCtD6ztBC4MN0cGBrwa3mNIT9TnwjZIpC1oi9TjQz9mPQeUI7tByNhIDSS04EhhJZLvH_QuP26qy8mRLay7o7OHF-BmEyFkdn612y35_li2FDOBvcfCrXt9ySKWhCerWJ6leMpnbG6oZRjgWvFO4&quot;);
+                  "
+                ></div>
+                <div class="flex flex-col">
+                  <h1 class="text-base font-medium leading-normal">
+                    {{ entrenador_nombre|default:request.session.usuario_email }}
+                  </h1>
+                  <p class="text-sm font-normal leading-normal text-slate-300">
+                    {{ request.session.usuario_rol|title|default:'Entrenador' }}
+                  </p>
+                </div>
+              </div>
+              <!-- Configuración link hidden for entrenador -->
 
-<a onclick="openLogoutModal()"
-   class="flex items-center gap-3 px-3 py-2 text-white-700 dark:text-blue-dark-300 rounded-lg hover:bg-blue-dark-100 dark:hover:bg-blue-dark-800 cursor-pointer">
-    <span class="material-symbols-outlined">logout</span>
-  <p class="text-sm font-medium leading-normal">Cerrar sesión</p>
-</a>
-
-
-</div>
-</div>
-</aside>
-<!-- Main Content -->
-<main class="flex-1">
-<!-- TopNavBar -->
-<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-10 py-3">
-<div class="flex items-center gap-4 text-text-light-primary dark:text-text-dark-primary">
-<label class="flex flex-col min-w-40 !h-10 w-80 max-w-sm">
-<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
-<div class="text-text-light-secondary dark:text-text-dark-secondary flex border-none bg-background-light dark:bg-background-dark items-center justify-center pl-4 rounded-l-lg border-r-0">
-<span class="material-symbols-outlined">search</span>
-</div>
-<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light-primary dark:text-text-dark-primary focus:outline-0 focus:ring-0 border-none bg-background-light dark:bg-background-dark focus:border-none h-full placeholder:text-text-light-secondary dark:placeholder:text-text-dark-secondary px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal" placeholder="Buscar clientes, rutinas..." value=""/>
-</div>
-</label>
-</div>
-<div class="flex flex-1 justify-end items-center gap-6">
-<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-background-light dark:bg-background-dark text-text-light-primary dark:text-text-dark-primary gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5 relative">
-<span class="material-symbols-outlined">notifications</span>
-<span class="absolute top-1.5 right-1.5 flex h-2.5 w-2.5">
-<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-critical opacity-75"></span>
-<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-critical"></span>
-</span>
-</button>
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Coach Antonia's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCR_F1ZYZcP-Fh1I-vATamf61ofKFUvWE8jYyAJtCjFyrbytmsnL5yTxSiCt41xJvVAupRRH2Hs2hY-5Q24JpgujjVvi6LJVmW4hecAM2_oW4xofBE1TFtih4kyZAKe5JriR7JxhLxPWWp1H3Gxy4ussppL1wu1XWHDE3EXvUWlUXbf2T9Mi5oiiNM-PTZl4PdToOGm7V5mXpFiLFfiNaU5S0v7_ip9ElSS1cq2cllO6xuYVHK8RIpXmsuPWmOz6VGcoRXQ-f19hJI");'></div>
-</div>
-</header>
-<div class="p-6 lg:p-10">
-<!-- PageHeading -->
-<div class="flex flex-wrap justify-between gap-3 mb-6">
-<div class="flex min-w-72 flex-col gap-2">
-                <p class="text-text-light-primary dark:text-text-dark-primary text-3xl font-black leading-tight tracking-[-0.033em]">¡Hola, {{ entrenador_nombre }}!</p>
-                <p class="text-text-light-secondary dark:text-text-dark-secondary text-base font-normal leading-normal">Resumen de tus clientes y actividades.</p>
-</div>
-        <div class="flex items-center gap-3">
-
-<a href="{% url 'crear_rutina_entrenador' %}"
-   class="flex cursor-pointer items-center justify-center rounded-lg h-10 bg-gluteos-blue text-white gap-2 text-sm font-bold px-4 hover:bg-gluteos-blue-dark">
-  Crear nueva rutina
-</a>
-
-
-
-
-</div>
-</div>
-<!-- Stats -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark">
-<p class="text-text-light-primary dark:text-text-dark-primary text-base font-medium leading-normal">Clientes activos</p>
-<p class="text-text-light-primary dark:text-text-dark-primary tracking-light text-4xl font-bold leading-tight">{{ total_clientes }}</p>
-<p class="text-success text-base font-medium leading-normal flex items-center gap-1"><span class="material-symbols-outlined text-base">arrow_upward</span>+2 esta semana</p>
-</div>
-<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark">
-<p class="text-text-light-primary dark:text-text-dark-primary text-base font-medium leading-normal">Rutinas asignadas</p>
-<p class="text-text-light-primary dark:text-text-dark-primary tracking-light text-4xl font-bold leading-tight">{{ rutinas_asignadas }}</p>
-<p class="text-success text-base font-medium leading-normal flex items-center gap-1"><span class="material-symbols-outlined text-base">arrow_upward</span>+5 esta semana</p>
-</div>
-<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark">
-<p class="text-text-light-primary dark:text-text-dark-primary text-base font-medium leading-normal">Socios sin rutina asignada</p>
-<p class="text-text-light-primary dark:text-text-dark-primary tracking-light text-4xl font-bold leading-tight">{{ socios_sin_rutina }}</p>
-<p class="text-critical text-base font-medium leading-normal flex items-center gap-1"><span class="material-symbols-outlined text-base">priority_high</span>Atención necesaria</p>
-</div>
-
-            
-</div>
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-<div class="lg:col-span-2">
-<!-- SectionHeader -->
-<h2 class="text-text-light-primary dark:text-text-dark-primary text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">Mejores procesos</h2>
-<!-- Clientes con la racha más larga (top 5) -->
-<div class="flex flex-col gap-4">
-  {% if top_rachas %}
-    {% for item in top_rachas %}
-      <div class="w-44 h-44 flex flex-col justify-between p-4 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
-        <div class="flex justify-between items-start">
-          <div class="flex items-center gap-3">
-            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12" data-alt="{{ item.socio.NombreCompleto }}'s profile picture" style='background-image: url("https://via.placeholder.com/80x80?text={{ item.socio.NombreCompleto|urlencode }}");'></div>
-            <div>
-              <p class="text-text-light-primary dark:text-text-dark-primary font-semibold">{{ item.socio.NombreCompleto }}</p>
-              <p class="text-text-light-secondary dark:text-text-dark-secondary text-sm">Racha: <strong>{{ item.streak }}</strong></p>
+              <a
+                onclick="openLogoutModal()"
+                class="flex items-center gap-3 px-3 py-2 text-white-700 dark:text-blue-dark-300 rounded-lg hover:bg-blue-dark-100 dark:hover:bg-blue-dark-800 cursor-pointer"
+              >
+                <span class="material-symbols-outlined">logout</span>
+                <p class="text-sm font-medium leading-normal">Cerrar sesión</p>
+              </a>
             </div>
           </div>
-          <div class="text-warning text-2xl" title="Racha caliente">
-            <span class="material-symbols-outlined">local_fire_department</span>
+        </aside>
+        <!-- Main Content -->
+        <main class="flex-1">
+          <!-- TopNavBar -->
+          <header
+            class="flex items-center justify-between whitespace-nowrap border-b border-solid border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-10 py-3"
+          >
+            <div
+              class="flex items-center gap-4 text-text-light-primary dark:text-text-dark-primary"
+            >
+              <label class="flex flex-col min-w-40 !h-10 w-80 max-w-sm">
+                <div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+                  <div
+                    class="text-text-light-secondary dark:text-text-dark-secondary flex border-none bg-background-light dark:bg-background-dark items-center justify-center pl-4 rounded-l-lg border-r-0"
+                  >
+                    <span class="material-symbols-outlined">search</span>
+                  </div>
+                  <input
+                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light-primary dark:text-text-dark-primary focus:outline-0 focus:ring-0 border-none bg-background-light dark:bg-background-dark focus:border-none h-full placeholder:text-text-light-secondary dark:placeholder:text-text-dark-secondary px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal"
+                    placeholder="Buscar clientes, rutinas..."
+                    value=""
+                  />
+                </div>
+              </label>
+            </div>
+            <div class="flex flex-1 justify-end items-center gap-6">
+              <button
+                class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-background-light dark:bg-background-dark text-text-light-primary dark:text-text-dark-primary gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5 relative"
+              >
+                <span class="material-symbols-outlined">notifications</span>
+                <span class="absolute top-1.5 right-1.5 flex h-2.5 w-2.5">
+                  <span
+                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-critical opacity-75"
+                  ></span>
+                  <span
+                    class="relative inline-flex rounded-full h-2.5 w-2.5 bg-critical"
+                  ></span>
+                </span>
+              </button>
+              <div
+                class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+                data-alt="Coach Antonia's profile picture"
+                style="
+                  background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuCR_F1ZYZcP-Fh1I-vATamf61ofKFUvWE8jYyAJtCjFyrbytmsnL5yTxSiCt41xJvVAupRRH2Hs2hY-5Q24JpgujjVvi6LJVmW4hecAM2_oW4xofBE1TFtih4kyZAKe5JriR7JxhLxPWWp1H3Gxy4ussppL1wu1XWHDE3EXvUWlUXbf2T9Mi5oiiNM-PTZl4PdToOGm7V5mXpFiLFfiNaU5S0v7_ip9ElSS1cq2cllO6xuYVHK8RIpXmsuPWmOz6VGcoRXQ-f19hJI&quot;);
+                "
+              ></div>
+            </div>
+          </header>
+          <div class="p-6 lg:p-10">
+            <!-- PageHeading -->
+            <div class="flex flex-wrap justify-between gap-3 mb-6">
+              <div class="flex min-w-72 flex-col gap-2">
+                <p
+                  class="text-text-light-primary dark:text-text-dark-primary text-3xl font-black leading-tight tracking-[-0.033em]"
+                >
+                  ¡Hola, {{ entrenador_nombre }}!
+                </p>
+                <p
+                  class="text-text-light-secondary dark:text-text-dark-secondary text-base font-normal leading-normal"
+                >
+                  Resumen de tus clientes y actividades.
+                </p>
+              </div>
+              <div class="flex items-center gap-3">
+                <a
+                  href="{% url 'crear_rutina_entrenador' %}"
+                  class="flex cursor-pointer items-center justify-center rounded-lg h-10 bg-gluteos-blue text-white gap-2 text-sm font-bold px-4 hover:bg-gluteos-blue-dark"
+                >
+                  Crear nueva rutina
+                </a>
+              </div>
+            </div>
+            <!-- Stats -->
+            <div
+              class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
+            >
+              <div
+                class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark"
+              >
+                <p
+                  class="text-text-light-primary dark:text-text-dark-primary text-base font-medium leading-normal"
+                >
+                  Clientes activos
+                </p>
+                <p
+                  class="text-text-light-primary dark:text-text-dark-primary tracking-light text-4xl font-bold leading-tight"
+                >
+                  {{ total_clientes }}
+                </p>
+                <p
+                  class="text-success text-base font-medium leading-normal flex items-center gap-1"
+                >
+                  <span class="material-symbols-outlined text-base"
+                    >arrow_upward</span
+                  >+2 esta semana
+                </p>
+              </div>
+              <div
+                class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark"
+              >
+                <p
+                  class="text-text-light-primary dark:text-text-dark-primary text-base font-medium leading-normal"
+                >
+                  Rutinas asignadas
+                </p>
+                <p
+                  class="text-text-light-primary dark:text-text-dark-primary tracking-light text-4xl font-bold leading-tight"
+                >
+                  {{ rutinas_asignadas }}
+                </p>
+                <p
+                  class="text-success text-base font-medium leading-normal flex items-center gap-1"
+                >
+                  <span class="material-symbols-outlined text-base"
+                    >arrow_upward</span
+                  >+5 esta semana
+                </p>
+              </div>
+              <div
+                class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark"
+              >
+                <p
+                  class="text-text-light-primary dark:text-text-dark-primary text-base font-medium leading-normal"
+                >
+                  Socios sin rutina asignada
+                </p>
+                <p
+                  class="text-text-light-primary dark:text-text-dark-primary tracking-light text-4xl font-bold leading-tight"
+                >
+                  {{ socios_sin_rutina }}
+                </p>
+                <p
+                  class="text-critical text-base font-medium leading-normal flex items-center gap-1"
+                >
+                  <span class="material-symbols-outlined text-base"
+                    >priority_high</span
+                  >Atención necesaria
+                </p>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div class="lg:col-span-2">
+                <!-- SectionHeader -->
+                <h2
+                  class="text-text-light-primary dark:text-text-dark-primary text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4"
+                >
+                  Mejores procesos
+                </h2>
+                <!-- Clientes con la racha más larga (top 5) -->
+                <div class="flex flex-col gap-4">
+                  {% if top_rachas %} {% for item in top_rachas %}
+                  <div
+                    class="w-44 h-44 flex flex-col justify-between p-4 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark"
+                  >
+                    <div class="flex justify-between items-start">
+                      <div class="flex items-center gap-3">
+                        <div
+                          class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12"
+                          data-alt="{{ item.socio.NombreCompleto }}'s profile picture"
+                          style='background-image: url("https://via.placeholder.com/80x80?text={{ item.socio.NombreCompleto|urlencode }}");'
+                        ></div>
+                        <div>
+                          <p
+                            class="text-text-light-primary dark:text-text-dark-primary font-semibold"
+                          >
+                            {{ item.socio.NombreCompleto }}
+                          </p>
+                          <p
+                            class="text-text-light-secondary dark:text-text-dark-secondary text-sm"
+                          >
+                            Racha: <strong>{{ item.streak }}</strong>
+                          </p>
+                        </div>
+                      </div>
+                      <div class="text-warning text-2xl" title="Racha caliente">
+                        <span class="material-symbols-outlined"
+                          >local_fire_department</span
+                        >
+                      </div>
+                    </div>
+                    <div class="flex justify-between items-end">
+                      <p
+                        class="text-text-light-secondary dark:text-text-dark-secondary text-xs"
+                      >
+                        Última: {{ item.last_date }}
+                      </p>
+                      <div class="flex items-center gap-2">
+                        <a
+                          href="{% url 'entrenador_ver_rutina' item.socio.id %}"
+                          class="px-2 py-1 text-xs bg-gluteos-blue text-white rounded"
+                          >Ver</a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %} {% else %}
+                  <p class="text-text-light-secondary">
+                    No hay rachas activas registradas.
+                  </p>
+                  {% endif %}
+                </div>
+              </div>
+              <!-- Socios pendientes de asignación de rutina (sin foto, escalable) -->
+              <div class="mt-6">
+                <h3
+                  class="text-text-light-primary dark:text-text-dark-primary font-semibold mb-3"
+                >
+                  Socios pendientes de asignación
+                </h3>
+                <div class="mb-3">
+                  <input
+                    id="filter-socios"
+                    type="search"
+                    placeholder="Buscar por nombre, email o teléfono"
+                    class="w-full rounded-md border border-border-light dark:border-border-dark px-3 py-2 text-sm bg-background-light dark:bg-background-dark focus:outline-none"
+                    oninput="filterPendingSocios()"
+                  />
+                </div>
+                {% if socios_sin_rutina_list %}
+                <!-- contenedor con altura fija y scroll para escalar bien cuando hay muchos socios -->
+                <div
+                  id="pending-socios-container"
+                  class="max-h-64 overflow-y-auto space-y-2 p-1"
+                >
+                  {% for item in socios_sin_rutina_list %}
+                  <div
+                    class="pending-socio flex items-center justify-between gap-4 p-3 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark transition"
+                    data-name="{{ item.socio.NombreCompleto|lower }}"
+                    data-contact="{% if item.socio.Telefono %}{{ item.socio.Telefono }}{% endif %} {% if item.socio.Email %}{{ item.socio.Email }}{% endif %}"
+                  >
+                    <div class="flex flex-col">
+                      <p
+                        class="text-text-light-primary dark:text-text-dark-primary font-medium"
+                      >
+                        {{ item.socio.NombreCompleto }}
+                      </p>
+                      <p
+                        class="text-text-light-secondary dark:text-text-dark-secondary text-xs"
+                      >
+                        {% if item.socio.Telefono %}{{ item.socio.Telefono }}{% elif item.socio.Email %}{{ item.socio.Email }}{% else %}—{% endif %}
+                      </p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="text-xs text-text-light-secondary dark:text-text-dark-secondary mr-2"
+                      >
+                        Última:
+                        <span class="font-medium text-sm"
+                          >{% if item.ultima_medicion %}{{ item.ultima_medicion.Fecha|date:"d M Y" }}{% else %}—{% endif %}</span
+                        >
+                      </div>
+                      <a
+                        href="{% url 'crear_rutina_entrenador' %}?socio_id={{ item.socio.id }}"
+                        class="inline-flex items-center gap-2 px-3 py-2 bg-gluteos-blue hover:bg-gluteos-blue-dark text-white rounded-md text-sm font-semibold"
+                        >Asignar rutina</a
+                      >
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+                {% else %}
+                <div
+                  class="p-4 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark"
+                >
+                  <p class="text-text-light-secondary">
+                    No hay socios pendientes de asignación.
+                  </p>
+                </div>
+                {% endif %}
+              </div>
+
+              <script>
+                function filterPendingSocios() {
+                  const q = document
+                    .getElementById("filter-socios")
+                    .value.trim()
+                    .toLowerCase();
+                  const list = document.querySelectorAll(
+                    "#pending-socios-container .pending-socio",
+                  );
+                  if (!list) return;
+                  let visible = 0;
+                  list.forEach((el) => {
+                    const name = (
+                      el.getAttribute("data-name") || ""
+                    ).toLowerCase();
+                    const contact = (
+                      el.getAttribute("data-contact") || ""
+                    ).toLowerCase();
+                    const matches =
+                      q === "" || name.includes(q) || contact.includes(q);
+                    el.style.display = matches ? "" : "none";
+                    if (matches) visible += 1;
+                  });
+                  // si no hay resultados, mostrar un mensaje sencillo
+                  let emptyMsg = document.getElementById("pending-empty-msg");
+                  if (!emptyMsg) {
+                    emptyMsg = document.createElement("div");
+                    emptyMsg.id = "pending-empty-msg";
+                    emptyMsg.className = "text-text-light-secondary p-2";
+                    emptyMsg.innerText = "No se encontraron socios.";
+                    document
+                      .getElementById("pending-socios-container")
+                      .insertAdjacentElement("afterend", emptyMsg);
+                  }
+                  emptyMsg.style.display = visible === 0 ? "" : "none";
+                }
+              </script>
+              <div class="lg:col-span-1">
+                <h2
+                  class="text-text-light-primary dark:text-text-dark-primary text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4"
+                >
+                  Actividad reciente
+                </h2>
+                <div class="flex flex-col gap-5">
+                  {% if recent_completions %} {% for c in recent_completions %}
+                  <div class="flex gap-4">
+                    <div
+                      class="flex items-center justify-center size-10 rounded-full bg-success/10 text-success"
+                    >
+                      <span class="material-symbols-outlined"
+                        >check_circle</span
+                      >
+                    </div>
+                    <div>
+                      <p
+                        class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"
+                      >
+                        <strong>{{ c.nombre }}</strong> completó '{{ c.rutina }}'.
+                      </p>
+                      <p
+                        class="text-text-light-secondary dark:text-text-dark-secondary text-xs"
+                      >
+                        hace {{ c.fecha|timesince }}
+                      </p>
+                    </div>
+                  </div>
+                  {% endfor %} {% else %}
+                  <div class="flex gap-4">
+                    <div
+                      class="flex items-center justify-center size-10 rounded-full bg-success/10 text-success"
+                    >
+                      <span class="material-symbols-outlined"
+                        >check_circle</span
+                      >
+                    </div>
+                    <div>
+                      <p
+                        class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"
+                      >
+                        <strong>Pamela Beesly</strong> completó 'Leg Day
+                        Annihilator'.
+                      </p>
+                      <p
+                        class="text-text-light-secondary dark:text-text-dark-secondary text-xs"
+                      >
+                        hace 15 minutos
+                      </p>
+                    </div>
+                  </div>
+                  <div class="flex gap-4">
+                    <div
+                      class="flex items-center justify-center size-10 rounded-full bg-primary/10 text-primary"
+                    >
+                      <span class="material-symbols-outlined">trending_up</span>
+                    </div>
+                    <div>
+                      <p
+                        class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"
+                      >
+                        <strong>Dwight Schrute</strong> registró un nuevo PR en
+                        Press de banca.
+                      </p>
+                      <p
+                        class="text-text-light-secondary dark:text-text-dark-secondary text-xs"
+                      >
+                        hace 1 hora
+                      </p>
+                    </div>
+                  </div>
+                  <div class="flex gap-4">
+                    <div
+                      class="flex items-center justify-center size-10 rounded-full bg-yellow-500/10 text-yellow-500"
+                    >
+                      <span class="material-symbols-outlined">chat</span>
+                    </div>
+                    <div>
+                      <p
+                        class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"
+                      >
+                        Nuevo mensaje de <strong>Michael Scott</strong>.
+                      </p>
+                      <p
+                        class="text-text-light-secondary dark:text-text-dark-secondary text-xs"
+                      >
+                        hace 3 horas
+                      </p>
+                    </div>
+                  </div>
+                  <div class="flex gap-4">
+                    <div
+                      class="flex items-center justify-center size-10 rounded-full bg-success/10 text-success"
+                    >
+                      <span class="material-symbols-outlined"
+                        >check_circle</span
+                      >
+                    </div>
+                    <div>
+                      <p
+                        class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"
+                      >
+                        <strong>Jim Halpert</strong> completó 'Full Body
+                        Workout'.
+                      </p>
+                      <p
+                        class="text-text-light-secondary dark:text-text-dark-secondary text-xs"
+                      >
+                        Ayer
+                      </p>
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="flex justify-between items-end">
-          <p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">Última: {{ item.last_date }}</p>
-          <div class="flex items-center gap-2">
-            <a href="{% url 'entrenador_ver_rutina' item.socio.id %}" class="px-2 py-1 text-xs bg-gluteos-blue text-white rounded">Ver</a>
-          </div>
-        </div>
+        </main>
       </div>
-    {% endfor %}
-  {% else %}
-    <p class="text-text-light-secondary">No hay rachas activas registradas.</p>
-  {% endif %}
-</div>
-</div>
-<!-- Socios pendientes de asignación de rutina (sin foto, escalable) -->
-<div class="mt-6">
-  <h3 class="text-text-light-primary dark:text-text-dark-primary font-semibold mb-3">Socios pendientes de asignación</h3>
-  <div class="mb-3">
-    <input id="filter-socios" type="search" placeholder="Buscar por nombre, email o teléfono" class="w-full rounded-md border border-border-light dark:border-border-dark px-3 py-2 text-sm bg-background-light dark:bg-background-dark focus:outline-none" oninput="filterPendingSocios()" />
-  </div>
-  {% if socios_sin_rutina_list %}
-    <!-- contenedor con altura fija y scroll para escalar bien cuando hay muchos socios -->
-    <div id="pending-socios-container" class="max-h-64 overflow-y-auto space-y-2 p-1">
-      {% for item in socios_sin_rutina_list %}
-        <div class="pending-socio flex items-center justify-between gap-4 p-3 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark transition" data-name="{{ item.socio.NombreCompleto|lower }}" data-contact="{% if item.socio.Telefono %}{{ item.socio.Telefono }}{% endif %} {% if item.socio.Email %}{{ item.socio.Email }}{% endif %}">
-          <div class="flex flex-col">
-            <p class="text-text-light-primary dark:text-text-dark-primary font-medium">{{ item.socio.NombreCompleto }}</p>
-            <p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">{% if item.socio.Telefono %}{{ item.socio.Telefono }}{% elif item.socio.Email %}{{ item.socio.Email }}{% else %}—{% endif %}</p>
-          </div>
-          <div class="flex items-center gap-3">
-            <div class="text-xs text-text-light-secondary dark:text-text-dark-secondary mr-2">Última: <span class="font-medium text-sm">{% if item.ultima_medicion %}{{ item.ultima_medicion.Fecha|date:"d M Y" }}{% else %}—{% endif %}</span></div>
-            <a href="{% url 'crear_rutina_entrenador' %}?socio_id={{ item.socio.id }}" class="inline-flex items-center gap-2 px-3 py-2 bg-gluteos-blue hover:bg-gluteos-blue-dark text-white rounded-md text-sm font-semibold">Asignar rutina</a>
-          </div>
-        </div>
-      {% endfor %}
     </div>
-  {% else %}
-    <div class="p-4 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark">
-      <p class="text-text-light-secondary">No hay socios pendientes de asignación.</p>
-    </div>
-  {% endif %}
-</div>
 
-<script>
-function filterPendingSocios() {
-  const q = document.getElementById('filter-socios').value.trim().toLowerCase();
-  const list = document.querySelectorAll('#pending-socios-container .pending-socio');
-  if (!list) return;
-  let visible = 0;
-  list.forEach(el => {
-    const name = (el.getAttribute('data-name') || '').toLowerCase();
-    const contact = (el.getAttribute('data-contact') || '').toLowerCase();
-    const matches = q === '' || name.includes(q) || contact.includes(q);
-    el.style.display = matches ? '' : 'none';
-    if (matches) visible += 1;
-  });
-  // si no hay resultados, mostrar un mensaje sencillo
-  let emptyMsg = document.getElementById('pending-empty-msg');
-  if (!emptyMsg) {
-    emptyMsg = document.createElement('div');
-    emptyMsg.id = 'pending-empty-msg';
-    emptyMsg.className = 'text-text-light-secondary p-2';
-    emptyMsg.innerText = 'No se encontraron socios.';
-    document.getElementById('pending-socios-container').insertAdjacentElement('afterend', emptyMsg);
-  }
-  emptyMsg.style.display = visible === 0 ? '' : 'none';
-}
-</script>
-<div class="lg:col-span-1">
-<h2 class="text-text-light-primary dark:text-text-dark-primary text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">Actividad reciente</h2>
-<div class="flex flex-col gap-5">
-  {% if recent_completions %}
-    {% for c in recent_completions %}
-      <div class="flex gap-4">
-        <div class="flex items-center justify-center size-10 rounded-full bg-success/10 text-success">
-          <span class="material-symbols-outlined">check_circle</span>
-        </div>
-        <div>
-          <p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"><strong>{{ c.nombre }}</strong> completó '{{ c.rutina }}'.</p>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">hace {{ c.fecha|timesince }}</p>
+    <!-- Logout Modal -->
+    <div
+      id="logoutModal"
+      class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+    >
+      <div
+        class="bg-white dark:bg-gray-900 rounded-xl shadow-xl p-6 w-full max-w-sm animate-fadeIn"
+      >
+        <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-3">
+          ¿Cerrar sesión?
+        </h2>
+        <p class="text-gray-600 dark:text-gray-300 text-sm mb-6">
+          Tu sesión actual se cerrará y volverás a la página de inicio de
+          sesión.
+        </p>
+
+        <div class="flex justify-end gap-3">
+          <button
+            onclick="closeLogoutModal()"
+            class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+          >
+            Cancelar
+          </button>
+
+          <button
+            onclick="logoutNow()"
+            class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition"
+          >
+            Salir
+          </button>
         </div>
       </div>
-    {% endfor %}
-  {% else %}
-    <div class="flex gap-4">
-      <div class="flex items-center justify-center size-10 rounded-full bg-success/10 text-success">
-        <span class="material-symbols-outlined">check_circle</span>
-      </div>
-      <div>
-        <p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"><strong>Pamela Beesly</strong> completó 'Leg Day Annihilator'.</p>
-        <p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">hace 15 minutos</p>
-      </div>
     </div>
-    <div class="flex gap-4">
-      <div class="flex items-center justify-center size-10 rounded-full bg-primary/10 text-primary">
-        <span class="material-symbols-outlined">trending_up</span>
-      </div>
-      <div>
-        <p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"><strong>Dwight Schrute</strong> registró un nuevo PR en Press de banca.</p>
-        <p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">hace 1 hora</p>
-      </div>
-    </div>
-    <div class="flex gap-4">
-      <div class="flex items-center justify-center size-10 rounded-full bg-yellow-500/10 text-yellow-500">
-        <span class="material-symbols-outlined">chat</span>
-      </div>
-      <div>
-        <p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium">Nuevo mensaje de <strong>Michael Scott</strong>.</p>
-        <p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">hace 3 horas</p>
-      </div>
-    </div>
-    <div class="flex gap-4">
-      <div class="flex items-center justify-center size-10 rounded-full bg-success/10 text-success">
-        <span class="material-symbols-outlined">check_circle</span>
-      </div>
-      <div>
-        <p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"><strong>Jim Halpert</strong> completó 'Full Body Workout'.</p>
-        <p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">Ayer</p>
-      </div>
-    </div>
-  {% endif %}
-  </div>
-</div>
-</div>
-</div>
-</main>
-</div>
-</div>
 
-<!-- Logout Modal -->
-<div id="logoutModal"
-     class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-  <div class="bg-white dark:bg-gray-900 rounded-xl shadow-xl p-6 w-full max-w-sm animate-fadeIn">
-    
-    <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-3">
-      ¿Cerrar sesión?
-    </h2>
-    <p class="text-gray-600 dark:text-gray-300 text-sm mb-6">
-      Tu sesión actual se cerrará y volverás a la página de inicio de sesión.
-    </p>
-    
-    <div class="flex justify-end gap-3">
-      <button onclick="closeLogoutModal()"
-              class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-        Cancelar
-      </button>
-      
-      <button onclick="logoutNow()"
-              class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition">
-        Salir
-      </button>
-    </div>
-  </div>
-</div>
+    <script>
+      function openLogoutModal() {
+        document.getElementById("logoutModal").classList.remove("hidden");
+      }
 
-<script>
-function openLogoutModal() {
-  document.getElementById("logoutModal").classList.remove("hidden");
-}
+      function closeLogoutModal() {
+        document.getElementById("logoutModal").classList.add("hidden");
+      }
 
-function closeLogoutModal() {
-  document.getElementById("logoutModal").classList.add("hidden");
-}
-
-function logoutNow() {
-  window.location.href = "/logout/";
-}
-</script>
-
-
-
-</body></html>
+      function logoutNow() {
+        window.location.href = "/logout/";
+      }
+    </script>
+  </body>
+</html>
