@@ -63,6 +63,7 @@
                     Plan de Membresía
                   </span>
                   <select
+                    id="id_PlanID"
                     name="PlanID"
                     class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
                     required
@@ -85,10 +86,12 @@
                     {{ form.FechaInicio.label }}
                   </span>
                   <input
+                    id="id_FechaInicio"
                     type="date"
                     name="FechaInicio"
                     value="{{ form.FechaInicio.value|default:'' }}"
-                    class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                    class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                    readonly
                     required
                   />
                   {% if form.FechaInicio.errors %}
@@ -102,10 +105,12 @@
                     {{ form.FechaFin.label }}
                   </span>
                   <input
+                    id="id_FechaFin"
                     type="date"
                     name="FechaFin"
                     value="{{ form.FechaFin.value|default:'' }}"
-                    class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                    class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                    readonly
                     required
                   />
                   {% if form.FechaFin.errors %}
@@ -118,17 +123,13 @@
                   <span class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">
                     Estado
                   </span>
-                  <select
+                  <input
+                    type="text"
                     name="Estado"
-                    class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    {% for estado_id, estado_nombre in form.fields.Estado.choices %}
-                      <option value="{{ estado_id }}">{{ estado_nombre }}</option>
-                    {% endfor %}
-                  </select>
-                  {% if form.Estado.errors %}
-                    <span class="text-red-600 text-sm mt-1">{{ form.Estado.errors.0 }}</span>
-                  {% endif %}
+                    value="Activa"
+                    readonly
+                    class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none"
+                  />
                 </label>
               </div>
 
@@ -152,5 +153,60 @@
         </div>
       </main>
     </div>
+
+    <!-- Datos de planes en JSON -->
+    <script id="planes-data" type="application/json">
+      {{ planes_data_json|safe }}
+    </script>
+
+    <script>
+      // Datos de duración de planes desde el backend
+      const planesData = JSON.parse(document.getElementById('planes-data').textContent);
+
+      // Función para calcular y establecer las fechas
+      function calcularFechas() {
+        const planSelect = document.getElementById('id_PlanID');
+        const fechaInicioInput = document.getElementById('id_FechaInicio');
+        const fechaFinInput = document.getElementById('id_FechaFin');
+
+        const planId = planSelect.value;
+        
+        if (!planId) {
+          fechaInicioInput.value = '';
+          fechaFinInput.value = '';
+          return;
+        }
+
+        // Obtener fecha de hoy
+        const hoy = new Date();
+        const fechaInicio = new Date(hoy);
+        
+        // Formatear fecha de inicio (YYYY-MM-DD)
+        const fechaInicioStr = fechaInicio.toISOString().split('T')[0];
+        fechaInicioInput.value = fechaInicioStr;
+
+        // Calcular fecha de fin basada en la duración del plan
+        const duracionDias = planesData[planId];
+        if (duracionDias) {
+          const fechaFin = new Date(fechaInicio);
+          fechaFin.setDate(fechaFin.getDate() + parseInt(duracionDias));
+          
+          // Formatear fecha de fin (YYYY-MM-DD)
+          const fechaFinStr = fechaFin.toISOString().split('T')[0];
+          fechaFinInput.value = fechaFinStr;
+        }
+      }
+
+      // Evento cuando se selecciona un plan
+      document.getElementById('id_PlanID').addEventListener('change', calcularFechas);
+
+      // Calcular fechas al cargar la página si ya hay un plan seleccionado
+      window.addEventListener('DOMContentLoaded', function() {
+        const planSelect = document.getElementById('id_PlanID');
+        if (planSelect.value) {
+          calcularFechas();
+        }
+      });
+    </script>
   </body>
 </html>

@@ -88,6 +88,27 @@ class SocioMembresiaForm(forms.ModelForm):
             "Estado": "Estado"
         }
         widgets = {
-            "FechaInicio": forms.DateInput(attrs={'type': 'date'}),
-            "FechaFin": forms.DateInput(attrs={'type': 'date'}),
+            "FechaInicio": forms.DateInput(attrs={
+                'type': 'date',
+                'id': 'id_FechaInicio',
+                'readonly': 'readonly',
+                'class': 'bg-gray-100'
+            }),
+            "FechaFin": forms.DateInput(attrs={
+                'type': 'date',
+                'id': 'id_FechaFin',
+                'readonly': 'readonly',
+                'class': 'bg-gray-100'
+            }),
+            "Estado": forms.Select(attrs={'id': 'id_Estado'}),
+            "PlanID": forms.Select(attrs={'id': 'id_PlanID'}),
         }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Establecer estado Activa por defecto
+        if not self.instance.pk:  # Solo en creación
+            self.initial['Estado'] = SocioMembresia.ESTADO_ACTIVA
+            # Establecer fecha de inicio como hoy
+            from django.utils import timezone
+            self.initial['FechaInicio'] = timezone.localdate()

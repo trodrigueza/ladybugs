@@ -369,10 +369,21 @@ def crear_membresia_view(request, socio_id):
     else:
         membresia_form = SocioMembresiaForm()
 
+    # Obtener planes con su duración para JavaScript
+    from apps.pagos.models import PlanMembresia
+    import json
+    planes = PlanMembresia.objects.all()
+    planes_data = {str(plan.id): plan.DuracionDias for plan in planes}
+    planes_data_json = json.dumps(planes_data)
+
     return render(
         request,
         "Administrador/crearMembresia.html",
-        {"form": membresia_form, "socio": socio},
+        {
+            "form": membresia_form,
+            "socio": socio,
+            "planes_data_json": planes_data_json
+        },
     )
 
 
