@@ -18,8 +18,7 @@ from apps.seguridad.servicios.FormularioSocio_Membresia import (
     SocioMembresiaForm,
     UsuarioForm,
 )
-from apps.socios.models import Socio
-
+from apps.socios.models import Medicion, Socio
 
 
 def login_view(request):
@@ -295,6 +294,8 @@ def crear_socio_view(request):
 def editar_socio_view(request, socio_id):
     """Editar un Socio existente"""
     socio = get_object_or_404(Socio, id=socio_id)
+    ultima_medicion = Medicion.objects.filter(SocioID=socio).order_by("-Fecha").first()
+    peso_actual = ultima_medicion.PesoCorporal if ultima_medicion else None
 
     if request.method == "POST":
         socio_form = SocioForm(request.POST, instance=socio)
@@ -331,7 +332,14 @@ def editar_socio_view(request, socio_id):
         socio_form = SocioForm(instance=socio)
 
     return render(
-        request, "Administrador/editarSocio.html", {"form": socio_form, "socio": socio}
+        request,
+        "Administrador/editarSocio.html",
+        {
+            "form": socio_form,
+            "socio": socio,
+            "ultima_medicion": ultima_medicion,
+            "peso_actual": peso_actual,
+        },
     )
 
 
@@ -374,8 +382,10 @@ def crear_membresia_view(request, socio_id):
         membresia_form = SocioMembresiaForm()
 
     # Obtener planes con su duración para JavaScript
-    from apps.pagos.models import PlanMembresia
     import json
+
+    from apps.pagos.models import PlanMembresia
+
     planes = PlanMembresia.objects.all()
     planes_data = {str(plan.id): plan.DuracionDias for plan in planes}
     planes_data_json = json.dumps(planes_data)
@@ -383,11 +393,7 @@ def crear_membresia_view(request, socio_id):
     return render(
         request,
         "Administrador/crearMembresia.html",
-        {
-            "form": membresia_form,
-            "socio": socio,
-            "planes_data_json": planes_data_json
-        },
+        {"form": membresia_form, "socio": socio, "planes_data_json": planes_data_json},
     )
 
 
@@ -456,5 +462,4 @@ def eliminar_socio_view(request, socio_id):
     Requiere método POST y devuelve JSON.
     (Vista legada - ahora usa eliminar_entidad_view)
     """
-    return eliminar_entidad_view(request, 'socio', socio_id)
-
+    return eliminar_entidad_view(request, "socio", socio_id)

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
   <head>
     <meta charset="utf-8" />
@@ -43,23 +43,70 @@
         <div class="w-full max-w-2xl mx-auto">
           <!-- Encabezado -->
           <div class="flex flex-col items-center justify-center gap-4 mb-8">
-            <h1 class="text-gray-900 dark:text-white text-4xl font-black leading-tight text-center">
+            <h1
+              class="text-gray-900 dark:text-white text-4xl font-black leading-tight text-center"
+            >
               Editar Socio
             </h1>
-            <p class="text-gray-500 dark:text-gray-400 text-base font-normal text-center">
+            <p
+              class="text-gray-500 dark:text-gray-400 text-base font-normal text-center"
+            >
               Actualice la información del socio.
             </p>
           </div>
+          {% if socio.Altura or peso_actual %}
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <div
+              class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4"
+            >
+              <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">
+                Altura actual
+              </p>
+              <p class="text-gray-900 dark:text-white text-3xl font-bold mt-1">
+                {% if socio.Altura %}{{ socio.Altura }} m{% else %}Sin registro{% endif %}
+              </p>
+              <p class="text-gray-500 dark:text-gray-400 text-xs mt-1">
+                Este valor es editable en el formulario.
+              </p>
+            </div>
+            <div
+              class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4"
+            >
+              <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">
+                Último peso registrado
+              </p>
+              {% if ultima_medicion %}
+              <p class="text-gray-900 dark:text-white text-3xl font-bold mt-1">
+                {{ peso_actual }} kg
+              </p>
+              <p class="text-gray-500 dark:text-gray-400 text-xs mt-1">
+                Actualizado el {{ ultima_medicion.Fecha|date:"d M Y" }}
+              </p>
+              {% else %}
+              <p class="text-gray-900 dark:text-white text-3xl font-bold mt-1">
+                Sin registros
+              </p>
+              <p class="text-gray-500 dark:text-gray-400 text-xs mt-1">
+                El socio aún no registra peso en la aplicación.
+              </p>
+              {% endif %}
+            </div>
+          </div>
+          {% endif %}
 
           <!-- Formulario -->
-          <div class="bg-white dark:bg-[#1C2434] rounded-xl shadow-sm p-6 sm:p-8">
+          <div
+            class="bg-white dark:bg-[#1C2434] rounded-xl shadow-sm p-6 sm:p-8"
+          >
             <form method="post">
               {% csrf_token %}
 
               <div class="grid grid-cols-1 gap-6">
                 <!-- Identificación -->
                 <label class="flex flex-col">
-                  <span class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">
+                  <span
+                    class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2"
+                  >
                     {{ form.Identificacion.label }}
                   </span>
                   <input
@@ -70,13 +117,17 @@
                     required
                   />
                   {% if form.Identificacion.errors %}
-                    <span class="text-red-600 text-sm mt-1">{{ form.Identificacion.errors.0 }}</span>
+                  <span class="text-red-600 text-sm mt-1"
+                    >{{ form.Identificacion.errors.0 }}</span
+                  >
                   {% endif %}
                 </label>
 
                 <!-- Nombre Completo -->
                 <label class="flex flex-col">
-                  <span class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">
+                  <span
+                    class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2"
+                  >
                     {{ form.NombreCompleto.label }}
                   </span>
                   <input
@@ -87,13 +138,17 @@
                     required
                   />
                   {% if form.NombreCompleto.errors %}
-                    <span class="text-red-600 text-sm mt-1">{{ form.NombreCompleto.errors.0 }}</span>
+                  <span class="text-red-600 text-sm mt-1"
+                    >{{ form.NombreCompleto.errors.0 }}</span
+                  >
                   {% endif %}
                 </label>
 
                 <!-- Email -->
                 <label class="flex flex-col">
-                  <span class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">
+                  <span
+                    class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2"
+                  >
                     {{ form.Email.label }} <span class="text-red-500">*</span>
                   </span>
                   <input
@@ -104,13 +159,17 @@
                     required
                   />
                   {% if form.Email.errors %}
-                    <span class="text-red-600 text-sm mt-1">{{ form.Email.errors.0 }}</span>
+                  <span class="text-red-600 text-sm mt-1"
+                    >{{ form.Email.errors.0 }}</span
+                  >
                   {% endif %}
                 </label>
 
                 <!-- Teléfono -->
                 <label class="flex flex-col">
-                  <span class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">
+                  <span
+                    class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2"
+                  >
                     {{ form.Telefono.label }}
                   </span>
                   <input
@@ -120,13 +179,17 @@
                     class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                   {% if form.Telefono.errors %}
-                    <span class="text-red-600 text-sm mt-1">{{ form.Telefono.errors.0 }}</span>
+                  <span class="text-red-600 text-sm mt-1"
+                    >{{ form.Telefono.errors.0 }}</span
+                  >
                   {% endif %}
                 </label>
 
                 <!-- Fecha de Nacimiento -->
                 <label class="flex flex-col">
-                  <span class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">
+                  <span
+                    class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2"
+                  >
                     {{ form.FechaNacimiento.label }}
                   </span>
                   <input
@@ -136,13 +199,17 @@
                     class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                   {% if form.FechaNacimiento.errors %}
-                    <span class="text-red-600 text-sm mt-1">{{ form.FechaNacimiento.errors.0 }}</span>
+                  <span class="text-red-600 text-sm mt-1"
+                    >{{ form.FechaNacimiento.errors.0 }}</span
+                  >
                   {% endif %}
                 </label>
 
                 <!-- Altura -->
                 <label class="flex flex-col">
-                  <span class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">
+                  <span
+                    class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2"
+                  >
                     {{ form.Altura.label }}
                   </span>
                   <input
@@ -153,43 +220,59 @@
                     class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                   {% if form.Altura.errors %}
-                    <span class="text-red-600 text-sm mt-1">{{ form.Altura.errors.0 }}</span>
+                  <span class="text-red-600 text-sm mt-1"
+                    >{{ form.Altura.errors.0 }}</span
+                  >
                   {% endif %}
                 </label>
 
                 <!-- Información de Salud -->
                 <label class="flex flex-col">
-                  <span class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">
+                  <span
+                    class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2"
+                  >
                     {{ form.SaludBasica.label }}
                   </span>
                   <textarea
                     name="SaludBasica"
                     rows="3"
                     class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
-                  >{{ form.SaludBasica.value|default:'' }}</textarea>
+                  >
+{{ form.SaludBasica.value|default:'' }}</textarea
+                  >
                   {% if form.SaludBasica.errors %}
-                    <span class="text-red-600 text-sm mt-1">{{ form.SaludBasica.errors.0 }}</span>
+                  <span class="text-red-600 text-sm mt-1"
+                    >{{ form.SaludBasica.errors.0 }}</span
+                  >
                   {% endif %}
                 </label>
 
                 <!-- Nota Adicional -->
                 <label class="flex flex-col">
-                  <span class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">
+                  <span
+                    class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2"
+                  >
                     {{ form.NotaOpcional.label }}
                   </span>
                   <textarea
                     name="NotaOpcional"
                     rows="2"
                     class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
-                  >{{ form.NotaOpcional.value|default:'' }}</textarea>
+                  >
+{{ form.NotaOpcional.value|default:'' }}</textarea
+                  >
                   {% if form.NotaOpcional.errors %}
-                    <span class="text-red-600 text-sm mt-1">{{ form.NotaOpcional.errors.0 }}</span>
+                  <span class="text-red-600 text-sm mt-1"
+                    >{{ form.NotaOpcional.errors.0 }}</span
+                  >
                   {% endif %}
                 </label>
 
                 <!-- Contraseña (Opcional en edición) -->
                 <label class="flex flex-col">
-                  <span class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">
+                  <span
+                    class="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2"
+                  >
                     {{ form.password.label }}
                   </span>
                   <input
@@ -199,16 +282,21 @@
                     placeholder="Dejar en blanco para mantener contraseña actual"
                   />
                   {% if form.password.errors %}
-                    <span class="text-red-600 text-sm mt-1">{{ form.password.errors.0 }}</span>
-                  {% endif %}
-                  {% if form.password.help_text %}
-                    <span class="text-gray-500 dark:text-gray-400 text-xs mt-1">{{ form.password.help_text }}</span>
+                  <span class="text-red-600 text-sm mt-1"
+                    >{{ form.password.errors.0 }}</span
+                  >
+                  {% endif %} {% if form.password.help_text %}
+                  <span class="text-gray-500 dark:text-gray-400 text-xs mt-1"
+                    >{{ form.password.help_text }}</span
+                  >
                   {% endif %}
                 </label>
               </div>
 
               <!-- Botones -->
-              <div class="flex justify-end items-center gap-4 mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <div
+                class="flex justify-end items-center gap-4 mt-8 pt-6 border-t border-gray-200 dark:border-gray-700"
+              >
                 <a
                   href="{% url 'gestionar_usuarios' %}"
                   class="px-6 py-2.5 rounded-lg text-sm font-semibold bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-600 dark:text-gray-100 dark:hover:bg-gray-500 transition-colors duration-200"
