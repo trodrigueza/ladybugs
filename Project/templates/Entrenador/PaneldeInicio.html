@@ -304,10 +304,10 @@
                   Mejores procesos
                 </h2>
                 <!-- Clientes con la racha más larga (top 5) -->
-                <div class="flex flex-col gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                   {% if top_rachas %} {% for item in top_rachas %}
                   <div
-                    class="w-44 h-44 flex flex-col justify-between p-4 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark"
+                    class="flex flex-col justify-between p-4 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark h-full"
                   >
                     <div class="flex justify-between items-start">
                       <div class="flex items-center gap-3">
