@@ -1,433 +1,361 @@
-{% load static %}
+{% extends 'base.html' %}
 
-<!DOCTYPE html>
-<html class="light" lang="es">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GluteOS - Planificador de Rutinas</title>
+{% block title %}Planificador — GluteOS{% endblock %}
 
-    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
-
-    <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .exercise-item:hover { background: #f3f4f6; }
-        .dropzone:hover { border-color: #0f49bd; color: #0f49bd; }
-    </style>
-
-    <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "gluteos-blue": "#1A237E",
-              "gluteos-blue-dark": "#161d68",
-              "card-light": "#ffffff",
-              "border-light": "#dbdfe6",
-            },
-            fontFamily: { "display": ["Manrope", "sans-serif"] }
-          },
-        },
-      }
-    </script>
-</head>
-
-<body class="bg-gray-100">
-
-<div class="flex h-screen w-full">
-
-    <!-- ===================================================== -->
-    <!-- SIDEBAR AZUL -->
-    <!-- ===================================================== -->
-    <aside class="flex w-64 flex-col bg-gluteos-blue p-4 text-white">
-        <div class="flex items-center gap-3 px-3 py-4 text-white">
-            <span class="material-symbols-outlined text-3xl">fitness_center</span>
-            <h2 class="text-xl font-bold">GluteOS</h2>
+{% block content %}
+  <div id="planificador-root" data-rutina-id="{{ rutina.id|default:'' }}" class="max-w-7xl mx-auto p-6">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Left: Exercise Library -->
+      <aside class="lg:col-span-3 bg-white rounded-lg p-4 shadow-sm border">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold">Biblioteca de Ejercicios</h2>
+          <div class="flex items-center gap-2">
+            <button id="btn-new-ejercicio" class="text-sm text-indigo-600 hover:text-indigo-800">+ Nuevo</button>
+            <button id="toggle-library" class="text-sm text-slate-500 hover:text-slate-700">Ocultar</button>
+          </div>
         </div>
 
-        <div class="flex h-full flex-col justify-between">
-            <div class="flex flex-col gap-2 pt-4">
-                <a href="{% url 'entrenador_panel' %}"
-                   class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-blue-800">
-                    <span class="material-symbols-outlined">dashboard</span>
-                    <p class="text-sm font-medium">Dashboard</p>
-                </a>
+        <input id="planner-search" type="text" placeholder="Buscar ejercicios..." class="w-full mb-3 px-3 py-2 border rounded-md" />
 
-                <a href="{% url 'crear_rutina_entrenador' %}"
-                   class="flex items-center gap-3 rounded-lg bg-blue-800 px-3 py-2">
-                    <span class="material-symbols-outlined">fitness_center</span>
-                    <p class="text-sm font-medium">Rutinas</p>
-                </a>
+        <div id="lista-ejercicios" class="flex flex-col gap-2 max-h-[60vh] overflow-y-auto">
+          {% for e in ejercicios %}
+          <div class="exercise-item flex items-center justify-between gap-3 p-3 rounded-md cursor-pointer border border-transparent hover:bg-gray-50" draggable="true" data-id="{{ e.id }}" data-nombre="{{ e.Nombre }}">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded bg-indigo-50 text-indigo-700 flex items-center justify-center font-semibold">{{ forloop.counter }}</div>
+              <div class="text-sm font-medium">{{ e.Nombre }}</div>
             </div>
-
-            <div class="flex flex-col gap-1">
-                <div class="mb-4 flex gap-3 px-3 py-2">
-                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
-                         style="background-image: url('https://via.placeholder.com/100');"></div>
-                    <div class="flex flex-col">
-                        <h1 class="text-base font-medium">Coach</h1>
-                        <p class="text-sm text-slate-300">Entrenador</p>
-                    </div>
-                </div>
-
-                <a onclick="openLogoutModal()" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-blue-800 cursor-pointer">
-                    <span class="material-symbols-outlined">logout</span>
-                    <p class="text-sm font-medium">Salir</p>
-                </a>
-            </div>
+            <span class="material-symbols-outlined text-slate-400">add</span>
+          </div>
+          {% empty %}
+          <p class="text-gray-500">No hay ejercicios registrados.</p>
+          {% endfor %}
         </div>
-    </aside>
 
-    <!-- ===================================================== -->
-    <!-- PANEL DE EJERCICIOS (IZQUIERDA) -->
-    <!-- ===================================================== -->
-    <div class="flex flex-1">
-
-        <aside class="w-1/4 bg-white border-r border-gray-200 p-4 overflow-y-auto">
-            <h2 class="text-xl font-bold mb-4">Biblioteca de Ejercicios</h2>
-
-            <input type="text" placeholder="Buscar..." class="w-full mb-3 p-2 border rounded-lg">
-
-            <div id="lista-ejercicios" class="flex flex-col gap-2">
-                {% for e in ejercicios %}
-                <div class="exercise-item p-2 flex justify-between items-center rounded cursor-pointer"
-                    draggable="true" data-id="{{ e.id }}" data-nombre="{{ e.Nombre }}">
-                    <p class="text-sm font-semibold">{{ e.Nombre }}</p>
-                    <span class="material-symbols-outlined">add</span>
-                </div>
-                {% empty %}
-                <p class="text-gray-500">No hay ejercicios registrados.</p>
-                {% endfor %}
-            </div>
-        </aside>
-
-        <!-- ===================================================== -->
-        <!-- PANEL CENTRAL – CONSTRUCTOR DE RUTINA -->
-        <!-- ===================================================== -->
-        <main class="flex-1 p-6 overflow-y-auto">
-
-            <script>
-                const RUTINA_ID = "{{ rutina.id|default:'' }}";
-            </script>
-
-            <h1 class="text-3xl font-bold mb-6">Planificador de Rutinas</h1>
-
-            <!-- Selector de día -->
-            <div class="grid grid-cols-7 gap-2 mb-6 text-center font-medium">
-                <div class="day p-2 rounded cursor-pointer bg-blue-100" data-dia="0">LU</div>
-                <div class="day p-2 rounded cursor-pointer" data-dia="1">MA</div>
-                <div class="day p-2 rounded cursor-pointer" data-dia="2">MI</div>
-                <div class="day p-2 rounded cursor-pointer" data-dia="3">JU</div>
-                <div class="day p-2 rounded cursor-pointer" data-dia="4">VI</div>
-                <div class="day p-2 rounded cursor-pointer" data-dia="5">SA</div>
-                <div class="day p-2 rounded cursor-pointer" data-dia="6">DO</div>
-            </div>
-
-            <h3 id="titulo-dia" class="text-xl font-bold mb-3">Rutina del Lunes</h3>
-
-            <!-- Contenedor de ejercicios asignados -->
-            <div id="contenedor-ejercicios-dia" class="flex flex-col gap-3">
-                {% for asignacion in ejercicios_dia %}
-                <div class="ej-asignado bg-white p-4 rounded shadow border" data-id="{{ asignacion.id }}">
-
-                    <div class="flex justify-between mb-3">
-                        <p class="font-semibold">{{ asignacion.EjercicioID.Nombre }}</p>
-
-                        <button class="btn-eliminar text-red-500" data-id="{{ asignacion.id }}">
-                            <span class="material-symbols-outlined">close</span>
-                        </button>
-                    </div>
-
-                    <div class="grid grid-cols-4 gap-3">
-                        <div>
-                            <label class="text-xs">Series</label>
-                            <input type="number" value="{{ asignacion.Series }}" class="form-input w-full">
-                        </div>
-
-                        <div>
-                            <label class="text-xs">Reps</label>
-                            <input type="number" value="{{ asignacion.Repeticiones }}" class="form-input w-full">
-                        </div>
-
-                        <div>
-                            <label class="text-xs">Peso</label>
-                            <input type="number" value="{{ asignacion.PesoObjetivo }}" class="form-input w-full">
-                        </div>
-
-                        <div>
-                            <label class="text-xs">Tempo</label>
-                            <input type="text" value="{{ asignacion.Tempo }}" class="form-input w-full">
-                        </div>
-                    </div>
-
-                </div>
-                {% endfor %}
-            </div>
-
-            <!-- Zona de drop -->
-            <div id="drop-zone"
-                class="dropzone mt-6 p-10 text-center border-2 border-dashed border-gray-400 rounded-lg text-gray-500">
-                Arrastra ejercicios aquí
-            </div>
-
-        </main>
-
-        <!-- ===================================================== -->
-        <!-- PANEL DERECHO – CREAR RUTINA -->
-        <!-- ===================================================== -->
-        <aside class="w-1/4 bg-white border-l border-gray-200 p-4">
-
-            <form method="post">
-                {% csrf_token %}
-
-                <h2 class="text-xl font-bold mb-4">Crear Rutina</h2>
-
-                <label class="block text-sm font-medium mb-1">Nombre de la Rutina</label>
-                <input type="text" name="nombre_rutina"
-                    class="w-full p-2 border rounded mb-4"
-                    placeholder="Ej: Fuerza Semana 1" required>
-
-                <label class="block text-sm font-medium mb-1">Seleccionar cliente</label>
-                <select name="socio_id" class="w-full p-2 border rounded mb-4" required>
-                    <option value="">-- Seleccionar cliente --</option>
-                    {% for socio in socios %}
-                        <option value="{{ socio.id }}">{{ socio.NombreCompleto }} ({{ socio.Email }})</option>
-                    {% endfor %}
-                </select>
-
-                <input type="hidden" name="dias_entrenamiento" id="input-dias" value="LMXJVSD">
-
-                <button type="submit" class="w-full bg-gluteos-blue text-white p-3 rounded-lg font-semibold">
-                    Guardar Rutina
-                </button>
+        <!-- Modal: Nuevo Ejercicio -->
+        <div id="modal-nuevo-ejercicio" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+          <div class="bg-white rounded-md p-4 w-full max-w-md mx-4">
+            <h3 class="text-lg font-semibold mb-2">Crear ejercicio</h3>
+            <form id="form-nuevo-ejercicio" class="space-y-2">
+              <div>
+                <label class="text-xs font-medium">Nombre</label>
+                <input name="nombre" required class="w-full mt-1 p-2 border rounded-md" />
+              </div>
+              <div>
+                <label class="text-xs font-medium">Grupo muscular</label>
+                <input name="grupo" class="w-full mt-1 p-2 border rounded-md" />
+              </div>
+              <div>
+                <label class="text-xs font-medium">Equipo</label>
+                <input name="equipo" class="w-full mt-1 p-2 border rounded-md" />
+              </div>
+              <div>
+                <label class="text-xs font-medium">Descripción</label>
+                <textarea name="descripcion" class="w-full mt-1 p-2 border rounded-md" rows="3"></textarea>
+              </div>
+              <div class="flex items-center gap-2 justify-end">
+                <button type="button" id="cancel-new-ejercicio" class="px-3 py-1 rounded-md bg-gray-100">Cancelar</button>
+                <button type="submit" class="px-3 py-1 rounded-md bg-indigo-600 text-white">Crear</button>
+              </div>
             </form>
+          </div>
+        </div>
+      </aside>
 
-        </aside>
+      <!-- Center: Builder -->
+      <main class="lg:col-span-6 bg-white rounded-lg p-6 shadow-sm border">
+        {% if messages %}
+          <div id="django-messages" class="mb-4 space-y-2">
+            {% for message in messages %}
+              <div class="p-3 rounded shadow-sm border {% if 'success' in message.tags %}bg-emerald-50 text-emerald-800 border-emerald-200{% elif 'warning' in message.tags %}bg-yellow-50 text-yellow-800 border-yellow-200{% elif 'error' in message.tags %}bg-red-50 text-red-800 border-red-200{% else %}bg-gray-50 text-gray-800 border-gray-200{% endif %}">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    {% if 'success' in message.tags %}<span class="material-symbols-outlined">check_circle</span>{% else %}<span class="material-symbols-outlined">priority_high</span>{% endif %}
+                    <div class="text-sm">{{ message }}</div>
+                  </div>
+                  <button onclick="this.parentElement.parentElement.remove()" class="text-sm text-gray-500 hover:text-gray-700">Cerrar</button>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
 
-    </div>
-</div>
+        <h1 class="text-2xl font-bold mb-4">Planificador de Rutinas</h1>
 
-<!-- Logout Modal -->
-<div id="logoutModal"
-     class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-  <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm">
-    
-    <h2 class="text-lg font-bold mb-3">¿Cerrar sesión?</h2>
-    <p class="text-gray-600 text-sm mb-6">Tu sesión se cerrará.</p>
-    
-    <div class="flex justify-end gap-3">
-      <button onclick="closeLogoutModal()"
-              class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">
-        Cancelar
-      </button>
-      
-      <button onclick="logoutNow()"
-              class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700">
-        Salir
-      </button>
+        <div class="grid grid-cols-7 gap-2 mb-4 text-center font-medium">
+          {% for abbr in dias_abbr %}
+            <div class="day p-2 rounded cursor-pointer {% if forloop.first %}bg-indigo-100{% endif %}" data-dia="{{ forloop.counter0 }}">{{ abbr }}</div>
+          {% endfor %}
+        </div>
+
+        <h3 id="titulo-dia" class="text-lg font-semibold mb-3">Rutina del Lunes</h3>
+
+        <div id="contenedor-ejercicios-dia" class="flex flex-col gap-3">
+          {% for asignacion in ejercicios_dia %}
+          <div class="ej-asignado bg-gray-50 p-3 rounded-md border" data-id="{{ asignacion.id }}">
+            <div class="flex justify-between items-center mb-2">
+              <p class="font-medium">{{ asignacion.EjercicioID.Nombre }}</p>
+              <button class="btn-eliminar text-red-500" data-id="{{ asignacion.id }}"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <div class="grid grid-cols-4 gap-2">
+              <div><label class="text-xs">Series</label><input type="number" value="{{ asignacion.Series }}" class="form-input w-full"/></div>
+              <div><label class="text-xs">Reps</label><input type="number" value="{{ asignacion.Repeticiones }}" class="form-input w-full"/></div>
+              <div><label class="text-xs">Peso</label><input type="number" value="{{ asignacion.PesoObjetivo }}" class="form-input w-full"/></div>
+              <div><label class="text-xs">Tempo</label><input type="text" value="{{ asignacion.Tempo }}" class="form-input w-full"/></div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div id="drop-zone" class="mt-6 p-8 text-center border-2 border-dashed rounded-md text-gray-500">Arrastra ejercicios aquí</div>
+      </main>
+
+      <!-- Right: Create form -->
+      <aside class="lg:col-span-3 bg-white rounded-lg p-4 shadow-sm border">
+        <form method="post" class="space-y-4">
+          {% csrf_token %}
+          <input type="hidden" name="ejercicios_temp" id="input-ejercicios-temp" value="">
+          {% if rutina %}
+            <h2 class="text-lg font-semibold">Editar Rutina</h2>
+
+            <div>
+              <label class="block text-sm font-medium">Nombre</label>
+              <div class="mt-1 p-2 rounded-md border bg-gray-50">{{ rutina.Nombre }}</div>
+              <input type="hidden" name="nombre_rutina" value="{{ rutina.Nombre }}">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium">Cliente</label>
+              <div class="mt-1 p-2 rounded-md border bg-gray-50">{% if rutina.SocioID %}{{ rutina.SocioID.NombreCompleto }} ({{ rutina.SocioID.Email }}){% else %}Sin asignar{% endif %}</div>
+              <input type="hidden" name="socio_id" value="{% if rutina.SocioID %}{{ rutina.SocioID.id }}{% else %}{% endif %}">
+            </div>
+
+            <input type="hidden" name="dias_entrenamiento" id="input-dias" value="{{ rutina.DiasEntrenamiento }}">
+            <div class="flex gap-2">
+              <a href="{% url 'rutinas_list' %}" class="flex-1 text-center bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-md">Volver a lista</a>
+              <button id="btn-save-rutina" class="flex-1 text-center bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-md">Guardar cambios</button>
+            </div>
+          {% else %}
+            <h2 class="text-lg font-semibold">Crear Rutina</h2>
+            <div>
+              <label class="block text-sm font-medium">Nombre</label>
+              <input type="text" name="nombre_rutina" class="w-full mt-1 p-2 border rounded-md" placeholder="Ej: Fuerza Semana 1" required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium">Seleccionar cliente</label>
+              <select name="socio_id" class="w-full mt-1 p-2 border rounded-md" required>
+                <option value="">-- Seleccionar cliente --</option>
+                {% for socio in socios %}<option value="{{ socio.id }}">{{ socio.NombreCompleto }} ({{ socio.Email }})</option>{% endfor %}
+              </select>
+            </div>
+            <input type="hidden" name="dias_entrenamiento" id="input-dias" value="LMXJVSD">
+            <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-md font-semibold">Guardar Rutina</button>
+          {% endif %}
+        </form>
+      </aside>
     </div>
   </div>
-</div>
+{% endblock %}
 
-<script>
-function openLogoutModal() { document.getElementById("logoutModal").classList.remove("hidden"); }
-function closeLogoutModal() { document.getElementById("logoutModal").classList.add("hidden"); }
-function logoutNow() { window.location.href = "/logout/"; }
-</script>
-
-<!-- ====================================================== -->
-<!-- JAVASCRIPT DEL PLANIFICADOR (BUFFER + AJAX COMPLETO) -->
-<!-- ====================================================== -->
+{% block extra_js %}
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-
-    const RUTINA_ID = "{{ rutina.id|default:'' }}";
+    const ROOT = document.getElementById('planificador-root');
+    const RUTINA_ID = ROOT ? ROOT.dataset.rutinaId : '';
     const contenedorEjerciciosDia = document.getElementById("contenedor-ejercicios-dia");
     const dropZone = document.getElementById("drop-zone");
     const dias = document.querySelectorAll(".day");
     const tituloDia = document.getElementById("titulo-dia");
+    const listaEjercicios = document.getElementById('lista-ejercicios');
+    const inputTemp = document.getElementById('input-ejercicios-temp');
 
     let diaActual = 0;
     let ejerciciosTemporales = [];
 
     const nombresDias = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
-
-    function getCSRF() {
-        return document.querySelector("[name=csrfmiddlewaretoken]").value;
+    // Toast helper (simple) — shows ephemeral toasts at top-right
+    function showToast(message, type='success'){
+      const container = document.getElementById('toast-container') || (function(){ const c = document.createElement('div'); c.id='toast-container'; document.body.appendChild(c); return c; })();
+      const el = document.createElement('div');
+      el.className = 'max-w-sm w-full bg-white border rounded-md px-4 py-2 shadow flex items-center gap-3';
+      if (type==='success') el.classList.add('border-emerald-200');
+      if (type==='error') el.classList.add('border-red-200');
+      el.innerHTML = `<div class="text-sm text-slate-800">${message}</div>`;
+      container.appendChild(el);
+      setTimeout(()=>{ el.remove(); }, 3500);
     }
 
+    // Persistent Django-style message inject (dismissible)
+    function pushDjangoMessage(message, level='success'){
+      const container = document.getElementById('django-messages') || (function(){ const c = document.createElement('div'); c.id='django-messages'; const main = document.querySelector('main') || document.body; main.insertBefore(c, main.firstChild); return c; })();
+      const wrapper = document.createElement('div');
+      wrapper.className = 'p-3 rounded shadow-sm border mb-2 ' + (level==='success' ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : (level==='error' ? 'bg-red-50 text-red-800 border-red-200' : 'bg-gray-50 text-gray-800 border-gray-200'));
+      wrapper.innerHTML = `<div class="flex items-center justify-between"><div class="flex items-center gap-3"><span class="material-symbols-outlined">${ level==='success' ? 'check_circle' : 'priority_high' }</span><div class="text-sm">${message}</div></div><button class="text-sm text-gray-500 hover:text-gray-700">Cerrar</button></div>`;
+      const btn = wrapper.querySelector('button'); btn.addEventListener('click', ()=> wrapper.remove());
+      container.appendChild(wrapper);
+    }
+
+    function getCSRF() { const el = document.querySelector("[name=csrfmiddlewaretoken]"); return el ? el.value : ''; }
 
     function agregarTarjetaDOM(id, nombre, series=4, reps=10, peso=0, tempo="2-0-2") {
         const card = document.createElement("div");
-        card.className = "ej-asignado bg-white p-4 rounded shadow border mb-2";
+        card.className = "ej-asignado bg-gray-50 p-3 rounded-md border mb-2";
         card.dataset.id = id;
-
-        card.innerHTML = `
-            <div class="flex justify-between mb-3">
-                <p class="font-semibold">${nombre}</p>
-                <button class="btn-eliminar text-red-500" data-id="${id}">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-            </div>
-
-            <div class="grid grid-cols-4 gap-3">
-                <div>
-                    <label class="text-xs">Series</label>
-                    <input type="number" value="${series}" class="form-input w-full">
-                </div>
-                <div>
-                    <label class="text-xs">Reps</label>
-                    <input type="number" value="${reps}" class="form-input w-full">
-                </div>
-                <div>
-                    <label class="text-xs">Peso</label>
-                    <input type="number" value="${peso}" class="form-input w-full">
-                </div>
-                <div>
-                    <label class="text-xs">Tempo</label>
-                    <input type="text" value="${tempo}" class="form-input w-full">
-                </div>
-            </div>
-        `;
-
+        card.innerHTML = `\n            <div class="flex justify-between mb-2"><p class="font-medium">${nombre}</p><button class="btn-eliminar text-red-500" data-id="${id}"><span class="material-symbols-outlined">close</span></button></div>\n            <div class="grid grid-cols-4 gap-2"><div><label class="text-xs">Series</label><input type="number" value="${series}" class="form-input w-full"></div><div><label class="text-xs">Reps</label><input type="number" value="${reps}" class="form-input w-full"></div><div><label class="text-xs">Peso</label><input type="number" value="${peso}" class="form-input w-full"></div><div><label class="text-xs">Tempo</label><input type="text" value="${tempo}" class="form-input w-full"></div></div>`;
         contenedorEjerciciosDia.appendChild(card);
     }
 
-
     async function cargarEjerciciosBD(dia) {
         if (!RUTINA_ID) return;
-
-        const res = await fetch(`/ajax/obtener-ejercicios-dia/${RUTINA_ID}/${dia}/`);
+        const res = await fetch(`/entrenador/rutina/${RUTINA_ID}/dia/${dia}/ejercicios/`);
         const data = await res.json();
-
         contenedorEjerciciosDia.innerHTML = "";
-
-        data.ejercicios.forEach(e => {
-            agregarTarjetaDOM(e.id, e.nombre, e.series, e.reps, e.peso, e.tempo);
-        });
+        data.ejercicios.forEach(e => agregarTarjetaDOM(e.id, e.nombre, e.series, e.reps, e.peso, e.tempo));
     }
-
 
     dias.forEach((d) => {
         d.addEventListener("click", async function () {
-            dias.forEach(el => el.classList.remove("bg-blue-100"));
-            d.classList.add("bg-blue-100");
-
+            dias.forEach(el => el.classList.remove("bg-indigo-100"));
+            d.classList.add("bg-indigo-100");
             diaActual = parseInt(d.dataset.dia);
             tituloDia.textContent = "Rutina del " + nombresDias[diaActual];
-
-            if (RUTINA_ID) {
-                cargarEjerciciosBD(diaActual);
-            } else {
-                contenedorEjerciciosDia.innerHTML = "";
-                ejerciciosTemporales
-                    .filter(e => e.dia == diaActual)
-                    .forEach(e => agregarTarjetaDOM("temp", e.nombre, e.series, e.reps, e.peso, e.tempo));
-            }
+            if (RUTINA_ID) cargarEjerciciosBD(diaActual);
+            else { contenedorEjerciciosDia.innerHTML = ""; ejerciciosTemporales.filter(e => e.dia == diaActual).forEach(e => agregarTarjetaDOM('temp', e.nombre, e.series, e.reps, e.peso, e.tempo)); }
         });
     });
 
-
-    const ejerciciosItems = document.querySelectorAll(".exercise-item");
-
-    ejerciciosItems.forEach(item => {
-        item.addEventListener("dragstart", function (e) {
-            e.dataTransfer.setData("application/json", JSON.stringify({
-                id: item.dataset.id,
-                nombre: item.dataset.nombre
-            }));
-        });
+    // drag handlers
+    listaEjercicios && listaEjercicios.querySelectorAll('.exercise-item').forEach(item => {
+        item.addEventListener('dragstart', function (e) { e.dataTransfer.setData('application/json', JSON.stringify({ id: item.dataset.id, nombre: item.dataset.nombre })); });
     });
 
-    dropZone.addEventListener("dragover", e => {
-        e.preventDefault();
-        dropZone.classList.add("border-blue-500", "text-blue-500");
-    });
+    dropZone && dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('border-indigo-400'); });
+    dropZone && dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-indigo-400'));
 
-    dropZone.addEventListener("dragleave", () => {
-        dropZone.classList.remove("border-blue-500", "text-blue-500");
-    });
-
-    dropZone.addEventListener("drop", async function (e) {
-        e.preventDefault();
-        dropZone.classList.remove("border-blue-500", "text-blue-500");
-
-        const data = JSON.parse(e.dataTransfer.getData("application/json"));
-
+    dropZone && dropZone.addEventListener('drop', async function (e) {
+        e.preventDefault(); dropZone.classList.remove('border-indigo-400');
+        const data = JSON.parse(e.dataTransfer.getData('application/json'));
         if (!RUTINA_ID) {
-            ejerciciosTemporales.push({
-                ejercicio_id: data.id,
-                nombre: data.nombre,
-                series: 4,
-                reps: 10,
-                peso: 0,
-                tempo: "2-0-2",
-                dia: diaActual
-            });
-
-            agregarTarjetaDOM("temp", data.nombre);
+            ejerciciosTemporales.push({ ejercicio_id: data.id, nombre: data.nombre, series:4, reps:10, peso:0, tempo:'2-0-2', dia: diaActual });
+            agregarTarjetaDOM('temp', data.nombre);
             return;
         }
-
-        const res = await fetch(`/ajax/agregar-ejercicio/${RUTINA_ID}/`, {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": getCSRF(),
-                "Content-Type": "application/x-www-form-urlencoded"
-            },
-            body: `ejercicio_id=${data.id}&dia=${diaActual}&series=4&reps=10&peso=0&tempo=2-0-2`
-        });
-
-        const result = await res.json();
-
-        if (!result.ok) {
-            alert(result.error);
-            return;
-        }
-
-        agregarTarjetaDOM(result.id, data.nombre);
+        const res = await fetch(`/entrenador/rutina/${RUTINA_ID}/add/`, { method: 'POST', headers: { 'X-CSRFToken': getCSRF(), 'Content-Type':'application/x-www-form-urlencoded' }, body: `ejercicio_id=${data.id}&dia=${diaActual}&series=4&reps=10&peso=0&tempo=2-0-2` });
+        const result = await res.json(); if (!result.ok) { alert(result.error); return; } agregarTarjetaDOM(result.id, data.nombre);
     });
 
-
-    contenedorEjerciciosDia.addEventListener("click", async function (e) {
-        const btn = e.target.closest(".btn-eliminar");
-        if (!btn) return;
-
-        const id = btn.dataset.id;
-
-        if (!RUTINA_ID || id === "temp") {
-            ejerciciosTemporales = ejerciciosTemporales.filter(
-                ej => ej.nombre !== btn.closest(".ej-asignado").querySelector("p").textContent
-            );
-            btn.closest(".ej-asignado").remove();
-            return;
-        }
-
-        const res = await fetch(`/ajax/eliminar-ejercicio/${RUTINA_ID}/`, {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": getCSRF(),
-                "Content-Type": "application/x-www-form-urlencoded"
-            },
-            body: `id=${id}`
-        });
-
-        const result = await res.json();
-
-        if (result.ok) {
-            btn.closest(".ej-asignado").remove();
-        }
+    contenedorEjerciciosDia && contenedorEjerciciosDia.addEventListener('click', async function (e) {
+        const btn = e.target.closest('.btn-eliminar'); if (!btn) return; const id = btn.dataset.id;
+        if (!RUTINA_ID || id === 'temp') { ejerciciosTemporales = ejerciciosTemporales.filter(ej => ej.nombre !== btn.closest('.ej-asignado').querySelector('p').textContent); btn.closest('.ej-asignado').remove(); return; }
+        const res = await fetch(`/entrenador/rutina/${RUTINA_ID}/eliminar/`, { method:'POST', headers:{ 'X-CSRFToken': getCSRF(), 'Content-Type':'application/x-www-form-urlencoded' }, body: `id=${id}` }); const result = await res.json(); if (result.ok) btn.closest('.ej-asignado').remove();
     });
 
-    if (RUTINA_ID) ejerciciosTemporales = [];
+    // form submit: attach temporals
+    const formCrear = document.querySelector('aside form');
+    if (formCrear) formCrear.addEventListener('submit', function () { if (inputTemp) inputTemp.value = JSON.stringify(ejerciciosTemporales || []); });
 
+    // small search for library
+    const search = document.getElementById('planner-search');
+    search && search.addEventListener('input', function (e) { const q = e.target.value.trim().toLowerCase(); listaEjercicios && listaEjercicios.querySelectorAll('[data-nombre]').forEach(card => { const name = card.dataset.nombre.toLowerCase(); card.style.display = (!q || name.includes(q)) ? '' : 'none'; }); });
+
+    // Guardar todos los cambios de ejercicios para la rutina actual
+    const btnSaveRutina = document.getElementById('btn-save-rutina');
+    if (btnSaveRutina) {
+      btnSaveRutina.addEventListener('click', async function (ev) {
+        ev.preventDefault();
+        btnSaveRutina.disabled = true;
+        const cards = contenedorEjerciciosDia ? Array.from(contenedorEjerciciosDia.querySelectorAll('.ej-asignado')) : [];
+        const updates = [];
+        cards.forEach(card => {
+          const id = card.dataset.id;
+          if (!id || id === 'temp') return; // ignorar temporales
+          const inputs = card.querySelectorAll('input');
+          const series = inputs[0] ? inputs[0].value : '';
+          const reps = inputs[1] ? inputs[1].value : '';
+          const peso = inputs[2] ? inputs[2].value : '';
+          const tempo = inputs[3] ? inputs[3].value : '';
+          updates.push(fetch(`/entrenador/asignacion/${id}/actualizar/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCSRF(), 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ series, reps, peso, tempo }).toString()
+          }).then(r => r.json()).catch(() => ({ ok: false })));
+        });
+
+        if (updates.length === 0) {
+          showToast('No hay cambios para guardar', 'success');
+          btnSaveRutina.disabled = false;
+          return;
+        }
+
+        try {
+          const results = await Promise.all(updates);
+          const failed = results.filter(r => !r || !r.ok);
+          if (failed.length === 0) {
+            showToast('Cambios guardados correctamente', 'success');
+            // persistent confirmation banner
+            try { pushDjangoMessage('Los datos fueron guardados', 'success'); } catch(e) { /* ignore */ }
+          } else {
+            showToast('Algunos cambios no pudieron guardarse', 'error');
+            try { pushDjangoMessage('Algunos cambios no pudieron guardarse', 'error'); } catch(e) { /* ignore */ }
+          }
+        } catch (err) {
+          showToast('Error de red al guardar', 'error');
+          try { pushDjangoMessage('Error de red al guardar', 'error'); } catch(e) { /* ignore */ }
+        }
+
+        btnSaveRutina.disabled = false;
+      });
+    }
+
+    // Nuevo ejercicio modal logic
+    const btnNewEj = document.getElementById('btn-new-ejercicio');
+    const modalNew = document.getElementById('modal-nuevo-ejercicio');
+    const cancelNew = document.getElementById('cancel-new-ejercicio');
+    const formNew = document.getElementById('form-nuevo-ejercicio');
+
+    function openNewModal(){ if(modalNew) modalNew.classList.remove('hidden'); }
+    function closeNewModal(){ if(modalNew) modalNew.classList.add('hidden'); }
+
+    btnNewEj && btnNewEj.addEventListener('click', function(e){ e.preventDefault(); openNewModal(); });
+    cancelNew && cancelNew.addEventListener('click', function(e){ e.preventDefault(); closeNewModal(); });
+
+    if (formNew) {
+      formNew.addEventListener('submit', async function (ev) {
+        ev.preventDefault();
+        const fd = new FormData(formNew);
+        const payload = new URLSearchParams();
+        for (const [k,v] of fd.entries()) payload.append(k,v);
+        try {
+          const res = await fetch('{% url "ajax_crear_ejercicio" %}', {
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCSRF(), 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: payload.toString()
+          });
+          const data = await res.json();
+          if (data.ok) {
+            // Añadir a la lista de ejercicios existente
+            const list = document.getElementById('lista-ejercicios');
+            const div = document.createElement('div');
+            div.className = 'exercise-item flex items-center justify-between gap-3 p-3 rounded-md cursor-pointer border border-transparent hover:bg-gray-50';
+            div.draggable = true;
+            div.dataset.id = data.id;
+            div.dataset.nombre = data.nombre;
+            div.innerHTML = `<div class="flex items-center gap-3"><div class="w-9 h-9 rounded bg-indigo-50 text-indigo-700 flex items-center justify-center font-semibold">+</div><div class="text-sm font-medium">${data.nombre}</div></div><span class="material-symbols-outlined text-slate-400">add</span>`;
+            list.prepend(div);
+            // make draggable
+            div.addEventListener('dragstart', function (e) { e.dataTransfer.setData('application/json', JSON.stringify({ id: div.dataset.id, nombre: div.dataset.nombre })); });
+            showToast('Ejercicio creado', 'success');
+            try { pushDjangoMessage('Ejercicio creado correctamente', 'success'); } catch(e){}
+            closeNewModal();
+            formNew.reset();
+          } else {
+            showToast(data.error || 'No se pudo crear', 'error');
+            try { pushDjangoMessage(data.error || 'No se pudo crear ejercicio', 'error'); } catch(e){}
+          }
+        } catch (err) {
+          showToast('Error de red', 'error');
+        }
+      });
+    }
 });
 </script>
-
-</body>
-</html>
+{% endblock %}

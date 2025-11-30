@@ -3,7 +3,7 @@
 <html class="light" lang="es"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>GluteOS Coach Dashboard</title>
+<title>GluteOS - Panel del entrenador</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
@@ -72,23 +72,23 @@
 <div class="flex flex-col gap-2 pt-4">
 <a class="flex items-center gap-3 rounded-lg bg-gluteos-blue-dark px-3 py-2" href="#">
 <span class="material-symbols-outlined">dashboard</span>
-<p class="text-sm font-medium leading-normal">Dashboard</p>
+<p class="text-sm font-medium leading-normal">Panel</p>
 </a>
 <a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="#">
 <span class="material-symbols-outlined">group</span>
-<p class="text-sm font-medium leading-normal">Clients</p>
+<p class="text-sm font-medium leading-normal">Clientes</p>
 </a>
-<a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="#">
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="{% url 'rutinas_list' %}">
 <span class="material-symbols-outlined">fitness_center</span>
-<p class="text-sm font-medium leading-normal">Routines</p>
+<p class="text-sm font-medium leading-normal">Rutinas</p>
 </a>
 <a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="#">
 <span class="material-symbols-outlined">restaurant_menu</span>
-<p class="text-sm font-medium leading-normal">Nutrition</p>
+<p class="text-sm font-medium leading-normal">Nutrición</p>
 </a>
 <a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="#">
 <span class="material-symbols-outlined">mail</span>
-<p class="text-sm font-medium leading-normal">Messages</p>
+<p class="text-sm font-medium leading-normal">Mensajes</p>
 </a>
 </div>
 <div class="flex flex-col gap-1">
@@ -96,18 +96,18 @@
 <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Coach Antonia's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDfQWrkjVOCmpIklKgYAtayyKEKku6uP2jWrASZq-FPRFzrqHTD92I1o40Vn22sp3QX4zCVhlpf-dIREfbJb9Qnn0vbu4rBIYLqtIHNoYNAoU4LXCy0HR7-dUcPCtD6ztBC4MN0cGBrwa3mNIT9TnwjZIpC1oi9TjQz9mPQeUI7tByNhIDSS04EhhJZLvH_QuP26qy8mRLay7o7OHF-BmEyFkdn612y35_li2FDOBvcfCrXt9ySKWhCerWJ6leMpnbG6oZRjgWvFO4");'></div>
 <div class="flex flex-col">
 <h1 class="text-base font-medium leading-normal">Antonia</h1>
-<p class="text-sm font-normal leading-normal text-slate-300">Coach</p>
+<p class="text-sm font-normal leading-normal text-slate-300">Entrenador</p>
 </div>
 </div>
 <a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="#">
 <span class="material-symbols-outlined">settings</span>
-<p class="text-sm font-medium leading-normal">Settings</p>
+<p class="text-sm font-medium leading-normal">Configuración</p>
 </a>
 
 <a onclick="openLogoutModal()"
    class="flex items-center gap-3 px-3 py-2 text-white-700 dark:text-blue-dark-300 rounded-lg hover:bg-blue-dark-100 dark:hover:bg-blue-dark-800 cursor-pointer">
     <span class="material-symbols-outlined">logout</span>
-    <p class="text-sm font-medium leading-normal">Log Out</p>
+  <p class="text-sm font-medium leading-normal">Cerrar sesión</p>
 </a>
 
 
@@ -124,7 +124,7 @@
 <div class="text-text-light-secondary dark:text-text-dark-secondary flex border-none bg-background-light dark:bg-background-dark items-center justify-center pl-4 rounded-l-lg border-r-0">
 <span class="material-symbols-outlined">search</span>
 </div>
-<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light-primary dark:text-text-dark-primary focus:outline-0 focus:ring-0 border-none bg-background-light dark:bg-background-dark focus:border-none h-full placeholder:text-text-light-secondary dark:placeholder:text-text-dark-secondary px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal" placeholder="Search clients, routines..." value=""/>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light-primary dark:text-text-dark-primary focus:outline-0 focus:ring-0 border-none bg-background-light dark:bg-background-dark focus:border-none h-full placeholder:text-text-light-secondary dark:placeholder:text-text-dark-secondary px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal" placeholder="Buscar clientes, rutinas..." value=""/>
 </div>
 </label>
 </div>
@@ -143,15 +143,14 @@
 <!-- PageHeading -->
 <div class="flex flex-wrap justify-between gap-3 mb-6">
 <div class="flex min-w-72 flex-col gap-2">
-<p class="text-text-light-primary dark:text-text-dark-primary text-3xl font-black leading-tight tracking-[-0.033em]">Welcome back, Antonia!</p>
-<p class="text-text-light-secondary dark:text-text-dark-secondary text-base font-normal leading-normal">Here's a summary of your clients and activities.</p>
+<p class="text-text-light-primary dark:text-text-dark-primary text-3xl font-black leading-tight tracking-[-0.033em]">¡Bienvenida, Antonia!</p>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-base font-normal leading-normal">Resumen de tus clientes y actividades.</p>
 </div>
-<div class="flex items-center gap-3">
-<button class="flex cursor-pointer items-center justify-center rounded-lg h-10 bg-white dark:bg-card-dark text-text-light-primary dark:text-text-dark-primary border border-border-light dark:border-border-dark gap-2 text-sm font-bold px-4 hover:bg-gray-50 dark:hover:bg-slate-700">Assign Nutrition Plan</button>
+        <div class="flex items-center gap-3">
 
 <a href="{% url 'crear_rutina_entrenador' %}"
    class="flex cursor-pointer items-center justify-center rounded-lg h-10 bg-gluteos-blue text-white gap-2 text-sm font-bold px-4 hover:bg-gluteos-blue-dark">
-    Crear nueva Rutina
+  Crear nueva rutina
 </a>
 
 
@@ -160,27 +159,27 @@
 </div>
 </div>
 <!-- Stats -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
 <div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark">
-<p class="text-text-light-primary dark:text-text-dark-primary text-base font-medium leading-normal">Total Active Clients</p>
-<p class="text-text-light-primary dark:text-text-dark-primary tracking-light text-4xl font-bold leading-tight">42</p>
-<p class="text-success text-base font-medium leading-normal flex items-center gap-1"><span class="material-symbols-outlined text-base">arrow_upward</span>+2 this week</p>
+<p class="text-text-light-primary dark:text-text-dark-primary text-base font-medium leading-normal">Clientes activos</p>
+<p class="text-text-light-primary dark:text-text-dark-primary tracking-light text-4xl font-bold leading-tight">{{ total_clientes }}</p>
+<p class="text-success text-base font-medium leading-normal flex items-center gap-1"><span class="material-symbols-outlined text-base">arrow_upward</span>+2 esta semana</p>
 </div>
 <div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark">
-<p class="text-text-light-primary dark:text-text-dark-primary text-base font-medium leading-normal">Routines Assigned</p>
-<p class="text-text-light-primary dark:text-text-dark-primary tracking-light text-4xl font-bold leading-tight">15</p>
-<p class="text-success text-base font-medium leading-normal flex items-center gap-1"><span class="material-symbols-outlined text-base">arrow_upward</span>+5 this week</p>
+<p class="text-text-light-primary dark:text-text-dark-primary text-base font-medium leading-normal">Rutinas asignadas</p>
+<p class="text-text-light-primary dark:text-text-dark-primary tracking-light text-4xl font-bold leading-tight">{{ rutinas_asignadas }}</p>
+<p class="text-success text-base font-medium leading-normal flex items-center gap-1"><span class="material-symbols-outlined text-base">arrow_upward</span>+5 esta semana</p>
 </div>
 <div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark">
-<p class="text-text-light-primary dark:text-text-dark-primary text-base font-medium leading-normal">Pending Check-ins</p>
-<p class="text-text-light-primary dark:text-text-dark-primary tracking-light text-4xl font-bold leading-tight">3</p>
-<p class="text-critical text-base font-medium leading-normal flex items-center gap-1"><span class="material-symbols-outlined text-base">priority_high</span>Needs attention</p>
+<p class="text-text-light-primary dark:text-text-dark-primary text-base font-medium leading-normal">Socios sin rutina asignada</p>
+<p class="text-text-light-primary dark:text-text-dark-primary tracking-light text-4xl font-bold leading-tight">{{ socios_sin_rutina }}</p>
+<p class="text-critical text-base font-medium leading-normal flex items-center gap-1"><span class="material-symbols-outlined text-base">priority_high</span>Atención necesaria</p>
 </div>
 </div>
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 <div class="lg:col-span-2">
 <!-- SectionHeader -->
-<h2 class="text-text-light-primary dark:text-text-dark-primary text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">Clients to Watch</h2>
+<h2 class="text-text-light-primary dark:text-text-dark-primary text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">Clientes a vigilar</h2>
 <!-- Clients to Watch List -->
 <div class="flex flex-col gap-4">
 <div class="flex items-center justify-between p-4 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
@@ -188,11 +187,11 @@
 <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12" data-alt="Client Michael Scott's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBwwfQjxq5N0a65_OHkkfrgdzg8qR5lfCAcf5JsIndOMm-qyT1_UFuZT0pIU3j87vdzl6GIqITEZmY6ln6V3RhbKU1qDlWv3RzGR_t_tiZ16yW3kaVRqcoWeWGIo-L01VG9pcyqx54jczPUx6jdfJOCO-EuMy4dUamoTIyU0LbM4xOlDlzZCFI1EiyyvlhYGFpidXDsa5nW-XFXs0ZdK64TjIyuAp0-4TNq9oc4E3zgz2kPin4p0EX3VSAMNSafWpUrHrmxJ6jCOGg");'></div>
 <div>
 <p class="text-text-light-primary dark:text-text-dark-primary font-semibold">Michael Scott</p>
-<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm">Check-in overdue by 2 days</p>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm">Check-in atrasado por 2 días</p>
 </div>
 </div>
 <div class="flex items-center gap-2">
-<span class="inline-flex items-center rounded-md bg-critical/10 px-2 py-1 text-xs font-medium text-critical ring-1 ring-inset ring-critical/20">Overdue</span>
+<span class="inline-flex items-center rounded-md bg-critical/10 px-2 py-1 text-xs font-medium text-critical ring-1 ring-inset ring-critical/20">Atrasado</span>
 <button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 text-text-light-secondary dark:text-text-dark-secondary">
 <span class="material-symbols-outlined text-xl">more_vert</span>
 </button>
@@ -203,11 +202,11 @@
 <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12" data-alt="Client Jane Doe's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBtphg1gXj0TkH6y_tu2UQ0c63LlfIKNw4U6_NFFxB5AlV2byMYEtxgE4A-CEHzCYil4EQ3U6SWZ8LrE6L9DHkNYUxjTVPv2homlBq5MJEEejdPfGHENJ-z_VKkD7eXl2grFvD-KERKiRu_S5BH9KZLN6hm03hnWWm-V_ZI_eDc1-0ksFso1IcZ5ip_aPbRcHfcTd-Ni9Hg4ozyc_UWsFzSAbd1Ui7_jNr1mW05bUDbOrHQ3mHPAB954he7ztmu278cyAOr3Mxq6cM");'></div>
 <div>
 <p class="text-text-light-primary dark:text-text-dark-primary font-semibold">Jane Doe</p>
-<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm">Nutrition plan expires tomorrow</p>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm">Plan nutricional expira mañana</p>
 </div>
 </div>
 <div class="flex items-center gap-2">
-<span class="inline-flex items-center rounded-md bg-warning/10 px-2 py-1 text-xs font-medium text-warning ring-1 ring-inset ring-warning/20">Expiring Soon</span>
+<span class="inline-flex items-center rounded-md bg-warning/10 px-2 py-1 text-xs font-medium text-warning ring-1 ring-inset ring-warning/20">Próximo a expirar</span>
 <button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 text-text-light-secondary dark:text-text-dark-secondary">
 <span class="material-symbols-outlined text-xl">more_vert</span>
 </button>
@@ -218,11 +217,11 @@
 <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12" data-alt="Client John Smith's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAGDf5skG3w59ep0o2heOWWcyaZyl5Hsgbk9tGjBb39S-Xi-Rmq70MfFnT6v1AgsV-mrQbHqls88IsTG33lAD6AxOCeSVdU9mwf9Ko5b9N-qa4rmoutHvENVCdhE0M2j3zM89gMxjtlJ_KSDepyktjDP8wGebJziwFFlSwLvDgG-GyNkjwcaicNzlYTO2oH-o_v_5zpnGsJICAA4GLbF4w14AhkF-VZN-JZuoI6myHoe4RF6p3lCyCVrbQKo3IdVCIl7x3uCwdqsgA");'></div>
 <div>
 <p class="text-text-light-primary dark:text-text-dark-primary font-semibold">John Smith</p>
-<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm">Reported drop in motivation</p>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm">Reportó bajón de motivación</p>
 </div>
 </div>
 <div class="flex items-center gap-2">
-<span class="inline-flex items-center rounded-md bg-sky-500/10 px-2 py-1 text-xs font-medium text-sky-500 ring-1 ring-inset ring-sky-500/20">Feedback</span>
+<span class="inline-flex items-center rounded-md bg-sky-500/10 px-2 py-1 text-xs font-medium text-sky-500 ring-1 ring-inset ring-sky-500/20">Retroalimentación</span>
 <button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 text-text-light-secondary dark:text-text-dark-secondary">
 <span class="material-symbols-outlined text-xl">more_vert</span>
 </button>
@@ -231,15 +230,15 @@
 </div>
 </div>
 <div class="lg:col-span-1">
-<h2 class="text-text-light-primary dark:text-text-dark-primary text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">Recent Activity</h2>
+<h2 class="text-text-light-primary dark:text-text-dark-primary text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">Actividad reciente</h2>
 <div class="flex flex-col gap-5">
 <div class="flex gap-4">
 <div class="flex items-center justify-center size-10 rounded-full bg-success/10 text-success">
 <span class="material-symbols-outlined">check_circle</span>
 </div>
 <div>
-<p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"><strong>Pamela Beesly</strong> completed 'Leg Day Annihilator'.</p>
-<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">15 minutes ago</p>
+<p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"><strong>Pamela Beesly</strong> completó 'Leg Day Annihilator'.</p>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">hace 15 minutos</p>
 </div>
 </div>
 <div class="flex gap-4">
@@ -247,8 +246,8 @@
 <span class="material-symbols-outlined">trending_up</span>
 </div>
 <div>
-<p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"><strong>Dwight Schrute</strong> logged a new PR on Bench Press.</p>
-<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">1 hour ago</p>
+<p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"><strong>Dwight Schrute</strong> registró un nuevo PR en Press de banca.</p>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">hace 1 hora</p>
 </div>
 </div>
 <div class="flex gap-4">
@@ -256,8 +255,8 @@
 <span class="material-symbols-outlined">chat</span>
 </div>
 <div>
-<p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium">New message from <strong>Michael Scott</strong>.</p>
-<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">3 hours ago</p>
+<p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium">Nuevo mensaje de <strong>Michael Scott</strong>.</p>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">hace 3 horas</p>
 </div>
 </div>
 <div class="flex gap-4">
@@ -265,8 +264,8 @@
 <span class="material-symbols-outlined">check_circle</span>
 </div>
 <div>
-<p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"><strong>Jim Halpert</strong> completed 'Full Body Workout'.</p>
-<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">Yesterday</p>
+<p class="text-text-light-primary dark:text-text-dark-primary text-sm font-medium"><strong>Jim Halpert</strong> completó 'Full Body Workout'.</p>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs">Ayer</p>
 </div>
 </div>
 </div>
