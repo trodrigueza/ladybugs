@@ -48,6 +48,7 @@
   </script>
 </head>
 <body class="font-display bg-background-light dark:bg-background-dark">
+{% with rol=request.session.usuario_rol|default:""|lower profile_name=request.session.usuario_nombre|default:request.session.usuario_email|default:'Usuario' profile_initial=profile_name|default:'Usuario'|slice:":1"|upper %}
   <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
     <div class="flex min-h-screen">
       <!-- SideNavBar -->
@@ -61,11 +62,11 @@
               {# Determine current url name safely #}
               {% with current=request.resolver_match.url_name|default:"" %}
                 {# Panel link: route depends on logged user role stored in session #}
-                {% if request.session.usuario_rol == 'entrenador' %}
+                {% if rol == 'entrenador' %}
                   <a class="flex items-center gap-3 rounded-lg px-3 py-2 {% if current == 'entrenador_panel' %}bg-gluteos-blue-dark{% else %}hover:bg-gluteos-blue-dark/50{% endif %}" href="{% url 'entrenador_panel' %}">
-                {% elif request.session.usuario_rol == 'administrativo' %}
+                {% elif rol == 'administrativo' %}
                   <a class="flex items-center gap-3 rounded-lg px-3 py-2 {% if current == 'panel_admin' %}bg-gluteos-blue-dark{% else %}hover:bg-gluteos-blue-dark/50{% endif %}" href="{% url 'panel_admin' %}">
-                {% elif request.session.usuario_rol == 'socio' %}
+                {% elif rol == 'socio' %}
                   <a class="flex items-center gap-3 rounded-lg px-3 py-2 {% if current == 'socio_panel' %}bg-gluteos-blue-dark{% else %}hover:bg-gluteos-blue-dark/50{% endif %}" href="{% url 'socio_panel' %}">
                 {% else %}
                   <a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="#">
@@ -88,7 +89,7 @@
                   <p class="text-sm font-medium leading-normal">Banco de rutinas</p>
                 </a>
               {% endwith %}
-            {% if request.session.usuario_rol|default:"" != 'entrenador' %}
+            {% if rol != 'entrenador' %}
             <a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="#">
               <span class="material-symbols-outlined">restaurant_menu</span>
               <p class="text-sm font-medium leading-normal">Nutrición</p>
@@ -98,13 +99,15 @@
           </div>
           <div class="flex flex-col gap-1">
             <div class="mb-4 flex gap-3 px-3 py-2">
-              <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Coach profile" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDfQWrkjVOCmpIklKgYAtayyKEKku6uP2jWrASZq-FPRFzrqHTD92I1o40Vn22sp3QX4zCVhlpf-dIREfbJb9Qnn0vbu4rBIYLqtIHNoYNAoU4LXCy0HR7-dUcPCtD6ztBC4MN0cGBrwa3mNIT9TnwjZIpC1oi9TjQz9mPQeUI7tByNhIDSS04EhhJZLvH_QuP26qy8mRLay7o7OHF-BmEyFkdn612y35_li2FDOBvcfCrXt9ySKWhCerWJ6leMpnbG6oZRjgWvFO4");'></div>
+              <div class="flex items-center justify-center rounded-full size-10 bg-white/10 text-white font-semibold uppercase" aria-hidden="true">
+                {{ profile_initial }}
+              </div>
               <div class="flex flex-col">
-                <h1 class="text-base font-medium leading-normal">{{ request.session.usuario_email|default:'Usuario' }}</h1>
+                <h1 class="text-base font-medium leading-normal">{{ profile_name }}</h1>
                 <p class="text-sm font-normal leading-normal text-slate-300">{{ request.session.usuario_rol|title|default:'Usuario' }}</p>
               </div>
             </div>
-            {% if request.session.usuario_rol|default:"" != 'entrenador' %}
+            {% if rol != 'entrenador' %}
             <a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="#">
               <span class="material-symbols-outlined">settings</span>
               <p class="text-sm font-medium leading-normal">Configuración</p>
@@ -140,7 +143,9 @@
                 <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-critical"></span>
               </span>
             </button>
-            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Coach profile" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCR_F1ZYZcP-Fh1I-vATamf61ofKFUvWE8jYyAJtCjFyrbytmsnL5yTxSiCt41xJvVAupRRH2Hs2hY-5Q24JpgujjVvi6LJVmW4hecAM2_oW4xofBE1TFtih4kyZAKe5JriR7JxhLxPWWp1H3Gxy4ussppL1wu1XWHDE3EXvUWlUXbf2T9Mi5oiiNM-PTZl4PdToOGm7V5mXpFiLFfiNaU5S0v7_ip9ElSS1cq2cllO6xuYVHK8RIpXmsuPWmOz6VGcoRXQ-f19hJI");'></div>
+            <div class="flex items-center justify-center rounded-full size-10 bg-primary/10 text-primary font-semibold uppercase" aria-hidden="true">
+              {{ profile_initial }}
+            </div>
           </div>
         </header>
 
@@ -170,5 +175,6 @@
   </script>
 
   {% block extra_js %}{% endblock %}
+{% endwith %}
 </body>
 </html>

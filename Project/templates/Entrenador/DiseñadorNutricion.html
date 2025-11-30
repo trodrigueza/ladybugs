@@ -58,6 +58,7 @@
   <body
     class="font-display bg-background-light dark:bg-background-dark text-text-light-primary dark:text-dark-primary"
   >
+    {% with rol=request.session.usuario_rol|default:""|lower profile_name=request.session.usuario_nombre|default:request.session.usuario_email|default:'Entrenador' profile_initial=profile_name|default:'Entrenador'|slice:":1"|upper %}
     <div class="relative flex min-h-screen w-full flex-col">
       <!-- TopNavBar -->
       <header
@@ -90,12 +91,11 @@
             <span class="truncate">Guardar Plan</span>
           </button>
           <div
-            class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
-            data-alt="User profile picture"
-            style="
-              background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuD9-fFrY-0rkAuFF1pFHztkE2Bm6bEx7sXFi5kqYgbFMmQtAkA4kFCp9QY0nHEb0F1XNAEgIoBYcsru0T2DCmMJOThtpPAvP4RpUWRMKMu8idRPBomwux7kiresC9R87jLanLgNmM2KP3KJbJyLuCOTqHcRxjw87iDrNF_iiLFO6uX6zXQ-4IhM7gZGGtSQ5BFBqLBFGXh1aqLTdxrvmsP7Vie_16K6f4KLwdqnExPAKiIgNXVOPcrIN-Ad6wyJnb6_8rjwx8Sy5SM&quot;);
-            "
-          ></div>
+            class="flex items-center justify-center rounded-full size-10 bg-primary/10 text-primary font-semibold uppercase"
+            aria-hidden="true"
+          >
+            {{ profile_initial }}
+          </div>
         </div>
       </header>
       <main class="flex-grow p-4 md:p-6 lg:p-8">
@@ -551,5 +551,6 @@
         </div>
       </main>
     </div>
+    {% endwith %}
   </body>
 </html>

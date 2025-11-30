@@ -89,9 +89,10 @@
               ></div>
               <div class="flex gap-3 items-center p-2">
                 <div
-                  class="flex items-center justify-center rounded-full size-10 bg-primary/10 text-primary"
+                  class="flex items-center justify-center rounded-full size-10 bg-primary/10 text-primary font-semibold uppercase"
+                  aria-hidden="true"
                 >
-                  <span class="material-symbols-outlined text-2xl">person</span>
+                  {{ socio.NombreCompleto|default:"Socio"|slice:":1"|upper }}
                 </div>
                 <div class="flex flex-col">
                   <h1

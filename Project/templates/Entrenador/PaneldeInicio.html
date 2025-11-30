@@ -77,7 +77,8 @@
       };
     </script>
   </head>
-  <body class="font-display bg-background-light dark:bg-background-dark">
+<body class="font-display bg-background-light dark:bg-background-dark">
+{% with profile_name=entrenador_nombre|default:request.session.usuario_email|default:'Entrenador' profile_initial=profile_name|default:'Entrenador'|slice:":1"|upper rol=request.session.usuario_rol|default:""|lower %}
     <div
       class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden"
     >
@@ -130,12 +131,11 @@
             <div class="flex flex-col gap-1">
               <div class="mb-4 flex gap-3 px-3 py-2">
                 <div
-                  class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
-                  data-alt="Coach Antonia's profile picture"
-                  style="
-                    background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuDfQWrkjVOCmpIklKgYAtayyKEKku6uP2jWrASZq-FPRFzrqHTD92I1o40Vn22sp3QX4zCVhlpf-dIREfbJb9Qnn0vbu4rBIYLqtIHNoYNAoU4LXCy0HR7-dUcPCtD6ztBC4MN0cGBrwa3mNIT9TnwjZIpC1oi9TjQz9mPQeUI7tByNhIDSS04EhhJZLvH_QuP26qy8mRLay7o7OHF-BmEyFkdn612y35_li2FDOBvcfCrXt9ySKWhCerWJ6leMpnbG6oZRjgWvFO4&quot;);
-                  "
-                ></div>
+                  class="flex items-center justify-center rounded-full size-10 bg-white/15 text-white font-semibold uppercase"
+                  aria-hidden="true"
+                >
+                  {{ profile_initial }}
+                </div>
                 <div class="flex flex-col">
                   <h1 class="text-base font-medium leading-normal">
                     {{ entrenador_nombre|default:request.session.usuario_email }}
@@ -196,12 +196,11 @@
                 </span>
               </button>
               <div
-                class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
-                data-alt="Coach Antonia's profile picture"
-                style="
-                  background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuCR_F1ZYZcP-Fh1I-vATamf61ofKFUvWE8jYyAJtCjFyrbytmsnL5yTxSiCt41xJvVAupRRH2Hs2hY-5Q24JpgujjVvi6LJVmW4hecAM2_oW4xofBE1TFtih4kyZAKe5JriR7JxhLxPWWp1H3Gxy4ussppL1wu1XWHDE3EXvUWlUXbf2T9Mi5oiiNM-PTZl4PdToOGm7V5mXpFiLFfiNaU5S0v7_ip9ElSS1cq2cllO6xuYVHK8RIpXmsuPWmOz6VGcoRXQ-f19hJI&quot;);
-                "
-              ></div>
+                class="flex items-center justify-center rounded-full size-10 bg-primary/10 text-primary font-semibold uppercase"
+                aria-hidden="true"
+              >
+                {{ profile_initial }}
+              </div>
             </div>
           </header>
           <div class="p-6 lg:p-10">
@@ -633,5 +632,6 @@
         window.location.href = "/logout/";
       }
     </script>
+{% endwith %}
   </body>
 </html>

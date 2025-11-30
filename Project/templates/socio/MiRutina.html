@@ -78,8 +78,9 @@
                         <div class="border-t border-border-light dark:border-border-dark my-2"></div>
                         <div class="flex gap-3 items-center p-2">
                             <div
-                                class="flex items-center justify-center rounded-full size-10 bg-primary/10 text-primary">
-                                <span class="material-symbols-outlined text-2xl">person</span>
+                                class="flex items-center justify-center rounded-full size-10 bg-primary/10 text-primary font-semibold uppercase"
+                                aria-hidden="true">
+                                {{ socio.NombreCompleto|default:"Socio"|slice:":1"|upper }}
                             </div>
                             <div class="flex flex-col">
                                 <h1
@@ -109,8 +110,9 @@
                             class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-background-light dark:bg-background-dark text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary transition-colors duration-200">
                             <span class="material-symbols-outlined text-xl">notifications</span>
                         </button>
-                        <div class="flex items-center justify-center rounded-full size-10 bg-primary/10 text-primary">
-                            <span class="material-symbols-outlined text-2xl">person</span>
+                        <div class="flex items-center justify-center rounded-full size-10 bg-primary/10 text-primary font-semibold uppercase"
+                            aria-hidden="true">
+                            {{ socio.NombreCompleto|default:"Socio"|slice:":1"|upper }}
                         </div>
                     </div>
                 </header>
