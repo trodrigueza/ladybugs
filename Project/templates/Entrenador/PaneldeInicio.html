@@ -124,8 +124,14 @@
                   Banco de rutinas
                 </p>
               </a>
+              <a
+                class="flex items-center gap-3 rounded-lg px-3 py-2 {% if current == 'entrenador_nutricion' or current == 'entrenador_plan_nutricion' %}bg-gluteos-blue-dark{% else %}hover:bg-gluteos-blue-dark/50{% endif %}"
+                href="{% url 'entrenador_nutricion' %}"
+              >
+                <span class="material-symbols-outlined">restaurant_menu</span>
+                <p class="text-sm font-medium leading-normal">Nutrición</p>
+              </a>
               {% endwith %}
-              <!-- Nutrición link hidden for entrenador -->
               {# Mensajes removed as per request #}
             </div>
             <div class="flex flex-col gap-1">

@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if es_template %}Plantilla nutricional — {{ plan.Nombre|default:"Nueva plantilla" }}{% else %}Plan nutricional — {{ socio.NombreCompleto }}{% endif %}{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto p-6">
+  <a href="{% url 'entrenador_nutricion' %}" class="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80">
+    <span class="material-symbols-outlined text-base">arrow_back</span>
+    Volver a planes nutricionales
+  </a>
+
+  <header class="mt-4 flex flex-col gap-3">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <h1 class="text-3xl font-black leading-tight text-gray-900 dark:text-white">
+          {% if es_template %}
+            {{ plan.Nombre|default:"Plantilla sin nombre" }}
+          {% else %}
+            Plan de {{ socio.NombreCompleto }}
+          {% endif %}
+        </h1>
+        <p class="text-sm text-gray-500">
+          Objetivo calórico actual: {{ plan.ObjetivoCaloricoDiario|default:"-" }} kcal
+        </p>
+      </div>
+      <form method="post" action="{% url 'entrenador_nutricion_actualizar_plan' plan.id %}" class="flex flex-col sm:flex-row gap-2">
+        {% csrf_token %}
+        {% if es_template %}
+        <input type="text" name="nombre" value="{{ plan.Nombre }}" placeholder="Nombre de la plantilla" class="rounded-lg border border-gray-300 dark:border-border-dark bg-white dark:bg-background-dark px-3 py-2 text-sm" required>
+        {% endif %}
+        <input type="number" name="objetivo_calorico" min="1200" max="4500" step="50" value="{{ plan.ObjetivoCaloricoDiario }}" class="rounded-lg border border-gray-300 dark:border-border-dark bg-white dark:bg-background-dark px-3 py-2 text-sm" placeholder="kcal/día">
+        <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-lg bg-primary text-white px-4 py-2 text-sm font-semibold hover:bg-primary/90">Guardar</button>
+      </form>
+    </div>
+    {% if not es_template %}
+    <p class="text-xs text-gray-500">Edita las comidas de {{ socio.NombreCompleto }} directamente desde esta vista.</p>
+    {% endif %}
+  </header>
+
+  <section class="mt-6">
+    <details class="group rounded-2xl border border-border-light dark:border-border-dark bg-white dark:bg-card-dark shadow-sm">
+      <summary class="flex cursor-pointer items-center justify-between gap-4 px-5 py-4">
+        <div>
+          <p class="text-xs uppercase tracking-wide text-gray-400">Catálogo</p>
+          <h2 class="text-base font-semibold text-gray-900 dark:text-white">Agregar alimento personalizado</h2>
+          <p class="text-xs text-gray-500">Úsalo para registrar alimentos que no estén en la lista actual.</p>
+        </div>
+        <span class="material-symbols-outlined text-primary transition-transform duration-200 group-open:rotate-45">add</span>
+      </summary>
+      <div class="border-t border-border-light dark:border-border-dark px-5 py-4">
+        <form method="post" action="{% url 'entrenador_nutricion_crear_alimento' %}" class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+          <label class="text-sm font-medium text-gray-700 dark:text-gray-300 flex flex-col gap-1">
+            Nombre
+            <input type="text" name="nombre" required class="rounded-lg border border-gray-300 dark:border-border-dark bg-white dark:bg-background-dark px-3 py-2 text-sm" placeholder="Ej. Pan integral artesanal">
+          </label>
+          <label class="text-sm font-medium text-gray-700 dark:text-gray-300 flex flex-col gap-1">
+            Porción base
+            <input type="text" name="porcion_base" class="rounded-lg border border-gray-300 dark:border-border-dark bg-white dark:bg-background-dark px-3 py-2 text-sm" placeholder="Ej. 100 g / 1 taza">
+          </label>
+          <label class="text-sm font-medium text-gray-700 dark:text-gray-300 flex flex-col gap-1">
+            Calorías (kcal)
+            <input type="number" name="kcal" min="0" class="rounded-lg border border-gray-300 dark:border-border-dark bg-white dark:bg-background-dark px-3 py-2 text-sm" placeholder="Ej. 250">
+          </label>
+          <label class="text-sm font-medium text-gray-700 dark:text-gray-300 flex flex-col gap-1 lg:col-span-2">
+            Información de macros (opcional)
+            <textarea name="macros" rows="1" class="rounded-lg border border-gray-300 dark:border-border-dark bg-white dark:bg-background-dark px-3 py-2 text-sm" placeholder="P: 15 g, C: 30 g, G: 5 g"></textarea>
+          </label>
+          <div class="lg:col-span-5 flex justify-end">
+            <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-primary text-white px-4 py-2 text-sm font-semibold hover:bg-primary/90">
+              <span class="material-symbols-outlined text-base">restaurant</span>
+              Guardar alimento
+            </button>
+          </div>
+        </form>
+      </div>
+    </details>
+  </section>
+
+  <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+    {% for dia in dias %}
+    <article class="rounded-2xl border border-border-light dark:border-border-dark bg-white dark:bg-card-dark p-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs uppercase tracking-wide text-gray-400">{{ dia.nombre }}</p>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">{{ dia.comidas|length }} comidas</h2>
+        </div>
+        <form method="post" action="{% url 'entrenador_nutricion_agregar_comida' plan.id %}" class="flex items-center gap-2 text-xs">
+          {% csrf_token %}
+          <input type="hidden" name="dia" value="{{ dia.indice }}">
+          <input type="text" name="tipo" placeholder="Nueva comida" class="rounded-lg border border-gray-300 dark:border-border-dark bg-white dark:bg-background-dark px-2 py-1" required>
+          <button type="submit" class="inline-flex items-center gap-1 rounded-lg bg-primary text-white px-3 py-1">
+            <span class="material-symbols-outlined text-base">add</span>
+            Agregar
+          </button>
+        </form>
+      </div>
+
+      <div class="mt-4 space-y-3">
+        {% if dia.comidas %}
+          {% for comida in dia.comidas %}
+            <div class="rounded-lg border border-border-light dark:border-border-dark p-3 space-y-3">
+              <div class="flex items-center justify-between">
+                <p class="font-semibold text-gray-900 dark:text-white">{{ comida.tipo }}</p>
+                <form method="post" action="{% url 'entrenador_nutricion_eliminar_comida' comida.obj.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="text-xs text-red-500 hover:text-red-400 inline-flex items-center gap-1">
+                    <span class="material-symbols-outlined text-base">delete</span> Eliminar
+                  </button>
+                </form>
+              </div>
+              <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                {% for alimento in comida.alimentos %}
+                  <li class="flex flex-col gap-1 border border-dashed border-border-light dark:border-border-dark rounded-lg p-2">
+                    <div class="flex justify-between gap-4">
+                      <span>{{ alimento.nombre }}</span>
+                      <span class="text-right text-xs text-gray-500">
+                        {{ alimento.porcion|default:"" }}{% if alimento.calorias %} · {{ alimento.calorias }} kcal{% endif %}
+                      </span>
+                    </div>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                      <form method="post" action="{% url 'entrenador_nutricion_actualizar_alimento' alimento.obj.id %}" class="flex items-center gap-2">
+                        {% csrf_token %}
+                        <input type="number" step="0.01" name="porcion" value="{{ alimento.porcion_valor }}" class="rounded border border-border-light px-2 py-1 w-24" placeholder="Porción">
+                        <button type="submit" class="inline-flex items-center gap-1 rounded bg-slate-100 text-slate-700 px-2 py-1">Actualizar</button>
+                      </form>
+                      <form method="post" action="{% url 'entrenador_nutricion_eliminar_alimento' alimento.obj.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="inline-flex items-center gap-1 text-red-500 px-2 py-1">Quitar</button>
+                      </form>
+                    </div>
+                  </li>
+                {% endfor %}
+              </ul>
+              <form method="post" action="{% url 'entrenador_nutricion_agregar_alimento' comida.obj.id %}" class="flex flex-wrap items-center gap-2 text-xs border-t border-dashed border-border-light dark:border-border-dark pt-3">
+                {% csrf_token %}
+                <select name="alimento_id" class="rounded-lg border border-gray-300 dark:border-border-dark bg-white dark:bg-background-dark px-2 py-1 flex-1 min-w-[180px]" required>
+                  <option value="" disabled selected>Selecciona alimento…</option>
+                  {% for alimento in alimentos_catalogo %}
+                    <option value="{{ alimento.id }}">{{ alimento.Nombre }}</option>
+                  {% endfor %}
+                </select>
+                <input type="number" name="porcion" step="0.01" placeholder="Porción (g)" class="rounded-lg border border-gray-300 dark:border-border-dark bg-white dark:bg-background-dark px-2 py-1 w-28">
+                <button type="submit" class="inline-flex items-center gap-1 rounded-lg bg-primary text-white px-3 py-1">
+                  <span class="material-symbols-outlined text-base">add</span> Agregar alimento
+                </button>
+              </form>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p class="text-sm text-gray-500">Sin comidas registradas para este día.</p>
+        {% endif %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

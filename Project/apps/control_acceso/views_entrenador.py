@@ -1,8 +1,13 @@
+from decimal import Decimal
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 import json
+from django.utils import timezone
+from django.urls import reverse
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from apps.seguridad.decoradores import login_requerido
 
@@ -10,6 +15,10 @@ from apps.control_acceso.models import (
     Ejercicio,
     RutinaSemanal,
     DiaRutinaEjercicio,
+    PlanNutricional,
+    DiaComida,
+    ComidaAlimento,
+    Alimento,
 )
 
 from apps.socios.models import Socio
@@ -25,14 +34,11 @@ from apps.control_acceso.servicios.rutinas_service import (
     ValidationError,
 )
 
-from apps.control_acceso.models import Ejercicio
-
-
-
-from django.http import JsonResponse
-from apps.control_acceso.models import DiaRutinaEjercicio, Ejercicio, RutinaSemanal
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
+from apps.control_acceso.servicios.nutricion_service import (
+    asignar_plan_desde_plantilla,
+    get_nutrition_templates,
+    aplicar_plan_desde_template_db,
+)
 
 
 @login_requerido
@@ -288,6 +294,486 @@ def entrenador_panel(request):
     except Exception:
         context["recent_completions"] = []
     return render(request, "Entrenador/PaneldeInicio.html", context)
+
+
+@login_requerido
+def entrenador_nutricion_view(request):
+    """Listado de planes nutricionales por socio y acción para asignarlos."""
+    rol = request.session.get("usuario_rol", "").lower()
+    if rol not in ("entrenador", "administrativo"):
+        messages.error(request, "No tienes permisos para acceder a esta página.")
+        return redirect("login")
+
+    if request.method == "POST":
+        socio_id = request.POST.get("socio_id")
+        plantilla_value = request.POST.get("plantilla")
+        objetivo = request.POST.get("objetivo_calorico")
+        try:
+            socio = Socio.objects.get(id=socio_id)
+        except Socio.DoesNotExist:
+            messages.error(request, "El socio seleccionado no existe.")
+            return redirect("entrenador_nutricion")
+
+        try:
+            objetivo_valor = int(objetivo) if objetivo else None
+        except (TypeError, ValueError):
+            messages.error(request, "El objetivo calórico debe ser un número válido.")
+            return redirect("entrenador_nutricion")
+
+        if not plantilla_value:
+            messages.error(request, "Selecciona una plantilla.")
+            return redirect("entrenador_nutricion")
+
+        try:
+            if plantilla_value.startswith("db:"):
+                plantilla_id = int(plantilla_value.split(":", 1)[1])
+                plantilla_db = PlanNutricional.objects.filter(
+                    id=plantilla_id, EsPlantilla=True, SocioID__isnull=True
+                ).first()
+                if not plantilla_db:
+                    raise ValueError("La plantilla seleccionada no existe.")
+                aplicar_plan_desde_template_db(plantilla_db, socio, objetivo_valor)
+            else:
+                slug = plantilla_value.split(":", 1)[-1]
+                asignar_plan_desde_plantilla(socio, slug, objetivo_valor)
+            messages.success(
+                request,
+                f"Plan nutricional asignado a {socio.NombreCompleto}.",
+            )
+        except ValueError as exc:
+            messages.error(request, str(exc))
+        return redirect("entrenador_nutricion")
+
+    socios = Socio.objects.all().order_by("NombreCompleto")
+    planes = (
+        PlanNutricional.objects.filter(SocioID__in=socios, EsPlantilla=False)
+        .prefetch_related("dias_comida")
+    )
+    planes_map = {plan.SocioID_id: plan for plan in planes}
+
+    dia_actual = timezone.localdate().weekday()
+    dias_semana = [
+        "Lunes",
+        "Martes",
+        "Miércoles",
+        "Jueves",
+        "Viernes",
+        "Sábado",
+        "Domingo",
+    ]
+    dia_actual_nombre = dias_semana[dia_actual]
+
+    socios_data = []
+    for socio in socios:
+        plan = planes_map.get(socio.id)
+        comida_preview = []
+        comidas_por_dia = 0
+        objetivo = None
+
+        if plan:
+            objetivo = plan.ObjetivoCaloricoDiario
+            dias_comida = list(plan.dias_comida.all())
+            dia_comidas = [d for d in dias_comida if d.DiaSemana == dia_actual]
+            if not dia_comidas:
+                dia_comidas = [d for d in dias_comida if d.DiaSemana == 0]
+            comidas_por_dia = len(dia_comidas)
+            comida_preview = [d.TipoComida or "Comida" for d in dia_comidas][:4]
+
+        socios_data.append(
+            {
+                "socio": socio,
+                "plan": plan,
+                "objetivo": objetivo,
+                "comidas_por_dia": comidas_por_dia,
+                "comida_preview": comida_preview,
+            }
+        )
+
+    plantillas_db = PlanNutricional.objects.filter(
+        EsPlantilla=True, SocioID__isnull=True
+    ).order_by("Nombre")
+
+    alimentos_catalogo = Alimento.objects.all().order_by("Nombre")
+
+    context = {
+        "socios_data": socios_data,
+        "plantillas": get_nutrition_templates(),
+        "dia_actual_nombre": dia_actual_nombre,
+        "plantillas_db": plantillas_db,
+        "alimentos_catalogo": alimentos_catalogo,
+    }
+    return render(request, "Entrenador/NutricionList.html", context)
+
+
+@login_requerido
+def entrenador_plan_nutricion_detalle(request, socio_id):
+    rol = request.session.get("usuario_rol", "").lower()
+    if rol not in ("entrenador", "administrativo"):
+        messages.error(request, "No tienes permisos para acceder a esta página.")
+        return redirect("login")
+
+    socio = get_object_or_404(Socio, id=socio_id)
+    plan = (
+        PlanNutricional.objects.filter(SocioID=socio, EsPlantilla=False)
+        .prefetch_related("dias_comida__alimentos__AlimentoID")
+        .first()
+    )
+    if not plan:
+        messages.info(request, "Este socio aún no tiene un plan nutricional asignado.")
+        return redirect("entrenador_nutricion")
+
+    dias_semana = [
+        {"indice": 0, "nombre": "Lunes", "comidas": []},
+        {"indice": 1, "nombre": "Martes", "comidas": []},
+        {"indice": 2, "nombre": "Miércoles", "comidas": []},
+        {"indice": 3, "nombre": "Jueves", "comidas": []},
+        {"indice": 4, "nombre": "Viernes", "comidas": []},
+        {"indice": 5, "nombre": "Sábado", "comidas": []},
+        {"indice": 6, "nombre": "Domingo", "comidas": []},
+    ]
+
+    for dia_comida in plan.dias_comida.all().order_by("DiaSemana", "id"):
+        dia_info = dias_semana[dia_comida.DiaSemana]
+        alimentos = []
+        for alimento_rel in dia_comida.alimentos.all():
+            alimento = alimento_rel.AlimentoID
+            porcion = alimento_rel.Porcion
+            porcion_display = f"{porcion.normalize()} g" if porcion else ""
+            calorias = 0
+            if alimento.Kcal:
+                ratio = float(porcion or 100) / 100.0
+                calorias = int(float(alimento.Kcal) * ratio)
+            alimentos.append(
+                {
+                    "obj": alimento_rel,
+                    "nombre": alimento.Nombre,
+                    "porcion": porcion_display,
+                    "porcion_valor": porcion,
+                    "calorias": calorias,
+                    "macros": alimento.Macros,
+                }
+            )
+        dia_info["comidas"].append(
+            {
+                "obj": dia_comida,
+                "tipo": dia_comida.TipoComida or "Comida",
+                "alimentos": alimentos,
+            }
+        )
+
+    context = {
+        "socio": socio,
+        "plan": plan,
+        "dias": dias_semana,
+        "alimentos_catalogo": Alimento.objects.all().order_by("Nombre"),
+        "es_template": False,
+    }
+    return render(request, "Entrenador/NutricionDetalle.html", context)
+
+
+@login_requerido
+def entrenador_plantilla_nutricion_detalle(request, plan_id):
+    rol = request.session.get("usuario_rol", "").lower()
+    if rol not in ("entrenador", "administrativo"):
+        messages.error(request, "No tienes permisos para acceder a esta página.")
+        return redirect("login")
+
+    plan = get_object_or_404(
+        PlanNutricional,
+        id=plan_id,
+        EsPlantilla=True,
+        SocioID__isnull=True,
+    )
+
+    dias_semana = [
+        {"indice": 0, "nombre": "Lunes", "comidas": []},
+        {"indice": 1, "nombre": "Martes", "comidas": []},
+        {"indice": 2, "nombre": "Miércoles", "comidas": []},
+        {"indice": 3, "nombre": "Jueves", "comidas": []},
+        {"indice": 4, "nombre": "Viernes", "comidas": []},
+        {"indice": 5, "nombre": "Sábado", "comidas": []},
+        {"indice": 6, "nombre": "Domingo", "comidas": []},
+    ]
+
+    for dia_comida in plan.dias_comida.all().order_by("DiaSemana", "id"):
+        dia_info = dias_semana[dia_comida.DiaSemana]
+        alimentos = []
+        for alimento_rel in dia_comida.alimentos.all():
+            alimento = alimento_rel.AlimentoID
+            porcion = alimento_rel.Porcion
+            porcion_display = f"{porcion.normalize()} g" if porcion else ""
+            calorias = 0
+            if alimento.Kcal:
+                ratio = float(porcion or 100) / 100.0
+                calorias = int(float(alimento.Kcal) * ratio)
+            alimentos.append(
+                {
+                    "obj": alimento_rel,
+                    "nombre": alimento.Nombre,
+                    "porcion": porcion_display,
+                    "porcion_valor": porcion,
+                    "calorias": calorias,
+                    "macros": alimento.Macros,
+                }
+            )
+        dia_info["comidas"].append(
+            {
+                "obj": dia_comida,
+                "tipo": dia_comida.TipoComida or "Comida",
+                "alimentos": alimentos,
+            }
+        )
+
+    context = {
+        "socio": None,
+        "plan": plan,
+        "dias": dias_semana,
+        "alimentos_catalogo": Alimento.objects.all().order_by("Nombre"),
+        "es_template": True,
+    }
+    return render(request, "Entrenador/NutricionDetalle.html", context)
+
+
+@login_requerido
+@require_POST
+def entrenador_crear_plantilla_nutricional(request):
+    rol = request.session.get("usuario_rol", "").lower()
+    if rol not in ("entrenador", "administrativo"):
+        messages.error(request, "No tienes permisos para acceder a esta página.")
+        return redirect("login")
+
+    nombre = (request.POST.get("nombre") or "Plantilla sin nombre").strip()
+    objetivo_raw = request.POST.get("objetivo_calorico")
+    objetivo = None
+    if objetivo_raw:
+        try:
+            objetivo = int(objetivo_raw)
+        except (TypeError, ValueError):
+            objetivo = None
+
+    plan = PlanNutricional.objects.create(
+        Nombre=nombre,
+        ObjetivoCaloricoDiario=objetivo,
+        EsPlantilla=True,
+    )
+    messages.success(request, f"Plantilla '{plan.Nombre}' creada.")
+    return redirect("entrenador_plantilla_nutricion", plan_id=plan.id)
+
+
+@login_requerido
+def entrenador_crear_plan_manual(request, socio_id):
+    rol = request.session.get("usuario_rol", "").lower()
+    if rol not in ("entrenador", "administrativo"):
+        messages.error(request, "No tienes permisos para esta acción.")
+        return redirect("login")
+
+    socio = get_object_or_404(Socio, id=socio_id)
+    plan, created = PlanNutricional.objects.get_or_create(
+        SocioID=socio,
+        EsPlantilla=False,
+    )
+    if created:
+        messages.success(request, f"Plan nutricional creado para {socio.NombreCompleto}.")
+    return redirect("entrenador_plan_nutricion", socio_id=socio.id)
+
+
+@login_requerido
+@require_POST
+def entrenador_nutricion_actualizar_plan(request, plan_id):
+    rol = request.session.get("usuario_rol", "").lower()
+    if rol not in ("entrenador", "administrativo"):
+        messages.error(request, "No tienes permisos para esta acción.")
+        return redirect("login")
+
+    plan = get_object_or_404(PlanNutricional, id=plan_id)
+    objetivo_raw = request.POST.get("objetivo_calorico")
+    objetivo = None
+    if objetivo_raw:
+        try:
+            objetivo = int(objetivo_raw)
+        except (TypeError, ValueError):
+            objetivo = plan.ObjetivoCaloricoDiario
+    plan.ObjetivoCaloricoDiario = objetivo
+    if plan.EsPlantilla:
+        nombre = (request.POST.get("nombre") or "").strip()
+        if nombre:
+            plan.Nombre = nombre
+    plan.save()
+    messages.success(request, "Plan actualizado correctamente.")
+    if plan.EsPlantilla:
+        return redirect("entrenador_plantilla_nutricion", plan_id=plan.id)
+    return redirect("entrenador_plan_nutricion", socio_id=plan.SocioID_id)
+
+
+def _redirect_plan(plan):
+    if plan.EsPlantilla:
+        return redirect("entrenador_plantilla_nutricion", plan_id=plan.id)
+    return redirect("entrenador_plan_nutricion", socio_id=plan.SocioID_id)
+
+
+@login_requerido
+@require_POST
+def entrenador_nutricion_agregar_comida(request, plan_id):
+    plan = get_object_or_404(PlanNutricional, id=plan_id)
+    rol = request.session.get("usuario_rol", "").lower()
+    if rol not in ("entrenador", "administrativo"):
+        messages.error(request, "No tienes permisos para esta acción.")
+        return _redirect_plan(plan)
+
+    try:
+        dia = int(request.POST.get("dia", 0))
+    except (TypeError, ValueError):
+        dia = 0
+    tipo = (request.POST.get("tipo") or "").strip() or "Comida"
+    DiaComida.objects.create(
+        PlanNutricionalID=plan,
+        DiaSemana=max(0, min(6, dia)),
+        TipoComida=tipo,
+    )
+    messages.success(request, "Comida agregada.")
+    return _redirect_plan(plan)
+
+
+@login_requerido
+@require_POST
+def entrenador_nutricion_eliminar_comida(request, dia_id):
+    dia = get_object_or_404(DiaComida, id=dia_id)
+    plan = dia.PlanNutricionalID
+    rol = request.session.get("usuario_rol", "").lower()
+    if rol not in ("entrenador", "administrativo"):
+        messages.error(request, "No tienes permisos para esta acción.")
+        return _redirect_plan(plan)
+
+    dia.delete()
+    messages.success(request, "Comida eliminada.")
+    return _redirect_plan(plan)
+
+
+@login_requerido
+@require_POST
+def entrenador_nutricion_agregar_alimento(request, dia_id):
+    dia = get_object_or_404(DiaComida, id=dia_id)
+    plan = dia.PlanNutricionalID
+    rol = request.session.get("usuario_rol", "").lower()
+    if rol not in ("entrenador", "administrativo"):
+        messages.error(request, "No tienes permisos para esta acción.")
+        return _redirect_plan(plan)
+
+    alimento_id = request.POST.get("alimento_id")
+    porcion_raw = request.POST.get("porcion")
+    if not alimento_id:
+        messages.error(request, "Selecciona un alimento.")
+        return _redirect_plan(plan)
+    alimento = get_object_or_404(Alimento, id=alimento_id)
+    porcion = None
+    if porcion_raw:
+        try:
+            porcion = Decimal(str(porcion_raw))
+        except (ValueError, ArithmeticError):
+            porcion = None
+    ComidaAlimento.objects.create(
+        DiaComidaID=dia,
+        AlimentoID=alimento,
+        Porcion=porcion,
+    )
+    messages.success(request, "Alimento agregado.")
+    return _redirect_plan(plan)
+
+
+def _resolve_next_url(request, fallback_name="entrenador_nutricion"):
+    """Best-effort redirection target limited to rutas internas."""
+    allowed_hosts = {request.get_host()} if hasattr(request, "get_host") else None
+    next_url = request.POST.get("next") or request.GET.get("next")
+    if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts, request.is_secure()):
+        return next_url
+    referer = request.META.get("HTTP_REFERER")
+    if referer and url_has_allowed_host_and_scheme(referer, allowed_hosts, request.is_secure()):
+        return referer
+    return reverse(fallback_name)
+
+
+@login_requerido
+@require_POST
+def entrenador_nutricion_crear_alimento(request):
+    rol = request.session.get("usuario_rol", "").lower()
+    redirect_target = _resolve_next_url(request)
+    if rol not in ("entrenador", "administrativo"):
+        messages.error(request, "No tienes permisos para esta acción.")
+        return redirect(redirect_target)
+
+    nombre = (request.POST.get("nombre") or "").strip()
+    porcion_base = (request.POST.get("porcion_base") or "").strip() or None
+    kcal_raw = request.POST.get("kcal")
+    macros = (request.POST.get("macros") or "").strip() or None
+
+    if not nombre:
+        messages.error(request, "El nombre del alimento es obligatorio.")
+        return redirect(redirect_target)
+
+    if Alimento.objects.filter(Nombre__iexact=nombre).exists():
+        messages.error(
+            request,
+            "Ya existe un alimento con ese nombre. Usa otro o selecciona el existente.",
+        )
+        return redirect(redirect_target)
+
+    kcal = None
+    if kcal_raw not in (None, ""):
+        try:
+            kcal = int(kcal_raw)
+            if kcal < 0:
+                raise ValueError
+        except (TypeError, ValueError):
+            messages.error(request, "Las calorías deben ser un número entero positivo.")
+            return redirect(redirect_target)
+
+    Alimento.objects.create(
+        Nombre=nombre,
+        PorcionBase=porcion_base,
+        Kcal=kcal,
+        Macros=macros,
+    )
+    messages.success(request, "Alimento personalizado creado y disponible en el catálogo.")
+    return redirect(redirect_target)
+
+
+@login_requerido
+@require_POST
+def entrenador_nutricion_actualizar_alimento(request, item_id):
+    item = get_object_or_404(ComidaAlimento, id=item_id)
+    plan = item.DiaComidaID.PlanNutricionalID
+    rol = request.session.get("usuario_rol", "").lower()
+    if rol not in ("entrenador", "administrativo"):
+        messages.error(request, "No tienes permisos para esta acción.")
+        return _redirect_plan(plan)
+
+    porcion_raw = request.POST.get("porcion")
+    if porcion_raw in (None, ""):
+        item.Porcion = None
+    else:
+        try:
+            item.Porcion = Decimal(str(porcion_raw))
+        except (ArithmeticError, ValueError):
+            messages.error(request, "Porción inválida.")
+            return _redirect_plan(plan)
+    item.save()
+    messages.success(request, "Alimento actualizado.")
+    return _redirect_plan(plan)
+
+
+@login_requerido
+@require_POST
+def entrenador_nutricion_eliminar_alimento(request, item_id):
+    item = get_object_or_404(ComidaAlimento, id=item_id)
+    plan = item.DiaComidaID.PlanNutricionalID
+    rol = request.session.get("usuario_rol", "").lower()
+    if rol not in ("entrenador", "administrativo"):
+        messages.error(request, "No tienes permisos para esta acción.")
+        return _redirect_plan(plan)
+
+    item.delete()
+    messages.success(request, "Alimento eliminado.")
+    return _redirect_plan(plan)
 
 
 # ============================================================

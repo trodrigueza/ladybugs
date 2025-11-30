@@ -515,7 +515,7 @@ def create_test_data():
     print(f"Foods ready: {len(alimentos)}")
 
     plan_nutricional, created = PlanNutricional.objects.get_or_create(
-        SocioID=socio, defaults={"ObjetivoCaloricoDiario": 2200}
+        SocioID=socio, EsPlantilla=False, defaults={"ObjetivoCaloricoDiario": 2200}
     )
     if created:
         print("Nutritional plan created")

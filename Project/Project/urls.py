@@ -110,6 +110,66 @@ urlpatterns = [
     path(
         "entrenador/panel/", views_entrenador.entrenador_panel, name="entrenador_panel"
     ),
+    path(
+        "entrenador/nutricion/",
+        views_entrenador.entrenador_nutricion_view,
+        name="entrenador_nutricion",
+    ),
+    path(
+        "entrenador/nutricion/<int:socio_id>/",
+        views_entrenador.entrenador_plan_nutricion_detalle,
+        name="entrenador_plan_nutricion",
+    ),
+    path(
+        "entrenador/nutricion/plantilla/<int:plan_id>/",
+        views_entrenador.entrenador_plantilla_nutricion_detalle,
+        name="entrenador_plantilla_nutricion",
+    ),
+    path(
+        "entrenador/nutricion/plantillas/crear/",
+        views_entrenador.entrenador_crear_plantilla_nutricional,
+        name="entrenador_crear_plantilla",
+    ),
+    path(
+        "entrenador/nutricion/socio/<int:socio_id>/crear-plan/",
+        views_entrenador.entrenador_crear_plan_manual,
+        name="entrenador_crear_plan_socio",
+    ),
+    path(
+        "entrenador/nutricion/plan/<int:plan_id>/actualizar/",
+        views_entrenador.entrenador_nutricion_actualizar_plan,
+        name="entrenador_nutricion_actualizar_plan",
+    ),
+    path(
+        "entrenador/nutricion/plan/<int:plan_id>/agregar-comida/",
+        views_entrenador.entrenador_nutricion_agregar_comida,
+        name="entrenador_nutricion_agregar_comida",
+    ),
+    path(
+        "entrenador/nutricion/comida/<int:dia_id>/eliminar/",
+        views_entrenador.entrenador_nutricion_eliminar_comida,
+        name="entrenador_nutricion_eliminar_comida",
+    ),
+    path(
+        "entrenador/nutricion/comida/<int:dia_id>/agregar-alimento/",
+        views_entrenador.entrenador_nutricion_agregar_alimento,
+        name="entrenador_nutricion_agregar_alimento",
+    ),
+    path(
+        "entrenador/nutricion/alimentos/crear/",
+        views_entrenador.entrenador_nutricion_crear_alimento,
+        name="entrenador_nutricion_crear_alimento",
+    ),
+    path(
+        "entrenador/nutricion/alimento/<int:item_id>/actualizar/",
+        views_entrenador.entrenador_nutricion_actualizar_alimento,
+        name="entrenador_nutricion_actualizar_alimento",
+    ),
+    path(
+        "entrenador/nutricion/alimento/<int:item_id>/eliminar/",
+        views_entrenador.entrenador_nutricion_eliminar_alimento,
+        name="entrenador_nutricion_eliminar_alimento",
+    ),
     # NUEVA RUTINA
     path(
         "entrenador/rutinas/nueva/",

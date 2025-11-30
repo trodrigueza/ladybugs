@@ -293,7 +293,7 @@ def panel_de_control_view(request):
 
     # --- Plan Nutricional de Hoy ---
     plan_nutricional_hoy = []
-    plan_nutri_obj = PlanNutricional.objects.filter(SocioID=socio).first()
+    plan_nutri_obj = PlanNutricional.objects.filter(SocioID=socio, EsPlantilla=False).first()
     if plan_nutri_obj:
         dias_comida = DiaComida.objects.filter(
             PlanNutricionalID=plan_nutri_obj, DiaSemana=dia_semana_actual
@@ -988,7 +988,7 @@ def mi_nutricion_view(request):
         return redirect("login")
 
     # Get nutrition plan
-    plan_nutricional = PlanNutricional.objects.filter(SocioID=socio).first()
+    plan_nutricional = PlanNutricional.objects.filter(SocioID=socio, EsPlantilla=False).first()
 
     if not plan_nutricional:
         context = {
@@ -1357,7 +1357,7 @@ def toggle_comida_view(request):
 
     dia_comida = get_object_or_404(DiaComida, id=dia_comida_id)
 
-    plan = PlanNutricional.objects.filter(SocioID=socio).first()
+    plan = PlanNutricional.objects.filter(SocioID=socio, EsPlantilla=False).first()
     if not plan or dia_comida.PlanNutricionalID_id != plan.id:
         return JsonResponse(
             {"error": "No estás autorizado para modificar esta comida"}, status=403
@@ -1411,7 +1411,7 @@ def historial_comidas_view(request):
 
     from apps.control_acceso.models import DiaComida, PlanNutricional
 
-    plan = PlanNutricional.objects.filter(SocioID=socio).first()
+    plan = PlanNutricional.objects.filter(SocioID=socio, EsPlantilla=False).first()
     if not plan:
         opciones_rango = [7, 14, 21, 30]
         context = {

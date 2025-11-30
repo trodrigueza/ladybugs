@@ -124,11 +124,23 @@ class EjecucionSesion(models.Model):
 
 # === TABLA PlanNutricional ===
 class PlanNutricional(models.Model):
-    SocioID = models.ForeignKey("socios.Socio", on_delete=models.CASCADE, related_name="planes_nutricionales")
+    SocioID = models.ForeignKey(
+        "socios.Socio",
+        on_delete=models.CASCADE,
+        related_name="planes_nutricionales",
+        null=True,
+        blank=True,
+    )
+    Nombre = models.CharField(max_length=120, null=True, blank=True)
     ObjetivoCaloricoDiario = models.IntegerField(null=True, blank=True)
+    EsPlantilla = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"PlanNutricional {self.id} - Socio {self.SocioID_id}"
+        if self.EsPlantilla:
+            return self.Nombre or f"Plantilla #{self.id}"
+        if self.SocioID:
+            return f"Plan de {self.SocioID.NombreCompleto}"
+        return f"PlanNutricional {self.id}"
 
     class Meta:
         db_table = "plan_nutricional"

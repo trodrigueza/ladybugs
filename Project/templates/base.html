@@ -89,7 +89,12 @@
                   <p class="text-sm font-medium leading-normal">Banco de rutinas</p>
                 </a>
               {% endwith %}
-            {% if rol != 'entrenador' %}
+            {% if rol == 'entrenador' %}
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2 {% if current == 'entrenador_nutricion' or current == 'entrenador_plan_nutricion' or current == 'entrenador_plantilla_nutricion' %}bg-gluteos-blue-dark{% else %}hover:bg-gluteos-blue-dark/50{% endif %}" href="{% url 'entrenador_nutricion' %}">
+              <span class="material-symbols-outlined">restaurant_menu</span>
+              <p class="text-sm font-medium leading-normal">Nutrición</p>
+            </a>
+            {% elif rol != 'entrenador' %}
             <a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gluteos-blue-dark/50" href="#">
               <span class="material-symbols-outlined">restaurant_menu</span>
               <p class="text-sm font-medium leading-normal">Nutrición</p>
