@@ -83,6 +83,7 @@ from apps.pagos.models import AlertaPago, Pago, PlanMembresia, SocioMembresia
 from apps.seguridad.decoradores import login_requerido
 from apps.seguridad.models import Usuario
 from apps.seguridad.servicios.registro_usuario import crear_usuario_para_socio
+from apps.socios.forms import PerfilSocioForm
 from apps.socios.models import Medicion, Socio
 from apps.socios.servicios.rutinas import obtener_o_crear_rutina_base
 
@@ -1167,6 +1168,99 @@ def mi_nutricion_view(request):
     }
 
     return render(request, "socio/MiNutrición.html", context)
+
+
+@login_requerido
+def mi_perfil_view(request):
+    usuario_id = request.session.get("usuario_id")
+
+    try:
+        usuario = Usuario.objects.get(id=usuario_id)
+        socio = Socio.objects.get(Email=usuario.Email)
+    except (Usuario.DoesNotExist, Socio.DoesNotExist):
+        messages.error(request, "No se encontró el perfil de socio asociado.")
+        return redirect("login")
+
+    ultima_medicion = Medicion.objects.filter(SocioID=socio).order_by("-Fecha").first()
+    peso_actual = ultima_medicion.PesoCorporal if ultima_medicion else None
+
+    miembro_desde = (
+        SocioMembresia.objects.filter(SocioID=socio)
+        .order_by("FechaInicio")
+        .values_list("FechaInicio", flat=True)
+        .first()
+    )
+
+    membresia_actual = (
+        SocioMembresia.objects.filter(SocioID=socio)
+        .select_related("PlanID")
+        .order_by("-FechaFin")
+        .first()
+    )
+    membresia_estado = None
+    membresia_dias_restantes = None
+    membresia_dias_texto = None
+    if membresia_actual:
+        if membresia_actual.FechaFin:
+            dias_restantes = (membresia_actual.FechaFin - timezone.now().date()).days
+            membresia_dias_restantes = dias_restantes
+            if dias_restantes >= 0:
+                membresia_dias_texto = (
+                    f"{dias_restantes} día{'s' if dias_restantes != 1 else ''}"
+                )
+            else:
+                dias_abs = abs(dias_restantes)
+                membresia_dias_texto = (
+                    f"Vencida hace {dias_abs} día{'s' if dias_abs != 1 else ''}"
+                )
+        estado = (membresia_actual.Estado or "").lower()
+        if estado == "activa" and (
+            membresia_dias_restantes is None or membresia_dias_restantes >= 0
+        ):
+            membresia_estado = "activa"
+        elif membresia_dias_restantes is not None and membresia_dias_restantes < 0:
+            membresia_estado = "vencida"
+        else:
+            membresia_estado = estado or "pendiente"
+
+    if request.method == "POST":
+        form = PerfilSocioForm(request.POST, instance=socio, peso_inicial=peso_actual)
+        if form.is_valid():
+            socio = form.save()
+            peso = form.cleaned_data.get("peso_actual")
+            if peso:
+                altura = float(socio.Altura) if socio.Altura else None
+                imc = None
+                if altura and altura > 0:
+                    imc = round(float(peso) / (altura**2), 2)
+
+                Medicion.objects.update_or_create(
+                    SocioID=socio,
+                    Fecha=timezone.now().date(),
+                    defaults={
+                        "PesoCorporal": peso,
+                        "IMC": imc,
+                    },
+                )
+
+            messages.success(request, "Tu perfil se actualizó correctamente.")
+            return redirect("mi_perfil")
+        else:
+            messages.error(request, "Por favor revisa los datos ingresados.")
+    else:
+        form = PerfilSocioForm(instance=socio, peso_inicial=peso_actual)
+
+    context = {
+        "socio": socio,
+        "form": form,
+        "ultima_medicion": ultima_medicion,
+        "miembro_desde": miembro_desde,
+        "membresia_actual": membresia_actual,
+        "membresia_estado": membresia_estado,
+        "membresia_dias_restantes": membresia_dias_restantes,
+        "membresia_dias_texto": membresia_dias_texto,
+    }
+    return render(request, "socio/MiPerfil.html", context)
 
 
 @login_requerido
