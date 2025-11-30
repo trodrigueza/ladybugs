@@ -36,6 +36,16 @@ urlpatterns = [
     path('administrativo/gestion-pagos/', pagos_views.gestion_pagos_view, name='gestion_pagos'),
     path('administrativo/gestion-pagos/registrar/', pagos_views.registrar_pago_view, name='registrar_pago'),
 
+    # ADMIN: user management routes (seleccionar/crear/editar/eliminar)
+    path('administrativo/agregar-usuario/', seguridad_views.seleccionar_tipo_usuario_view, name='agregar_usuario'),
+    path('administrativo/crear-usuario/<str:tipo_rol>/', seguridad_views.crear_usuario_view, name='crear_usuario'),
+    path('administrativo/crear-socio/', seguridad_views.crear_socio_view, name='crear_socio'),
+    path('administrativo/crear-membresia/<int:socio_id>/', seguridad_views.crear_membresia_view, name='crear_membresia'),
+    path('administrativo/editar-socio/<int:socio_id>/', seguridad_views.editar_socio_view, name='editar_socio'),
+    path('administrativo/editar-usuario/<int:usuario_id>/', seguridad_views.editar_usuario_view, name='editar_usuario'),
+    path('administrativo/gestionar-usuarios/eliminar/<str:tipo>/<int:entidad_id>/', seguridad_views.eliminar_entidad_view, name='eliminar_entidad'),
+    path('administrativo/gestionar-usuarios/eliminar-socio/<int:socio_id>/', seguridad_views.eliminar_socio_view, name='eliminar_socio'),
+
     # ENTRENADOR
     path('entrenador/panel/', views_entrenador.entrenador_panel, name='entrenador_panel'),
 
