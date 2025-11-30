@@ -294,13 +294,19 @@
       }
 
       function confirmarEliminar() {
-        if (!socioIdToDelete || !tipoEntidadToDelete) return;
+        if (!socioIdToDelete || !tipoEntidadToDelete) {
+          alert('Error: Datos incompletos');
+          return;
+        }
 
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value ||
                           document.querySelector('input[name="csrfmiddlewaretoken"]')?.value ||
                           getCookie('csrftoken');
 
-        fetch(`/Administrativo/gestionar-usuarios/eliminar/${tipoEntidadToDelete}/${socioIdToDelete}/`, {
+        console.log('Eliminando:', tipoEntidadToDelete, socioIdToDelete);
+        console.log('CSRF Token:', csrfToken);
+
+        fetch(`/administrativo/gestionar-usuarios/eliminar/${tipoEntidadToDelete}/${socioIdToDelete}/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -308,8 +314,15 @@
           },
           body: JSON.stringify({}),
         })
-          .then((response) => response.json())
+          .then((response) => {
+            console.log('Response status:', response.status);
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+          })
           .then((data) => {
+            console.log('Response data:', data);
             if (data.success) {
               const row = document.querySelector(`tr[data-socio-id="${socioIdToDelete}"]`);
               if (row) {
@@ -322,8 +335,8 @@
             }
           })
           .catch((error) => {
-            console.error('Error:', error);
-            alert('Error al eliminar la entidad');
+            console.error('Error completo:', error);
+            alert(`Error al eliminar la entidad: ${error.message}`);
           });
       }
 

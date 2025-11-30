@@ -377,6 +377,7 @@ def crear_membresia_view(request, socio_id):
 
 
 @admin_requerido
+@ensure_csrf_cookie
 @require_http_methods(["POST"])
 def eliminar_entidad_view(request, tipo, entidad_id):
     """
@@ -387,11 +388,6 @@ def eliminar_entidad_view(request, tipo, entidad_id):
         tipo: 'Socio' o 'Usuario' (se normaliza a minúsculas)
         entidad_id: ID de la entidad a eliminar
     """
-
-    if request.method != "POST":
-        return JsonResponse(
-            {"success": False, "error": "Método no permitido"}, status=405
-        )
 
     # Normalizar tipo a minúsculas para comparación
     tipo_normalizado = tipo.lower()
