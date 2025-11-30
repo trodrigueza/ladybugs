@@ -65,10 +65,39 @@ def actualizar_ejercicio_ajax(request, asignacion_id):
         return JsonResponse({"ok": False})
 
     a = DiaRutinaEjercicio.objects.get(id=asignacion_id)
-    a.Series = request.POST.get("series")
-    a.Repeticiones = request.POST.get("reps")
-    a.PesoObjetivo = request.POST.get("peso")
-    a.Tempo = request.POST.get("tempo")
+    # Parse and sanitize numeric inputs
+    series_raw = request.POST.get("series")
+    reps_raw = request.POST.get("reps")
+    peso_raw = request.POST.get("peso")
+    tempo_raw = request.POST.get("tempo")
+
+    # Series and reps: try to convert to int, allow null
+    try:
+        a.Series = int(series_raw) if series_raw not in (None, "") else None
+    except (ValueError, TypeError):
+        a.Series = None
+
+    try:
+        a.Repeticiones = int(reps_raw) if reps_raw not in (None, "") else None
+    except (ValueError, TypeError):
+        a.Repeticiones = None
+
+    # PesoObjetivo: convert to Decimal, accept comma or dot as decimal separator, clamp to >= 0
+    from decimal import Decimal, InvalidOperation
+    if peso_raw in (None, ""):
+        a.PesoObjetivo = None
+    else:
+        # Normalize comma decimal separator
+        peso_norm = str(peso_raw).replace(',', '.')
+        try:
+            p = Decimal(peso_norm)
+            if p < 0:
+                p = Decimal('0.00')
+            a.PesoObjetivo = p
+        except (InvalidOperation, ValueError):
+            a.PesoObjetivo = None
+
+    a.Tempo = tempo_raw or None
     a.save()
 
     return JsonResponse({"ok": True})
