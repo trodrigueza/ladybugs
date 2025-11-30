@@ -179,15 +179,13 @@
                     <td class="px-4 py-3">
                       {% if entidad.tipo == 'Socio' and entidad.membresias_ordered and entidad.membresias_ordered.0 %}
                         {% with memb=entidad.membresias_ordered.0 %}
-                          {% with dias_restantes=memb.remaining_days %}
-                            {% if dias_restantes < 0 %}
-                              <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-red-100 text-red-600">Expirada</span>
-                            {% elif dias_restantes <= 3 %}
-                              <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-yellow-100 text-yellow-600">Morosa ({{ dias_restantes }} días)</span>
-                            {% else %}
-                              <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-green-100 text-green-600">Activa</span>
-                            {% endif %}
-                          {% endwith %}
+                          {% if memb.Estado == 'Activa' %}
+                            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-green-100 text-green-600">Activa</span>
+                          {% elif memb.Estado == 'Morosa' %}
+                            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-yellow-100 text-yellow-600">Morosa</span>
+                          {% elif memb.Estado == 'Expirada' %}
+                            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-red-100 text-red-600">Expirada</span>
+                          {% endif %}
                         {% endwith %}
                       {% elif entidad.tipo == 'Socio' %}
                         <span class="bg-gray-100 text-gray-500 px-2.5 py-0.5 rounded-full text-xs">Sin membresía</span>

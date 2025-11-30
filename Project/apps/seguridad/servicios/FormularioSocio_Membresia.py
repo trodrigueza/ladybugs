@@ -106,9 +106,9 @@ class SocioMembresiaForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Establecer estado Activa por defecto
+        # Establecer estado Morosa por defecto (hasta que se registre pago completo)
         if not self.instance.pk:  # Solo en creación
-            self.initial['Estado'] = SocioMembresia.ESTADO_ACTIVA
+            self.initial['Estado'] = SocioMembresia.ESTADO_MOROSA
             # Establecer fecha de inicio como hoy
             from django.utils import timezone
             self.initial['FechaInicio'] = timezone.localdate()

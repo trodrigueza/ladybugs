@@ -111,10 +111,14 @@ def panel_admin_view(request):
 def gestionar_usuarios_view(request):
     """Gestionar Socios y Usuarios (Administrativos, Entrenadores)"""
     from apps.pagos.models import PlanMembresia
+    from apps.pagos.servicios.pagos_service import actualizar_estados_membresias
+
+    # Actualizar estados de membresías expiradas
+    actualizar_estados_membresias()
 
     # Obtener filtros del request GET
     tipo_selected = request.GET.get("tipo", "todos")
-    plan_id = request.GET.get("plan_id", "todos")
+    plan_id = request.GET.get("plan", "todos")
 
     # Prefetch memberships ordered by most recent FechaInicio first
     memb_qs = SocioMembresia.objects.order_by("-FechaInicio")
