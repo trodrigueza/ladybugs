@@ -58,6 +58,9 @@ urlpatterns = [
     path('administrativo/gestionar-usuarios/', seguridad_views.gestionar_usuarios_view, name='gestionar_usuarios'),
     path('administrativo/gestion-pagos/', pagos_views.gestion_pagos_view, name='gestion_pagos'),
     path('administrativo/gestion-pagos/registrar/', pagos_views.registrar_pago_view, name='registrar_pago'),
+    path('administrativo/crear-plan-membresia/', pagos_views.crear_plan_membresia_view, name='crear_plan_membresia'),
+    path('administrativo/eliminar-plan-membresia/<int:plan_id>/', pagos_views.eliminar_plan_membresia_view, name='eliminar_plan_membresia'),
+    path('administrativo/editar-plan-membresia/<int:plan_id>/', pagos_views.editar_plan_membresia_view, name='editar_plan_membresia'),
     # Rutas de clientes: mantener acceso administrativo y exponer ruta para entrenador
     path('administrativo/clientes/', socios_views.clientes_list_view, name='admin_clientes'),
     path('entrenador/clientes/', socios_views.clientes_list_view, name='clientes_list'),

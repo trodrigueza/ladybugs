@@ -22,7 +22,7 @@ class PlanMembresia(models.Model):
 # === TABLA SocioMembresia ===
 class SocioMembresia(models.Model):
     SocioID = models.ForeignKey("socios.Socio", on_delete=models.CASCADE, related_name="membresias")
-    PlanID = models.ForeignKey(PlanMembresia, on_delete=models.PROTECT, related_name="socio_membresias")
+    PlanID = models.ForeignKey(PlanMembresia, on_delete=models.SET_NULL, null=True, blank=True, related_name="socio_membresias")
 
     FechaInicio = models.DateField()
     FechaFin = models.DateField()

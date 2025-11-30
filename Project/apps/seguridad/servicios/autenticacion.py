@@ -1,5 +1,3 @@
-# seguridad/servicios/autenticacion.py
-
 from django.contrib.auth.hashers import check_password
 from django.utils import timezone
 from apps.seguridad.models import Usuario, RegistroAuditoria
@@ -7,10 +5,7 @@ from django.contrib.auth.hashers import make_password
 
 
 def registrar_evento_auditoria(usuario, tipo_accion, detalle):
-    """
-    Crea un registro de auditoría.
-    usuario puede ser None (login fallido de usuario inexistente).
-    """
+
     return RegistroAuditoria.objects.create(
         UsuarioID=usuario,
         TipoAccion=tipo_accion,
@@ -19,13 +14,7 @@ def registrar_evento_auditoria(usuario, tipo_accion, detalle):
 
 
 def autenticar_usuario(email, password_plano):
-    """
-    Verifica usuario y contraseña contra la tabla Usuario.
-    Devuelve el objeto Usuario si las credenciales son correctas, si no, None.
-    Además:
-      - Actualiza UltimoAcceso en login exitoso.
-      - Registra auditoría de login exitoso / fallido.
-    """
+
     try:
         usuario = Usuario.objects.get(Email=email)
     except Usuario.DoesNotExist:
@@ -36,7 +25,6 @@ def autenticar_usuario(email, password_plano):
         )
         return None
 
-    # Compara el password plano con el hash almacenado
     if check_password(password_plano, usuario.PasswordHash):
         usuario.UltimoAcceso = timezone.now()
         usuario.save(update_fields=["UltimoAcceso"])
@@ -48,10 +36,6 @@ def autenticar_usuario(email, password_plano):
         )
         return usuario
 
-    # Contraseña incorrecta
-    # Fallback: algunos usuarios fueron creados manualmente con la contraseña en texto plano.
-    # Si el campo PasswordHash coincide exactamente con el password plano, actualizamos
-    # el campo a un hash seguro y permitimos el acceso (migración automática).
     try:
         if usuario.PasswordHash == password_plano:
             usuario.PasswordHash = make_password(password_plano)
@@ -65,7 +49,7 @@ def autenticar_usuario(email, password_plano):
             )
             return usuario
     except Exception:
-        # En caso de cualquier error durante la migración, continuar con el flujo de fallo
+    
         pass
 
     registrar_evento_auditoria(

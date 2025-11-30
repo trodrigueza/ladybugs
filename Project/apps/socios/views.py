@@ -594,7 +594,26 @@ def panel_admin_view(request):
             return redirect("socio_panel")
         return redirect("login")
 
-    return render(request, "Administrador/PaneldeInicio.html")
+    # Obtener estadísticas para el dashboard
+    from apps.seguridad.servicios.estadisticas_dashboard import (
+        obtener_estadisticas_dashboard,
+        obtener_estadisticas_pagos_dashboard,
+        obtener_actividad_plataforma
+    )
+    
+    # Obtener todas las estadísticas
+    estadisticas = obtener_estadisticas_dashboard()
+    estadisticas_pagos = obtener_estadisticas_pagos_dashboard()
+    actividad = obtener_actividad_plataforma()
+    
+    # Combinar contextos
+    context = {
+        **estadisticas,
+        **estadisticas_pagos,
+        **actividad
+    }
+
+    return render(request, "Administrador/PaneldeInicio.html", context)
 
 
 # === SESSION TRACKING VIEWS ===
