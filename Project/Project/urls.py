@@ -33,6 +33,8 @@ urlpatterns = [
     # ADMINISTRATIVO (panel/gestion de usuarios y pagos)
     path('administrativo/panel/', socios_views.panel_admin_view, name='panel_admin'),
     path('administrativo/gestionar-usuarios/', seguridad_views.gestionar_usuarios_view, name='gestionar_usuarios'),
+    path('administrativo/gestion-pagos/', pagos_views.gestion_pagos_view, name='gestion_pagos'),
+    path('administrativo/gestion-pagos/registrar/', pagos_views.registrar_pago_view, name='registrar_pago'),
 
     # ENTRENADOR
     path('entrenador/panel/', views_entrenador.entrenador_panel, name='entrenador_panel'),
